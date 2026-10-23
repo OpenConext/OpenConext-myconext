@@ -8,6 +8,7 @@ import { fetchConfig } from '../api';
 import type { LinkedAccount } from '../api';
 import I18n from '../locale/I18n';
 import { formatDate } from '../utils/format';
+import { timeAgo } from '../utils/timeAgo';
 import {
     accountExpiresAt,
     accountFamilyName,
@@ -76,11 +77,11 @@ export const InstitutionCard = ({
                             </Badge>
                         )}
                     </span>
-                    {roles && (
-                        <span className="institution-card__role">
-                            {I18n.t('institutions.role', { roles })}
-                        </span>
-                    )}
+                    <span className="institution-card__added">
+                        {I18n.t('institutions.added', {
+                            time: timeAgo(account.createdAt),
+                        })}
+                    </span>
                 </span>
                 <CaretDownIcon
                     className="institution-card__caret"
@@ -94,6 +95,12 @@ export const InstitutionCard = ({
                         <dd>{accountGivenName(account)}</dd>
                         <dt>{I18n.t('institutions.details.lastName')}</dt>
                         <dd>{accountFamilyName(account)}</dd>
+                        {roles && (
+                            <>
+                                <dt>{I18n.t('institutions.details.role')}</dt>
+                                <dd>{roles}</dd>
+                            </>
+                        )}
                         <dt>{I18n.t('institutions.details.receivedOn')}</dt>
                         <dd>{formatDate(account.createdAt)}</dd>
                         <dt>{I18n.t('institutions.details.validUntil')}</dt>

@@ -17,6 +17,7 @@ import {
     DialogHeader,
     DialogTitle,
     Field,
+    FieldError,
     FieldGroup,
     FieldLabel,
     Input,
@@ -25,8 +26,6 @@ import {
     ItemDescription,
     ItemMedia,
     ItemTitle,
-    NativeSelect,
-    NativeSelectOption,
 } from '@surfnet/curve-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -61,6 +60,7 @@ const MONTHS = [
 const CODE_VALIDITY_DAYS = 14;
 const DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
 const YEARS_BACK = 100;
+const NUMBER = /^\d+$/;
 
 const daysInMonth = (monthIndex: number, year: number | undefined) =>
     // without a year Feb gets the leap day, the year can still narrow it down
@@ -85,10 +85,49 @@ const formatDayOfBirth = (dayOfBirth: string) => {
         : `${day.padStart(2, '0')}-${`${monthIndex + 1}`.padStart(2, '0')}-${year}`;
 };
 
-const monthLabel = (monthIndex: number) =>
-    new Intl.DateTimeFormat(I18n.locale, { month: 'long' }).format(
-        new Date(2000, monthIndex, 1),
-    );
+type FormErrors = Partial<
+    Record<'firstName' | 'lastName' | 'day' | 'month' | 'year' | 'date', string>
+>;
+
+const validate = (values: {
+    firstName: string;
+    lastName: string;
+    day: string;
+    month: string;
+    year: string;
+}): FormErrors => {
+    const errors: FormErrors = {};
+    const t = (key: string) => I18n.t(`identity.serviceDesk.${key}`);
+    const day = values.day.trim();
+    const month = values.month.trim();
+    const year = values.year.trim();
+    const currentYear = new Date().getFullYear();
+    if (values.lastName.trim() === '') {
+        errors.lastName = t('errorLastName');
+    }
+    if (values.firstName.trim() === '') {
+        errors.firstName = t('errorFirstName');
+    }
+    if (!NUMBER.test(day) || Number(day) < 1 || Number(day) > 31) {
+        errors.day = t('errorDay');
+    }
+    if (!NUMBER.test(month) || Number(month) < 1 || Number(month) > 12) {
+        errors.month = t('errorMonth');
+    }
+    if (
+        !/^\d{4}$/.test(year) ||
+        Number(year) >= currentYear ||
+        Number(year) < currentYear - YEARS_BACK
+    ) {
+        errors.year = t('errorYear');
+    }
+    if (!errors.day && !errors.month && !errors.year) {
+        if (Number(day) > daysInMonth(Number(month) - 1, Number(year))) {
+            errors.date = t('errorDate');
+        }
+    }
+    return errors;
+};
 
 const parseDayOfBirth = (dayOfBirth: string | undefined) => {
     const [day = '', month = '', year = ''] = (dayOfBirth ?? '').split(' ');
@@ -107,19 +146,11 @@ export const ServiceDeskSteps = ({
     const [firstName, setFirstName] = useState(controlCode?.firstName ?? '');
     const initialDate = parseDayOfBirth(controlCode?.dayOfBirth);
     const [day, setDay] = useState(initialDate.day);
-    const [month, setMonth] = useState(initialDate.month);
-    const [year, setYear] = useState(initialDate.year);
-
-    const currentYear = new Date().getFullYear();
-    const years = Array.from(
-        { length: YEARS_BACK },
-        (_, i) => `${currentYear - 1 - i}`,
+    const [month, setMonth] = useState(
+        initialDate.month ? `${MONTHS.indexOf(initialDate.month) + 1}` : '',
     );
-    const monthIndex = MONTHS.indexOf(month);
-    const days =
-        monthIndex < 0
-            ? 31
-            : daysInMonth(monthIndex, year ? Number(year) : undefined);
+    const [year, setYear] = useState(initialDate.year);
+    const [submitted, setSubmitted] = useState(false);
 
     const {
         mutate: create,
@@ -142,34 +173,24 @@ export const ServiceDeskSteps = ({
         },
     });
 
-    const changeMonth = (value: string) => {
-        setMonth(value);
-        // keep the day valid for the new month, e.g. 31 -> FEB
-        const index = MONTHS.indexOf(value);
-        if (
-            index >= 0 &&
-            Number(day) > daysInMonth(index, year ? Number(year) : undefined)
-        ) {
-            setDay('');
-        }
-    };
+    const errors = submitted
+        ? validate({ firstName, lastName, day, month, year })
+        : {};
+    const dateError = errors.day ?? errors.month ?? errors.year ?? errors.date;
 
-    const changeYear = (value: string) => {
-        setYear(value);
-        if (
-            monthIndex >= 0 &&
-            Number(day) > daysInMonth(monthIndex, Number(value))
-        ) {
-            setDay('');
+    const submit = () => {
+        setSubmitted(true);
+        const found = validate({ firstName, lastName, day, month, year });
+        if (Object.keys(found).length > 0) {
+            return;
         }
+        create({
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            // the backend expects `<day> <MON> <year>`
+            dayOfBirth: `${Number(day)} ${MONTHS[Number(month) - 1]} ${year}`,
+        });
     };
-
-    const formComplete =
-        lastName.trim() !== '' &&
-        firstName.trim() !== '' &&
-        day !== '' &&
-        month !== '' &&
-        year !== '';
 
     if (isError) {
         return (
@@ -222,7 +243,7 @@ export const ServiceDeskSteps = ({
                     </AlertDescription>
                 </Alert>
                 <FieldGroup>
-                    <Field>
+                    <Field data-invalid={!!errors.lastName}>
                         <FieldLabel htmlFor="controlLastName">
                             {I18n.t('identity.serviceDesk.lastName')}
                         </FieldLabel>
@@ -231,10 +252,14 @@ export const ServiceDeskSteps = ({
                             value={lastName}
                             autoComplete="off"
                             spellCheck={false}
+                            aria-invalid={!!errors.lastName}
                             onChange={(e) => setLastName(e.target.value)}
                         />
+                        {errors.lastName && (
+                            <FieldError>{errors.lastName}</FieldError>
+                        )}
                     </Field>
-                    <Field>
+                    <Field data-invalid={!!errors.firstName}>
                         <FieldLabel htmlFor="controlFirstName">
                             {I18n.t('identity.serviceDesk.firstName')}
                         </FieldLabel>
@@ -243,88 +268,63 @@ export const ServiceDeskSteps = ({
                             value={firstName}
                             autoComplete="off"
                             spellCheck={false}
+                            aria-invalid={!!errors.firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                         />
+                        {errors.firstName && (
+                            <FieldError>{errors.firstName}</FieldError>
+                        )}
                     </Field>
                     <div className="service-desk__date">
-                        <Field>
+                        <Field data-invalid={!!errors.day || !!errors.date}>
                             <FieldLabel htmlFor="controlDay">
                                 {I18n.t('identity.serviceDesk.day')}
                             </FieldLabel>
-                            <NativeSelect
+                            <Input
                                 id="controlDay"
                                 value={day}
+                                inputMode="numeric"
+                                maxLength={2}
+                                autoComplete="off"
+                                placeholder="DD"
+                                aria-invalid={!!errors.day || !!errors.date}
                                 onChange={(e) => setDay(e.target.value)}
-                            >
-                                <NativeSelectOption value="">
-                                    {I18n.t('identity.serviceDesk.select')}
-                                </NativeSelectOption>
-                                {Array.from({ length: days }, (_, i) => (
-                                    <NativeSelectOption
-                                        key={i}
-                                        value={`${i + 1}`}
-                                    >
-                                        {i + 1}
-                                    </NativeSelectOption>
-                                ))}
-                            </NativeSelect>
+                            />
                         </Field>
-                        <Field>
+                        <Field data-invalid={!!errors.month || !!errors.date}>
                             <FieldLabel htmlFor="controlMonth">
                                 {I18n.t('identity.serviceDesk.month')}
                             </FieldLabel>
-                            <NativeSelect
+                            <Input
                                 id="controlMonth"
                                 value={month}
-                                onChange={(e) => changeMonth(e.target.value)}
-                            >
-                                <NativeSelectOption value="">
-                                    {I18n.t('identity.serviceDesk.select')}
-                                </NativeSelectOption>
-                                {MONTHS.map((value, i) => (
-                                    <NativeSelectOption
-                                        key={value}
-                                        value={value}
-                                    >
-                                        {monthLabel(i)}
-                                    </NativeSelectOption>
-                                ))}
-                            </NativeSelect>
+                                inputMode="numeric"
+                                maxLength={2}
+                                autoComplete="off"
+                                placeholder="MM"
+                                aria-invalid={!!errors.month || !!errors.date}
+                                onChange={(e) => setMonth(e.target.value)}
+                            />
                         </Field>
-                        <Field>
+                        <Field data-invalid={!!errors.year || !!errors.date}>
                             <FieldLabel htmlFor="controlYear">
                                 {I18n.t('identity.serviceDesk.year')}
                             </FieldLabel>
-                            <NativeSelect
+                            <Input
                                 id="controlYear"
                                 value={year}
-                                onChange={(e) => changeYear(e.target.value)}
-                            >
-                                <NativeSelectOption value="">
-                                    {I18n.t('identity.serviceDesk.select')}
-                                </NativeSelectOption>
-                                {years.map((value) => (
-                                    <NativeSelectOption
-                                        key={value}
-                                        value={value}
-                                    >
-                                        {value}
-                                    </NativeSelectOption>
-                                ))}
-                            </NativeSelect>
+                                inputMode="numeric"
+                                maxLength={4}
+                                autoComplete="off"
+                                placeholder="YYYY"
+                                aria-invalid={!!errors.year || !!errors.date}
+                                onChange={(e) => setYear(e.target.value)}
+                            />
                         </Field>
                     </div>
+                    {dateError && <FieldError>{dateError}</FieldError>}
                 </FieldGroup>
-                <Button
-                    disabled={!formComplete || creating}
-                    onClick={() =>
-                        create({
-                            firstName: firstName.trim(),
-                            lastName: lastName.trim(),
-                            dayOfBirth: `${day} ${month} ${year}`,
-                        })
-                    }
-                >
+                <Button disabled={creating} onClick={submit}>
                     {I18n.t('identity.serviceDesk.continue')}
                 </Button>
             </>

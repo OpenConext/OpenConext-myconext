@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { pollEnrollment, startEnrollment } from '../api';
 import type { StartEnrollment } from '../api';
 import I18n from '../locale/I18n';
+import { isMobile } from '../utils/device';
 import './ActivateAppDialog.scss';
 import { RecoveryDialog } from './RecoveryDialog';
 import { StoreBadges } from './StoreBadges';
@@ -90,13 +91,15 @@ export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
                             </DialogDescription>
                         </DialogHeader>
                         <div className="activate-app__stores">
-                            <div className="activate-app__qr">
-                                <QRCodeSVG
-                                    value={`${window.location.origin}/install-app`}
-                                    size={120}
-                                    title={I18n.t('app.get.qr')}
-                                />
-                            </div>
+                            {!isMobile() && (
+                                <div className="activate-app__qr">
+                                    <QRCodeSVG
+                                        value={`${window.location.origin}/install-app`}
+                                        size={120}
+                                        title={I18n.t('app.get.qr')}
+                                    />
+                                </div>
+                            )}
                             <StoreBadges />
                         </div>
                         <p className="activate-app__after">

@@ -181,6 +181,7 @@ const pt: AppTranslation = {
         lead: 'View and edit the details that websites and apps see when you log in with eduID.',
         edit: 'Edit',
         view: 'View',
+        verifiedData: { title: 'Your verified data' },
         chosenName: 'Nickname',
         dateOfBirth: 'Date of birth',
         verifiedBy: 'Confirmed by {{name}} on {{date}}',
@@ -254,7 +255,12 @@ const pt: AppTranslation = {
             day: 'Day of birth',
             month: 'Month',
             year: 'Year',
-            select: 'Select...',
+            errorLastName: 'Enter a last name',
+            errorFirstName: 'Enter a first name',
+            errorDay: 'Enter a valid day (1-31)',
+            errorMonth: 'Enter a valid month (1-12)',
+            errorYear: 'Enter a valid year (4 digits)',
+            errorDate: 'This date does not exist',
             proceed: 'Proceed',
             codeTitle: 'Your verification code',
             codeInfo: {
@@ -283,7 +289,7 @@ const pt: AppTranslation = {
     institutions: {
         title: 'Institutions',
         lead: 'Connect educational or research institutions to get access to related services.',
-        role: 'Role: {{roles}}',
+        added: 'Added {{time}}',
         add: 'Connect an institution',
         learnMore: 'Learn more',
         learnMoreUrl: 'https://eduid.nl/help-en/',
@@ -305,6 +311,7 @@ const pt: AppTranslation = {
         details: {
             firstName: 'First name',
             lastName: 'Last name',
+            role: 'Role',
             receivedOn: 'Received on',
             validUntil: 'Valid until',
         },
@@ -318,7 +325,7 @@ const pt: AppTranslation = {
             alum: 'alumnus',
         },
         delete: {
-            button: 'Remove institution',
+            button: 'Remove verification',
             title: 'Remove institution?',
             question:
                 'Are you sure you want to remove the connection with this institution?',
@@ -674,7 +681,7 @@ const pt: AppTranslation = {
     landing: {
         logoutTitle: 'You have been logged out',
         logoutStatus:
-            'To finalise the logout process you must now close this browser.',
+            'You can log in again with the same or a different eduID account.',
         loginAgain: 'Login again',
         deleteTitle: 'Your eduID account has been deleted',
         deleteStatus:

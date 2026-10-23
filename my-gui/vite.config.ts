@@ -27,7 +27,7 @@ export default defineConfig({
         host: '127.0.0.1',
     },
     server: {
-        port: 3001,
+        port: 3003,
         open: true,
         proxy: {
             '/config': {

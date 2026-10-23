@@ -13,7 +13,7 @@ docker compose up -d mongo mailpit        # from the repo root
 # tiqr-mock (:8088), plays the eduID app and the institution login (/oidc)
 ```
 
-The my-gui dev server (:3001) is started by Playwright when it is not running.
+The my-gui dev server (:3003) is started by Playwright when it is not running.
 
 ```bash
 yarn e2e        # headless

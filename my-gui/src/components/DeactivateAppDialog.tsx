@@ -47,6 +47,8 @@ export const DeactivateAppDialog = ({
     // users that saved a recovery code type it instead of getting a code sent
     const useRecoveryCode = Boolean(user.registration?.recoveryCode);
     const otpRef = useRef<HTMLInputElement>(null);
+    // after a wrong code the user has to confirm explicitly
+    const autoSubmit = useRef(true);
 
     const [step, setStep] = useState<'intro' | 'code'>('intro');
     const [code, setCode] = useState('');
@@ -66,11 +68,12 @@ export const DeactivateAppDialog = ({
             onClose();
         },
         onError: (error) => {
-            setCode('');
             if (error instanceof Response && error.status === 429) {
+                setCode('');
                 setMaxAttempts(true);
             } else {
                 setWrongCode(true);
+                autoSubmit.current = false;
                 // the input is disabled while verifying, focus once enabled
                 setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
             }
@@ -162,7 +165,11 @@ export const DeactivateAppDialog = ({
                                 disabled={deactivate.isPending}
                                 containerClassName="deactivate-app__otp"
                                 onChange={changeCode}
-                                onComplete={submit}
+                                onComplete={(value) => {
+                                    if (autoSubmit.current) {
+                                        submit(value);
+                                    }
+                                }}
                             >
                                 <InputOTPGroup className="deactivate-app__slots">
                                     {Array.from(

@@ -10,6 +10,7 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.security.GuiRedirectResolver;
 import myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter;
 import myconext.util.CreateFromInstitutionReturnUrlSupport;
 import org.apache.commons.logging.Log;
@@ -55,9 +56,8 @@ public class LoginController {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final SecurityContextRepository securityContextRepository;
     private final List<String> createFromInstitutionAllowedReturnDomains;
-    private final String myconextRedirectUrl;
+    private final GuiRedirectResolver guiRedirectResolver;
     private final String servicedeskRedirectUrl;
-    private final String myconextLoginUrl;
 
     public LoginController(UserRepository userRepository,
                            AuthenticationRequestRepository authenticationRequestRepository,
@@ -90,7 +90,8 @@ public class LoginController {
                            @Value("${feature.enable_account_linking}") boolean enableAccountLinking,
                            @Value("${feature.use_app}") boolean useApp,
                            @Value("${supportedLanguages}") String supportedLanguages,
-                           CreateFromInstitutionProperties createFromInstitutionProperties
+                           CreateFromInstitutionProperties createFromInstitutionProperties,
+                           GuiRedirectResolver guiRedirectResolver
     ) {
         this.config.put("myconextBasePath", myconextBasePath);
         this.config.put("loginUrl", myconextBasePath + "/auth/login");
@@ -128,15 +129,20 @@ public class LoginController {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.securityContextRepository = securityContextRepository;
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
-        this.myconextRedirectUrl = myconextRedirectUrl;
+        this.guiRedirectResolver = guiRedirectResolver;
         this.servicedeskRedirectUrl = servicedeskRedirectUrl;
-        this.myconextLoginUrl = myconextBasePath + "/oauth2/authorization/my_conext";
     }
 
     @GetMapping("/config")
     public Map<String, Object> config(Authentication authentication) {
         Map<String, Object> result = new HashMap<>(this.config);
         result.put("isAuthenticated", authentication != null);
+        String myconextBaseUrl = guiRedirectResolver.myconextRedirectUrl();
+        result.put("myconextBaseUrl", myconextBaseUrl);
+        String basePath = guiRedirectResolver.myconextBasePath();
+        result.put("myconextBasePath", basePath);
+        result.put("loginUrl", basePath + "/auth/login");
+        result.put("myconextWebAuthnRedirectUrl", String.format("%s/security", myconextBaseUrl));
         return result;
     }
 
@@ -144,11 +150,18 @@ public class LoginController {
     public View login(
             @RequestParam(value = "redirect_path", required = false) String redirectPath,
             @RequestParam(value = "registration_id") String registrationId,
-            @RequestParam(value = "force", required = false, defaultValue = "false") Boolean force
+            @RequestParam(value = "force", required = false, defaultValue = "false") Boolean force,
+            @RequestParam(value = "app", required = false) String app,
+            HttpServletRequest request
     ) {
-        String baseUrl = InternalSecurityConfigurationAdapter.REGISTRATION_ID_SERVICE_DESK.equals(registrationId)
-                ? servicedeskRedirectUrl
-                : myconextRedirectUrl;
+        String baseUrl;
+        if (InternalSecurityConfigurationAdapter.REGISTRATION_ID_SERVICE_DESK.equals(registrationId)) {
+            baseUrl = servicedeskRedirectUrl;
+        } else {
+            // remember the client for the redirects of the flows that follow, e.g. linking an account
+            guiRedirectResolver.remember(request, app);
+            baseUrl = guiRedirectResolver.myconextRedirectUrl(request);
+        }
         String target = baseUrl;
         if (StringUtils.hasText(redirectPath)) {
             String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
@@ -190,7 +203,7 @@ public class LoginController {
         response.addCookie(loginPreferenceCookie);
         response.addCookie(usernameCookie);
 
-        String redirectLocation = this.config.get("myconextBaseUrl") + "/security";
+        String redirectLocation = guiRedirectResolver.myconextRedirectUrl() + "/security";
         response.sendRedirect(redirectLocation);
     }
 
@@ -211,7 +224,7 @@ public class LoginController {
         loginPreferenceCookie.setPath("/");
         response.addCookie(loginPreferenceCookie);
 
-        response.sendRedirect(this.config.get("myconextBaseUrl") + "/security");
+        response.sendRedirect(guiRedirectResolver.myconextRedirectUrl() + "/security");
     }
 
     @GetMapping("/servicedesk/{id}")
@@ -234,7 +247,7 @@ public class LoginController {
         context.setAuthentication(authentication);
         this.securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
 
-        String redirectUrl = String.format("%s/personal?servicedesk=start", this.config.get("myconextBaseUrl"));
+        String redirectUrl = String.format("%s/personal?servicedesk=start", guiRedirectResolver.myconextRedirectUrl());
 
         LOG.info(String.format("User %s logged in to process servicedesk request. Redirecting to %s", user.getEmail(), redirectUrl));
 
@@ -246,7 +259,7 @@ public class LoginController {
             String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
             response.setHeader("Set-Cookie", cookieValue);
         }
-        String redirectLocation = StringUtils.hasText(location) ? location : this.myconextLoginUrl + "?lang=" + lang;
+        String redirectLocation = StringUtils.hasText(location) ? location : guiRedirectResolver.myconextBasePath() + "/oauth2/authorization/my_conext?lang=" + lang;
 
         LOG.info(String.format("Redirecting to %s", redirectLocation));
 
@@ -269,10 +282,11 @@ public class LoginController {
                 });
             }
         }
+        // resolve before the session, which holds the client, is invalidated
+        Object url = StringUtils.hasText(app) && "servicedesk".equalsIgnoreCase(app) ?
+                this.config.get("servicedeskBaseUrl") : guiRedirectResolver.myconextRedirectUrl(request);
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
-        String key = StringUtils.hasText(app) && "servicedesk".equalsIgnoreCase(app) ? "servicedeskBaseUrl" : "myconextBaseUrl";
-        Object url = this.config.get(key);
         String redirectLocation = String.format("%s/landing?%s", url, param);
 
         LOG.info(String.format("Logout and redirect to %s", redirectLocation));
@@ -284,7 +298,7 @@ public class LoginController {
     public void createFromInstitutionLogin(HttpServletRequest request,
                                            HttpServletResponse response,
                                            @RequestParam(value = "key") String key) throws IOException {
-        String redirectUrl = String.format("%s/security", this.config.get("myconextBaseUrl"));
+        String redirectUrl = String.format("%s/security", guiRedirectResolver.myconextRedirectUrl());
         doCreateUserFromInstitutionKey(request, response, key, redirectUrl);
     }
 

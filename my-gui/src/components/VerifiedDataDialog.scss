@@ -1,0 +1,15 @@
+.verified-data {
+    &__title {
+        font-size: var(--text-lg-font-size);
+        font-weight: var(--font-weight-medium);
+        line-height: var(--text-lg-line-height);
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 2);
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+}

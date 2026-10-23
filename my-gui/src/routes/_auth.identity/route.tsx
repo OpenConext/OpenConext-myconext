@@ -13,11 +13,13 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchConfig, fetchMe } from '../../api';
 import type { LinkedAccount } from '../../api';
+import { DeleteInstitutionDialog } from '../../components/DeleteInstitutionDialog';
 import { EditChosenNameDialog } from '../../components/EditChosenNameDialog';
 import { EditNameDialog } from '../../components/EditNameDialog';
 import { IdentityRow } from '../../components/IdentityRow';
 import { NewLinkedAccount } from '../../components/NewLinkedAccount';
 import { PageHeader } from '../../components/PageHeader';
+import { VerifiedDataDialog } from '../../components/VerifiedDataDialog';
 import { VerifyIdentityDialog } from '../../components/VerifyIdentityDialog';
 import I18n from '../../locale/I18n';
 import { formatDate, formatDateOfBirth } from '../../utils/format';
@@ -30,9 +32,6 @@ import {
 } from '../../utils/verification';
 import './route.scss';
 
-const institutionPath = (account: LinkedAccount) =>
-    `/institutions?open=${encodeURIComponent(accountKey(account))}`;
-
 export default function Identity() {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
     const { data: config } = useQuery({
@@ -42,6 +41,8 @@ export default function Identity() {
     const [editingName, setEditingName] = useState(false);
     const [editingChosenName, setEditingChosenName] = useState(false);
     const [verifyingState, setVerifying] = useState(false);
+    const [viewing, setViewing] = useState<LinkedAccount>();
+    const [deleting, setDeleting] = useState<LinkedAccount>();
     const [searchParams, setSearchParams] = useSearchParams();
 
     if (!me) {
@@ -64,6 +65,10 @@ export default function Identity() {
     const account = preferredAccount(me);
     // only iDIN and eIDAS accounts deliver a date of birth
     const dobAccount = (me.externalLinkedAccounts ?? []).find(isValid);
+    const accounts = [
+        ...(me.linkedAccounts ?? []),
+        ...(me.externalLinkedAccounts ?? []),
+    ].sort((a, b) => b.createdAt - a.createdAt);
     const verifiedBy = account && institutionName(account);
     const verifiedText =
         account &&
@@ -119,7 +124,7 @@ export default function Identity() {
                     value={`${me.givenName} ${me.familyName}`}
                     verifiedText={verifiedText}
                     onEdit={account ? undefined : () => setEditingName(true)}
-                    viewTo={account && institutionPath(account)}
+                    onView={account && (() => setViewing(account))}
                 />
                 {dobAccount && me.dateOfBirth && (
                     <IdentityRow
@@ -129,7 +134,7 @@ export default function Identity() {
                             name: institutionName(dobAccount),
                             date: formatDate(dobAccount.createdAt),
                         })}
-                        viewTo={institutionPath(dobAccount)}
+                        onView={() => setViewing(dobAccount)}
                     />
                 )}
             </div>
@@ -157,6 +162,23 @@ export default function Identity() {
                     }
                     open
                     onOpenChange={closeVerify}
+                />
+            )}
+            {viewing && (
+                <VerifiedDataDialog
+                    accounts={accounts}
+                    openKey={accountKey(viewing)}
+                    onDelete={(toDelete) => {
+                        setViewing(undefined);
+                        setDeleting(toDelete);
+                    }}
+                    onClose={() => setViewing(undefined)}
+                />
+            )}
+            {deleting && (
+                <DeleteInstitutionDialog
+                    account={deleting}
+                    onClose={() => setDeleting(undefined)}
                 />
             )}
             <NewLinkedAccount />

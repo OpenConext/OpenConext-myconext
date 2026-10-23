@@ -54,6 +54,28 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void loginMyGui() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "/security")
+                .queryParam("registration_id", REGISTRATION_ID_MY_CONEXT)
+                .queryParam("app", "my_gui")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3003/security");
+    }
+
+    @Test
+    public void configMyGuiReferer() {
+        given().header("Origin", "http://localhost:3003")
+                .when()
+                .get("/config")
+                .then()
+                .body("myconextBaseUrl", equalTo("http://localhost:3003"));
+    }
+
+    @Test
     public void loginWithRedirectPath() {
         given().redirects().follow(false)
                 .when()

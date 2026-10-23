@@ -36,6 +36,7 @@ email:
   error: info@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
+  my-gui-url: http://localhost:3003
   idp-surfconext-url: http://localhost:3000
 #  mail-templates-directory: file://opt/build/main/resources/mail_templates
   mail-templates-directory: classpath:mail_templates
@@ -83,12 +84,14 @@ mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
 saml_metadata_base_path: http://localhost:8081
 myconext_base_path: http://localhost:8081
+my_gui_base_path: http://localhost:8081
 servicedesk_base_path: http://localhost:8081
 continue_after_login_url: http://localhost:8081/saml/guest-idp/continue
 account_redirect_url: http://localhost:3000
 account_id: localhost
 account_origin: http://localhost:3000
 myconext_redirect_url: http://localhost:3001
+my_gui_redirect_url: http://localhost:3003
 servicedesk_redirect_url: http://localhost:3003
 # sp_entity_id represents the SP's that are allowed to connect -- It is a comma separated list
 sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
@@ -108,6 +111,7 @@ create-from-institution:
 host_headers:
   service_desk: servicedesk.myconext.nl
   mijn_ediuid: mijn.myconext.nl
+  my_gui: mijn-new.myconext.nl
   #Only for testing purposes
 #  active: servicedesk.myconext.nl
   active: mijn.myconext.nl
@@ -246,6 +250,8 @@ oidc:
   sp-flow-redirect-url: http://localhost:8081/myconext/api/sp/oidc/redirect
   mobile-flow-redirect-url: http://localhost:8081/myconext/api/mobile/oidc/redirect
   sp-create-from-institution-redirect-url: http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect
+  my-gui-sp-flow-redirect-url: http://localhost:8081/myconext/api/sp/oidc/redirect
+  my-gui-sp-create-from-institution-redirect-url: http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect
   base-url: https://connect.test2.surfconext.nl
 
 services-configuration:
@@ -296,6 +302,7 @@ verify:
   secret: secret
   base_uri: "http://localhost:8282"
   sp_verify_redirect_url: http://localhost:8081/myconext/api/sp/verify/redirect
+  my_gui_sp_verify_redirect_url: http://localhost:8081/myconext/api/sp/verify/redirect
   mobile_verify_redirect_url: http://localhost:8081/myconext/api/mobile/verify/redirect
   idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
   issuers_path: "classpath:idin/issuers.json"

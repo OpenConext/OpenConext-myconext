@@ -183,6 +183,7 @@ const nl: AppTranslation = {
         lead: 'Bekijk en wijzig de gegevens die websites en apps van je zien als je met eduID inlogt.',
         edit: 'Wijzig',
         view: 'Bekijk',
+        verifiedData: { title: 'Jouw bevestigde gegevens' },
         chosenName: 'Roepnaam',
         dateOfBirth: 'Geboortedatum',
         verifiedBy: 'Bevestigd door {{name}} op {{date}}',
@@ -256,8 +257,13 @@ const nl: AppTranslation = {
             day: 'Geboortedag',
             month: 'Maand',
             year: 'Jaar',
-            select: 'Selecteer...',
-            proceed: 'Doorgaan',
+            errorLastName: 'Vul een achternaam in',
+            errorFirstName: 'Vul een voornaam in',
+            errorDay: 'Vul een geldige dag in (1-31)',
+            errorMonth: 'Vul een geldige maand in (1-12)',
+            errorYear: 'Vul een geldig jaar in (4 cijfers)',
+            errorDate: 'Deze datum bestaat niet',
+            proceed: 'Sluiten',
             codeTitle: 'Je controlecode',
             codeInfo: {
                 one: 'Je krijgt ook een e-mail met deze code. De code is nog {{count}} dag geldig en is bedoeld voor:',
@@ -285,7 +291,7 @@ const nl: AppTranslation = {
     institutions: {
         title: 'Instellingen',
         lead: 'Koppel onderwijs- of onderzoeksinstellingen om toegang te krijgen tot gerelateerde diensten.',
-        role: 'Rol: {{roles}}',
+        added: 'Toegevoegd {{time}}',
         add: 'Instelling koppelen',
         learnMore: 'Lees meer',
         learnMoreUrl: 'https://eduid.nl?lang=nl',
@@ -307,6 +313,7 @@ const nl: AppTranslation = {
         details: {
             firstName: 'Voornaam',
             lastName: 'Achternaam',
+            role: 'Rol',
             receivedOn: 'Ontvangen op',
             validUntil: 'Geldig tot',
         },
@@ -320,7 +327,7 @@ const nl: AppTranslation = {
             alum: 'alumnus',
         },
         delete: {
-            button: 'Instelling verwijderen',
+            button: 'Verificatie verwijderen',
             title: 'Instelling verwijderen?',
             question:
                 'Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?',
@@ -677,7 +684,7 @@ const nl: AppTranslation = {
     landing: {
         logoutTitle: 'Je bent uitgelogd',
         logoutStatus:
-            'Om het uitlogproces te voltooien, moet je de browser nu afsluiten.',
+            'Je kunt opnieuw inloggen met dezelfde of een andere eduID.',
         loginAgain: 'Opnieuw inloggen',
         deleteTitle: 'Jouw eduID is verwijderd',
         deleteStatus:

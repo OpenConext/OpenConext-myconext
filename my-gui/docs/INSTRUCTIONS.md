@@ -25,7 +25,7 @@
 
 - **Never edit anything in `../DesignSystem`** (it is git-ignored and read-only reference).
 - **Never commit.** The user commits.
-- Run `yarn check` (tsc + lint + prettier) before finishing; `yarn dev` serves on :3001 and proxies to the backend on :8081.
+- Run `yarn check` (tsc + lint + prettier) before finishing; `yarn dev` serves on :3003 and proxies to the backend on :8081.
 
 ## References
 

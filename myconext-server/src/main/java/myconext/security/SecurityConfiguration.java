@@ -254,6 +254,7 @@ public class SecurityConfiguration {
     public static class InternalSecurityConfigurationAdapter {
 
         private final AppAwareAuthorizationRequestResolver authorizationRequestResolver;
+        private final GuiRedirectResolver guiRedirectResolver;
 
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
@@ -263,8 +264,10 @@ public class SecurityConfiguration {
         private static final Set<String> ALLOWED_REGISTRATION_IDS =
                 Set.of(REGISTRATION_ID_MY_CONEXT, REGISTRATION_ID_SERVICE_DESK);
 
-        public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
+        public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver,
+                                                    GuiRedirectResolver guiRedirectResolver) {
             this.authorizationRequestResolver = authorizationRequestResolver;
+            this.guiRedirectResolver = guiRedirectResolver;
         }
 
         @Bean
@@ -279,6 +282,7 @@ public class SecurityConfiguration {
                 @Value("${service_desk_role_auto_provisioning}") boolean serviceDeskRoleAutoProvisioning,
                 @Value("${host_headers.active}") String activeHost,
                 @Value("${host_headers.mijn_ediuid}") String mijnEduIDHost,
+                @Value("${host_headers.my_gui}") String myGuiHost,
                 @Value("${host_headers.service_desk}") String serviceDeskHost) throws Exception {
             http
                     .securityMatcher(
@@ -314,7 +318,7 @@ public class SecurityConfiguration {
                             )
                             .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
                                     new OpenConextOidcUserService(
-                                            environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
+                                            environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, myGuiHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
                                     )
                             ))
                     )
@@ -337,7 +341,8 @@ public class SecurityConfiguration {
         private AuthenticationEntryPoint appAwareAuthenticationEntryPoint() {
             return (request, response, authException) -> {
                 String registrationId = request.getParameter("registration_id");
-                String force = request.getParameter("force");
+                // the client that started the login, for the OIDC callback and the redirects after the login
+                guiRedirectResolver.remember(request, request.getParameter("app"));
                 if (!StringUtils.hasText(registrationId) || !ALLOWED_REGISTRATION_IDS.contains(registrationId)) {
                     registrationId = REGISTRATION_ID_MY_CONEXT;
                 }

@@ -69,6 +69,8 @@ export const RecoveryDialog = ({
 }: RecoveryDialogProps) => {
     const queryClient = useQueryClient();
     const otpRef = useRef<HTMLInputElement>(null);
+    // after a wrong code the user has to confirm explicitly
+    const autoSubmit = useRef(true);
     const [step, setStep] = useState<Step>('choose');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [phoneTouched, setPhoneTouched] = useState(false);
@@ -102,6 +104,7 @@ export const RecoveryDialog = ({
         mutationFn: change ? resendPhoneCode : sendPhoneCode,
         onSuccess: () => {
             setCode('');
+            autoSubmit.current = true;
             setWrongCode(false);
             setMaxAttempts(false);
             setStep('sms');
@@ -112,11 +115,12 @@ export const RecoveryDialog = ({
         mutationFn: change ? reverifyPhoneCode : verifyPhoneCode,
         onSuccess: () => (change ? finishChange() : setStep('congrats')),
         onError: (error) => {
-            setCode('');
             if (error instanceof Response && error.status === 429) {
+                setCode('');
                 setMaxAttempts(true);
             } else {
                 setWrongCode(true);
+                autoSubmit.current = false;
                 // the input is disabled while verifying, focus once enabled
                 setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
             }
@@ -154,8 +158,10 @@ export const RecoveryDialog = ({
         setTimeout(() => setCopied(false), COPIED_TIMEOUT);
     };
 
-    // the recovery code is only shown once, so it can not be dismissed by accident
-    const locked = step === 'backup' || step === 'congrats';
+    // enrolling is only completed by finishing every step, and the recovery
+    // code is only shown once, so the dialog can not be dismissed (also not
+    // with esc) until then
+    const locked = !change || step === 'backup' || step === 'congrats';
 
     // leaving the page would lose the code that is shown once
     useEffect(() => {
@@ -309,7 +315,11 @@ export const RecoveryDialog = ({
                                     setCode(value);
                                     setWrongCode(false);
                                 }}
-                                onComplete={submitCode}
+                                onComplete={(value) => {
+                                    if (autoSubmit.current) {
+                                        submitCode(value);
+                                    }
+                                }}
                             >
                                 <InputOTPGroup className="recovery-dialog__slots">
                                     {Array.from(

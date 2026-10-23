@@ -73,6 +73,8 @@ export const PasswordDialog = ({
     const prefix = usePassword ? 'update' : 'add';
 
     const otpRef = useRef<HTMLInputElement>(null);
+    // after a wrong code the user has to confirm explicitly
+    const autoSubmit = useRef(true);
     const [stepState, setStep] = useState<Step>('confirm');
     const [code, setCode] = useState('');
     const [verifiedHash, setHash] = useState('');
@@ -132,6 +134,7 @@ export const PasswordDialog = ({
         mutationFn: generatePasswordCode,
         onSuccess: () => {
             setCode('');
+            autoSubmit.current = true;
             setWrongCode(false);
             setResent(false);
             setStep('code');
@@ -159,7 +162,7 @@ export const PasswordDialog = ({
                 void logoutAfterRateLimit();
             } else {
                 setWrongCode(true);
-                setCode('');
+                autoSubmit.current = false;
                 // the input is disabled while verifying, focus once enabled
                 setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
             }
@@ -300,7 +303,11 @@ export const PasswordDialog = ({
                                     setCode(value);
                                     setWrongCode(false);
                                 }}
-                                onComplete={submitCode}
+                                onComplete={(value) => {
+                                    if (autoSubmit.current) {
+                                        submitCode(value);
+                                    }
+                                }}
                             >
                                 <InputOTPGroup className="password-dialog__slots">
                                     {Array.from(

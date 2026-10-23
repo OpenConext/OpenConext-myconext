@@ -7,9 +7,9 @@
 
     &__card {
         overflow: hidden;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-xl);
-        background-color: var(--card);
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-lg, var(--radius, .625rem));
+        background-color: transparent;
         box-shadow: var(--shadow-sm);
     }
 

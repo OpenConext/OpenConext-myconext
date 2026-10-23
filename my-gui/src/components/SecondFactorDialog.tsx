@@ -102,7 +102,6 @@ export const SecondFactorDialog = ({
     const verify = useMutation({
         mutationFn: (response: string) => manualResponse(sessionKey!, response),
         onError: () => {
-            setCode('');
             setWrongCode(true);
             // the input is disabled while verifying, focus once enabled
             setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);

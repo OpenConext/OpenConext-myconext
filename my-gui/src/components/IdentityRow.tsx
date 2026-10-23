@@ -1,5 +1,3 @@
-import { Link } from 'react-router';
-
 import { PencilSimpleIcon, ShieldCheckIcon } from '@phosphor-icons/react';
 import { Button } from '@surfnet/curve-react';
 
@@ -13,8 +11,8 @@ type IdentityRowProps = {
     value: string;
     // shown in green below the value when the value is verified
     verifiedText?: string;
-    // the details of a verified value, opened with View
-    viewTo?: string;
+    // shows the details of a verified value, opened with View
+    onView?: () => void;
     // makes the value editable
     onEdit?: () => void;
 };
@@ -24,7 +22,7 @@ export const IdentityRow = ({
     label,
     value,
     verifiedText,
-    viewTo,
+    onView,
     onEdit,
 }: IdentityRowProps) => {
     return (
@@ -45,11 +43,11 @@ export const IdentityRow = ({
                         {I18n.t('identity.edit')}
                     </Button>
                 )}
-                {viewTo && (
+                {onView && (
                     <Button
                         variant="ghost"
                         className="identity-row__action"
-                        render={<Link to={viewTo} />}
+                        onClick={onView}
                     >
                         {I18n.t('identity.view')}
                     </Button>

@@ -29,6 +29,7 @@
         "react-dom": "^19.2.8",
         "react-router": "^8.5.0",
         "sonner": "^2.0.8",
+        "timeago.js": "^4.0.2",
         "zustand": "^5.0.15"
     },
     "devDependencies": {

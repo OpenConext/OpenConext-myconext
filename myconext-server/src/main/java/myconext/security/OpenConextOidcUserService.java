@@ -47,6 +47,7 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
     private final OidcUserService delegate;
     private final String myConextEntityId;
     private final String myConextHost;
+    private final String myGuiHost;
     private final String serviceDeskHost;
     private  final String activeHost;
     private final List<String> serviceDeskRoles;
@@ -58,6 +59,7 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
             ExternalUserRepository externalUserRepository,
             String myConextEntityId,
             String myConextHost,
+            String myGuiHost,
             String serviceDeskHost,
             String activeHost,
             List<String> serviceDeskRoles
@@ -69,6 +71,7 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
         this.delegate = new OidcUserService();
         this.myConextEntityId = myConextEntityId;
         this.myConextHost = myConextHost;
+        this.myGuiHost = myGuiHost;
         this.serviceDeskHost = serviceDeskHost;
         this.activeHost = activeHost;
         this.serviceDeskRoles = serviceDeskRoles;
@@ -99,7 +102,7 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
         if (!StringUtils.hasText(host)) {
             throw new IllegalArgumentException("There is no host header in the request");
         }
-        boolean logInToMyConext = host.toLowerCase().equals(this.myConextHost);
+        boolean logInToMyConext = host.toLowerCase().equals(this.myConextHost) || host.toLowerCase().equals(this.myGuiHost);
         boolean logInToServiceDesk = host.toLowerCase().equals(this.serviceDeskHost);
 
         // Retrieve or provision the user (always ending up with a user to return)

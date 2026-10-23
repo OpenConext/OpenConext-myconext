@@ -31,12 +31,24 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class AppAwareAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
     private final DefaultOAuth2AuthorizationRequestResolver delegate;
+    private final GuiRedirectResolver guiRedirectResolver;
 
-    public AppAwareAuthorizationRequestResolver(ClientRegistrationRepository repo) {
+    public AppAwareAuthorizationRequestResolver(ClientRegistrationRepository repo, GuiRedirectResolver guiRedirectResolver) {
+        this.guiRedirectResolver = guiRedirectResolver;
         this.delegate = new DefaultOAuth2AuthorizationRequestResolver(
                 repo, "/oauth2/authorization"
         );
-        this.delegate.setAuthorizationRequestCustomizer(builder -> builder.additionalParameters(this::addPromptLoginIfForced));
+        this.delegate.setAuthorizationRequestCustomizer(this::customize);
+    }
+
+    private void customize(OAuth2AuthorizationRequest.Builder builder) {
+        builder.additionalParameters(this::addPromptLoginIfForced);
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        String path = ((ServletRequestAttributes) requestAttributes).getRequest().getRequestURI();
+        String redirectUri = guiRedirectResolver.loginRedirectUri(path.substring(path.lastIndexOf('/') + 1));
+        if (redirectUri != null) {
+            builder.redirectUri(redirectUri);
+        }
     }
 
     private void addPromptLoginIfForced(java.util.Map<String, Object> params) {

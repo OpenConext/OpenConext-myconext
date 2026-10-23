@@ -1,5 +1,6 @@
 package myconext.mail;
 
+import myconext.security.GuiRedirectResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.repository.EmailsSendRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class MailConfiguration {
     @Value("${email.my-surfconext-url}")
     private String mySURFconextURL;
 
+    @Value("${email.my-gui-url}")
+    private String myGuiURL;
+
+    @Autowired
+    private GuiRedirectResolver guiRedirectResolver;
+
     @Value("${email.idp-surfconext-url}")
     private String loginSURFconextURL;
 
@@ -58,7 +65,7 @@ public class MailConfiguration {
 
     @Bean
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
+        return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, () -> guiRedirectResolver.select(mySURFconextURL, myGuiURL), loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds, environmentName);
     }
 }

@@ -3,3 +3,9 @@
     margin: calc(var(--spacing) * 16) auto;
     padding-inline: calc(var(--spacing) * 4);
 }
+
+.landing__alert [data-slot='alert-title'],
+.landing__alert [data-slot='alert-description'] {
+    // keep the text clear of the action button in the top right corner
+    padding-right: calc(var(--spacing) * 28);
+}

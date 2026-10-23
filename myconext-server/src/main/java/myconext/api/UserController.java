@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import myconext.security.GuiRedirectResolver;
 import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
 import myconext.captcha.CaptchaVerifier;
@@ -93,7 +94,6 @@ public class UserController implements UserAuthentication {
     private final OpenIDConnect openIDConnect;
     private final String magicLinkUrl;
     private final String schacHomeOrganization;
-    private final String webAuthnSpRedirectUrl;
     private final String accountRedirectUrl;
     private final RelyingParty relyingParty;
     private final UserCredentialRepository userCredentialRepository;
@@ -105,7 +105,7 @@ public class UserController implements UserAuthentication {
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;
-    private final String myconextRedirectUrl;
+    private final GuiRedirectResolver guiRedirectResolver;
     private final ObjectMapper objectMapper;
     private final RegistrationRepository registrationRepository;
     private final boolean featureDefaultRememberMe;
@@ -137,7 +137,6 @@ public class UserController implements UserAuthentication {
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organizations}") String schacHomeOrganizations,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
-                          @Value("${myconext_redirect_url}") String myconextRedirectUrl,
                           @Value("${account_redirect_url}") String accountRedirectUrl,
                           @Value("${account_origin}") String accountOrigin,
                           @Value("${account_id}") String accountId,
@@ -147,7 +146,8 @@ public class UserController implements UserAuthentication {
                           @Value("${secure_cookie}") boolean secureCookie,
                           @Value("${verify.issuers_path}") Resource issuersResource,
                           ServicesConfiguration servicesConfiguration,
-                          ActivityRecorder activityRecorder) throws IOException {
+                          ActivityRecorder activityRecorder,
+                          GuiRedirectResolver guiRedirectResolver) throws IOException {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
@@ -165,8 +165,7 @@ public class UserController implements UserAuthentication {
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
         this.accountRedirectUrl = accountRedirectUrl;
-        this.myconextRedirectUrl = myconextRedirectUrl;
-        this.webAuthnSpRedirectUrl = String.format("%s/security", myconextRedirectUrl);
+        this.guiRedirectResolver = guiRedirectResolver;
         this.servicesConfiguration = servicesConfiguration;
         this.relyingParty = relyingParty(accountId, accountOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
@@ -1202,7 +1201,7 @@ public class UserController implements UserAuthentication {
             return doIdpWebAuthn(response, body);
         } catch (Exception e) {
             //We always want to redirect back to the SP
-            return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
+            return ResponseEntity.status(201).body(Collections.singletonMap("location", guiRedirectResolver.myconextRedirectUrl() + "/security"));
         }
     }
 
@@ -1247,7 +1246,7 @@ public class UserController implements UserAuthentication {
         loginPreferenceCookie.setPath("/");
         response.addCookie(loginPreferenceCookie);
 
-        return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
+        return ResponseEntity.status(201).body(Collections.singletonMap("location", guiRedirectResolver.myconextRedirectUrl() + "/security"));
     }
 
 
@@ -1303,7 +1302,7 @@ public class UserController implements UserAuthentication {
             if (samlAuthenticationRequest.isTestInstance()) {
                 //back to SP
                 String credentialId = credentialId(body);
-                String url = String.format("%s/credential?id=%s&success=false", myconextRedirectUrl, credentialId);
+                String url = String.format("%s/credential?id=%s&success=false", guiRedirectResolver.myconextRedirectUrl(), credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
             throw new ForbiddenException("Unsuccessfully SAML authentication ");
@@ -1319,7 +1318,7 @@ public class UserController implements UserAuthentication {
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
             String credentialId = credentialId(body);
-            String url = String.format("%s/credential?id=%s&success=true", myconextRedirectUrl, credentialId);
+            String url = String.format("%s/credential?id=%s&success=true", guiRedirectResolver.myconextRedirectUrl(), credentialId);
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 

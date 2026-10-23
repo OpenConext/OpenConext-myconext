@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import myconext.security.GuiRedirectResolver;
 import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
 import myconext.config.CreateFromInstitutionProperties;
@@ -100,7 +101,10 @@ public class AccountLinkerController implements UserAuthentication {
     private final AttributeMapper attributeMapper;
     private final String magicLinkUrl;
     private final String accountRedirectUrl;
-    private final String myconextRedirectUrl;
+    private final GuiRedirectResolver guiRedirectResolver;
+    private final String myGuiSpFlowRedirectUri;
+    private final String myGuiSpCreateFromInstitutionRedirectUri;
+    private final String myGuiSpVerifyRedirectUri;
     private final String myconextBasePath;
     private final long removalValidatedDurationDays;
     private final String myConextSpEntityId;
@@ -141,7 +145,6 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${schac_home_organizations}") String schacHomeOrganizations,
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${account_redirect_url}") String accountRedirectUrl,
-            @Value("${myconext_redirect_url}") String myconextRedirectUrl,
             @Value("${oidc.client-id}") String clientId,
             @Value("${oidc.secret}") String clientSecret,
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
@@ -165,7 +168,11 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${verify.base_uri}") String verifyBaseUri,
             @Value("${verify.issuers_path}") Resource issuersResource,
             ObjectMapper objectMapper,
-            ActivityRecorder activityRecorder) throws IOException {
+            ActivityRecorder activityRecorder,
+            GuiRedirectResolver guiRedirectResolver,
+            @Value("${oidc.my-gui-sp-flow-redirect-url}") String myGuiSpFlowRedirectUri,
+            @Value("${oidc.my-gui-sp-create-from-institution-redirect-url}") String myGuiSpCreateFromInstitutionRedirectUri,
+            @Value("${verify.my_gui_sp_verify_redirect_url}") String myGuiSpVerifyRedirectUri) throws IOException {
         this.activityRecorder = activityRecorder;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
@@ -179,7 +186,10 @@ public class AccountLinkerController implements UserAuthentication {
         this.myconextEntityid = myconextEntityid;
         this.magicLinkUrl = magicLinkUrl;
         this.accountRedirectUrl = accountRedirectUrl;
-        this.myconextRedirectUrl = myconextRedirectUrl;
+        this.guiRedirectResolver = guiRedirectResolver;
+        this.myGuiSpFlowRedirectUri = myGuiSpFlowRedirectUri;
+        this.myGuiSpCreateFromInstitutionRedirectUri = myGuiSpCreateFromInstitutionRedirectUri;
+        this.myGuiSpVerifyRedirectUri = myGuiSpVerifyRedirectUri;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.idpFlowRedirectUri = idpFlowRedirectUri;
@@ -242,7 +252,7 @@ public class AccountLinkerController implements UserAuthentication {
         session.setAttribute("create_from_institution_return_url", validatedReturnUrl);
         LOG.info(String.format("Create-from-institution start state=%s, raw return_to=%s, validated return_to=%s",
                 state, returnTo, validatedReturnUrl));
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, forceAuth, myConextSpEntityId);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, guiRedirectResolver.select(spCreateFromInstitutionRedirectUri, myGuiSpCreateFromInstitutionRedirectUri), forceAuth, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
@@ -262,15 +272,15 @@ public class AccountLinkerController implements UserAuthentication {
                 URLDecoder.decode(state, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8))) {
             throw new ForbiddenException("No session enabled");
         }
-        Map<String, Object> userInfo = requestUserInfo(code, this.spCreateFromInstitutionRedirectUri);
+        Map<String, Object> userInfo = requestUserInfo(code, guiRedirectResolver.select(spCreateFromInstitutionRedirectUri, myGuiSpCreateFromInstitutionRedirectUri));
         String eppn = (String) userInfo.get("eduperson_principal_name");
         String subjectId = (String) userInfo.get("subject_id");
         if (!StringUtils.hasText(eppn) && !StringUtils.hasText(subjectId)) {
-            String uri = this.myconextRedirectUrl + "/create-from-institution/attribute-missing?fromInstitution=true";
+            String uri = guiRedirectResolver.myconextRedirectUrl() + "/create-from-institution/attribute-missing?fromInstitution=true";
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(uri)).build();
         }
         //Check if the eppn is taken before proceeding
-        String eppnAlreadyLinkedRequiredUri = this.myconextRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
+        String eppnAlreadyLinkedRequiredUri = guiRedirectResolver.myconextRedirectUrl() + "/create-from-institution/eppn-already-linked?fromInstitution=true";
         Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn, subjectId);
         if (eppnAlreadyLinkedOptional.isPresent()) {
             LOG.debug("EPPN already linked in create-institution-flow for " + eppn);
@@ -282,7 +292,7 @@ public class AccountLinkerController implements UserAuthentication {
                 storedState, requestInstitutionEduID.getHash(), requestInstitutionEduID.getReturnUrl()));
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
         //Now the user needs to enter email and validate this email to finish up the registration
-        String returnUri = this.myconextRedirectUrl + "/create-from-institution/link/" + requestInstitutionEduID.getHash();
+        String returnUri = guiRedirectResolver.myconextRedirectUrl() + "/create-from-institution/link/" + requestInstitutionEduID.getHash();
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(returnUri)).build();
     }
 
@@ -456,7 +466,7 @@ public class AccountLinkerController implements UserAuthentication {
             redirectUri = this.mobileFlowRedirectUri;
         } else {
             state = passwordEncoder.encode(user.getUid());
-            redirectUri = this.spFlowRedirectUri;
+            redirectUri = guiRedirectResolver.select(spFlowRedirectUri, myGuiSpFlowRedirectUri);
         }
         UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, myConextSpEntityId);
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
@@ -500,7 +510,7 @@ public class AccountLinkerController implements UserAuthentication {
             redirectUri = this.mobileVerifyRedirectUri;
         } else {
             stateIdentifier = passwordEncoder.encode(user.getUid());
-            redirectUri = this.spVerifyRedirectUri;
+            redirectUri = guiRedirectResolver.select(spVerifyRedirectUri, myGuiSpVerifyRedirectUri);
         }
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
                 .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
@@ -562,7 +572,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                       User user) {
         if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
 
-            String clientRedirectUrl = isMobileFlow ? accountRedirectUrl + "/client/mobile/external-account-linked-error" : myconextRedirectUrl;
+            String clientRedirectUrl = isMobileFlow ? accountRedirectUrl + "/client/mobile/external-account-linked-error" : guiRedirectResolver.myconextRedirectUrl();
             URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
                             clientRedirectUrl,
                             StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
@@ -589,7 +599,7 @@ public class AccountLinkerController implements UserAuthentication {
         map.add("client_secret", verifySecret);
         map.add("code", code);
         map.add("grant_type", "authorization_code");
-        map.add("redirect_uri", spVerifyRedirectUri);
+        map.add("redirect_uri", guiRedirectResolver.select(spVerifyRedirectUri, myGuiSpVerifyRedirectUri));
         map.add("scope", "openid");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
@@ -617,7 +627,7 @@ public class AccountLinkerController implements UserAuthentication {
             String encodedOtherMail = URLEncoder.encode(optionalUsers.stream().findFirst().get().getEmail(), Charset.defaultCharset());
             String clientRedirectUrl = isMobileFlow ?
                     accountRedirectUrl + String.format("/client/mobile/verify-already-used?email=%s", encodedOtherMail) :
-                    myconextRedirectUrl + String.format("/subject-already-linked?idp_scoping=%s&email=%s",
+                    guiRedirectResolver.myconextRedirectUrl() + String.format("/subject-already-linked?idp_scoping=%s&email=%s",
                             verifyState.getIdpScoping().name(), encodedOtherMail);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(clientRedirectUrl))
@@ -635,7 +645,7 @@ public class AccountLinkerController implements UserAuthentication {
         String queryParam = "?verify=" + externalLinkedAccount.getIdpScoping();
         String clientRedirectUrl = isMobileFlow ?
                 accountRedirectUrl + "/client/mobile/external-account-linked" + queryParam :
-                myconextRedirectUrl + "/personal" + queryParam;
+                guiRedirectResolver.myconextRedirectUrl() + "/personal" + queryParam;
         URI location = URI.create(clientRedirectUrl);
         return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
     }
@@ -725,7 +735,7 @@ public class AccountLinkerController implements UserAuthentication {
         map.add("client_secret", verifySecret);
         map.add("code", code);
         map.add("grant_type", "authorization_code");
-        map.add("redirect_uri", spVerifyRedirectUri);
+        map.add("redirect_uri", guiRedirectResolver.select(spVerifyRedirectUri, myGuiSpVerifyRedirectUri));
         map.add("scope", "openid");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
@@ -806,9 +816,9 @@ public class AccountLinkerController implements UserAuthentication {
             throw new ForbiddenException("Non matching user");
         }
 
-        return doRedirect(code, user, this.spFlowRedirectUri, this.myconextRedirectUrl + "/personal",
+        return doRedirect(code, user, guiRedirectResolver.select(spFlowRedirectUri, myGuiSpFlowRedirectUri), guiRedirectResolver.myconextRedirectUrl() + "/personal",
                 false, false, true, null, null,
-                this.myconextRedirectUrl + "/eppn-already-linked", this.myconextRedirectUrl + "/attribute-missing",
+                guiRedirectResolver.myconextRedirectUrl() + "/eppn-already-linked", guiRedirectResolver.myconextRedirectUrl() + "/attribute-missing",
                 Collections.emptyList(), null);
     }
 

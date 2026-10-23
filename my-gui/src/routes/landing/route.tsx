@@ -2,6 +2,10 @@ import { useNavigate, useSearchParams } from 'react-router';
 
 import { SignOutIcon, TrashIcon, WarningIcon } from '@phosphor-icons/react';
 import {
+    Alert,
+    AlertAction,
+    AlertDescription,
+    AlertTitle,
     Button,
     Empty,
     EmptyContent,
@@ -20,7 +24,6 @@ import './route.scss';
 const REASONS = {
     logout: { icon: <SignOutIcon />, action: 'loginAgain' },
     delete: { icon: <TrashIcon />, action: 'registerAgain' },
-    ratelimit: { icon: <WarningIcon />, action: 'loginAgain' },
 } as const;
 
 // public, the server sends the browser here after the logout of the account
@@ -32,8 +35,8 @@ function LandingContent() {
         queryFn: fetchConfig,
     });
 
-    const reason = (Object.keys(REASONS) as (keyof typeof REASONS)[]).find(
-        (key) => searchParams.get(key),
+    const reason = (['logout', 'delete', 'ratelimit'] as const).find((key) =>
+        searchParams.get(key),
     );
 
     if (!reason) {
@@ -53,6 +56,35 @@ function LandingContent() {
         );
     }
 
+    if (reason === 'ratelimit') {
+        return (
+            <div className="landing">
+                <Alert variant="warning" className="landing__alert">
+                    <WarningIcon />
+                    <AlertTitle>{I18n.t('landing.ratelimitTitle')}</AlertTitle>
+                    <AlertDescription>
+                        {I18n.t('landing.ratelimitStatus')}
+                    </AlertDescription>
+                    <AlertAction>
+                        <Button
+                            disabled={!config?.loginUrl}
+                            onClick={() =>
+                                config?.loginUrl &&
+                                redirectToLogin(
+                                    config.loginUrl,
+                                    undefined,
+                                    false,
+                                )
+                            }
+                        >
+                            {I18n.t('landing.loginAgain')}
+                        </Button>
+                    </AlertAction>
+                </Alert>
+            </div>
+        );
+    }
+
     const { icon, action } = REASONS[reason];
 
     return (
@@ -61,24 +93,18 @@ function LandingContent() {
                 <EmptyHeader>
                     <EmptyMedia variant="icon">{icon}</EmptyMedia>
                     <EmptyTitle>{I18n.t(`landing.${reason}Title`)}</EmptyTitle>
-                    {reason !== 'ratelimit' && (
-                        <EmptyDescription>
-                            {I18n.t(
-                                `landing.${reason === 'delete' ? 'delete' : 'logout'}Status`,
-                            )}
-                        </EmptyDescription>
-                    )}
-                    {reason === 'ratelimit' && (
-                        <EmptyDescription>
-                            {I18n.t('landing.ratelimitStatus')}
-                        </EmptyDescription>
-                    )}
+                    <EmptyDescription>
+                        {I18n.t(
+                            `landing.${reason === 'delete' ? 'delete' : 'logout'}Status`,
+                        )}
+                    </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
                     <Button
                         disabled={!config?.loginUrl}
                         onClick={() =>
-                            config?.loginUrl && redirectToLogin(config.loginUrl)
+                            config?.loginUrl &&
+                            redirectToLogin(config.loginUrl, undefined, true)
                         }
                     >
                         {I18n.t(`landing.${action}`)}

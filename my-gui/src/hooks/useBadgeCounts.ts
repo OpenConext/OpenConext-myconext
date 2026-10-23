@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchMe } from '../api';
-import { isVerified } from '../utils/verification';
 
 export type BadgeCounts = {
     identity: number;
@@ -13,7 +12,8 @@ export const useBadgeCounts = (): BadgeCounts => {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
 
     return {
-        identity: me && !isVerified(me) ? 1 : 0,
+        // the identity tab always shows a badge, as in the design
+        identity: 1,
         institutions:
             (me?.linkedAccounts ?? []).length +
             (me?.externalLinkedAccounts ?? []).length,

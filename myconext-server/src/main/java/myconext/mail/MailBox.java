@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.function.Supplier;
 import java.util.*;
 
 public class MailBox {
@@ -33,7 +34,7 @@ public class MailBox {
     private static final List<String> supportedLanguages = List.of("en", "nl");
 
     private final JavaMailSender mailSender;
-    private final String mySURFconextURL;
+    private final Supplier<String> mySURFconextURL;
     private final String loginSURFconextURL;
     private final String emailFromDeprovisioning;
     private final String emailFromCode;
@@ -48,13 +49,17 @@ public class MailBox {
     private final ObjectMapper objectMapper;
     private final String environmentName;
 
+    private String mySURFconextURL() {
+        return mySURFconextURL.get();
+    }
+
     public MailBox(JavaMailSender mailSender,
                    String emailFromDeprovisioning,
                    String emailFromCode,
                    String emailFromAppNudge,
                    String emailFromNewDevice,
                    String errorEmail,
-                   String mySURFconextURL,
+                   Supplier<String> mySURFconextURL,
                    String loginSURFconextURL,
                    ObjectMapper objectMapper,
                    Resource mailTemplatesDirectory,
@@ -113,21 +118,21 @@ public class MailBox {
     public void sendAccountConfirmation(User user) {
         String title = this.getTitle("account_confirmation", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
     public void sendInstitutionMailWarning(User user) {
         String title = this.getTitle("institution_mail_warning", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromAppNudge);
     }
 
     public void sendUserInactivityMail(User user, Map<String, String> localeVariables, boolean firstTwoWarnings) {
         String title = this.getTitle(firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         String language = preferredLanguage(user);
         List<String> serviceNames = user.getEduIDS().stream()
                 .map(eduID -> eduID.getServices())
@@ -145,14 +150,14 @@ public class MailBox {
     public void sendNudgeAppMail(User user) {
         String title = this.getTitle("nudge_eduid_app", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         sendMail("nudge_eduid_app", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromAppNudge);
     }
 
     public void sendResetPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("reset_password", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
@@ -175,7 +180,7 @@ public class MailBox {
     public void sendAddPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("add_password", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("add_password", title, variables, preferredLanguage(user), user.getEmail(), false);
@@ -184,7 +189,7 @@ public class MailBox {
     public void sendNewDevice(User user, UserLogin userLogin) {
         String title = this.getTitle("new_device", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         variables.put("ipAddress", userLogin.getLookupAddress());
         variables.put("ipLocation", userLogin.getIpLocation());
         sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromNewDevice);
@@ -200,7 +205,7 @@ public class MailBox {
     public void sendUpdateEmail(User user, String newMail, String hash, boolean mobileRequest) {
         String title = this.getTitle("update_email", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("update_email", title, variables, preferredLanguage(user), newMail, false);
@@ -211,7 +216,7 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("oldEmail", oldEmail);
         variables.put("newEmail", newEmail);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), oldEmail, false);
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail, false);
@@ -220,7 +225,7 @@ public class MailBox {
     public void sendVerificationCode(User user, String verificationCode) {
         String title = this.getTitle("verification_code", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         variables.put("verificationCode", verificationCode);
         sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
@@ -228,7 +233,7 @@ public class MailBox {
     public void sendServiceDeskControlCode(User user, ControlCode controlCode) {
         String title = this.getTitle("service_desk_control_code", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         variables.put("controlCode", controlCode);
         sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
@@ -237,7 +242,7 @@ public class MailBox {
         String title = this.getTitle("linked_account_added_eduid", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("institutionName", institutionName);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         sendMail("linked_account_added_eduid", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
@@ -251,7 +256,7 @@ public class MailBox {
     public void sendUserValidated(User user, UpdateExternalEduID externalEduID, String source) {
         String title = this.getTitle("account_validated", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         variables.put("dateOfBirth", externalEduID.getDateOfBirth());
         variables.put("source", source);
         variables.put("firstName", externalEduID.getFirstName());
@@ -262,7 +267,7 @@ public class MailBox {
     public void sendErrorMail(Map<String, Object> json, User user) {
         String title = this.getTitle("error_email", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mySURFconextURL());
         variables.put("json", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json));
         sendMail("error_email", title, variables, preferredLanguage(user), errorEmail, false);
     }

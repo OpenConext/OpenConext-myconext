@@ -32,6 +32,8 @@ export default function VerifyFromInstitution() {
     const navigate = useNavigate();
     const state = useLocation().state as VerifyState;
     const otpRef = useRef<HTMLInputElement>(null);
+    // after a wrong code the user has to confirm explicitly
+    const autoSubmit = useRef(true);
     const [code, setCode] = useState('');
     const [wrongCode, setWrongCode] = useState(false);
     const [canResend, setCanResend] = useState(false);
@@ -70,7 +72,7 @@ export default function VerifyFromInstitution() {
                 void expire();
             } else {
                 setWrongCode(true);
-                setCode('');
+                autoSubmit.current = false;
                 // the input is disabled while verifying, focus once enabled
                 setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
             }
@@ -128,7 +130,11 @@ export default function VerifyFromInstitution() {
                         setCode(value);
                         setWrongCode(false);
                     }}
-                    onComplete={submit}
+                    onComplete={(value) => {
+                        if (autoSubmit.current) {
+                            submit(value);
+                        }
+                    }}
                 >
                     <InputOTPGroup className="verify-from-institution__slots">
                         {Array.from({ length: CODE_LENGTH }, (_, index) => (

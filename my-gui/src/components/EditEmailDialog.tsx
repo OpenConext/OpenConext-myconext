@@ -54,6 +54,8 @@ const isRateLimited = (error: unknown) =>
 export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
     const navigate = useNavigate();
     const otpRef = useRef<HTMLInputElement>(null);
+    // after a wrong code the user has to confirm explicitly
+    const autoSubmit = useRef(true);
     const [step, setStep] = useState<Step>('email');
     const [email, setEmail] = useState('');
     const [touched, setTouched] = useState(false);
@@ -90,6 +92,7 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
         mutationFn: (force: boolean) => generateEmailCode(trimmed, force),
         onSuccess: () => {
             setCode('');
+            autoSubmit.current = true;
             setWrongCode(false);
             setResent(false);
             setStep('code');
@@ -129,7 +132,7 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                 void logoutAfterRateLimit();
             } else {
                 setWrongCode(true);
-                setCode('');
+                autoSubmit.current = false;
                 // the input is disabled while verifying, focus once enabled
                 setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
             }
@@ -273,7 +276,11 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                                     setCode(value);
                                     setWrongCode(false);
                                 }}
-                                onComplete={submitCode}
+                                onComplete={(value) => {
+                                    if (autoSubmit.current) {
+                                        submitCode(value);
+                                    }
+                                }}
                             >
                                 <InputOTPGroup className="edit-email__slots">
                                     {Array.from(

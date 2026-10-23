@@ -37,7 +37,7 @@ test.describe('link an institution', () => {
         await page.getByTestId('institutions-add').click();
         await loginAtInstitution(page, 'success');
 
-        await page.waitForURL(/localhost:3001/);
+        await page.waitForURL(/localhost:3003/);
         await page.goto('/institutions');
         await expect(cards).toHaveCount(before + 1);
     });

@@ -3,15 +3,15 @@ import { QRCodeSVG } from 'qrcode.react';
 import { GuestLayout } from '../../components/GuestLayout';
 import { StoreBadges } from '../../components/StoreBadges';
 import I18n from '../../locale/I18n';
+import { isAndroid, isIos } from '../../utils/device';
 import './route.scss';
 
 // opened from the QR code in the activate app dialog, sends the phone to its app store
 // eslint-disable-next-line react-refresh/only-export-components
 export function clientLoader() {
-    const userAgent = navigator.userAgent;
-    if (/iPad|iPhone|iPod/.test(userAgent)) {
+    if (isIos()) {
         window.location.replace(I18n.t('app.get.apple'));
-    } else if (/android/i.test(userAgent)) {
+    } else if (isAndroid()) {
         window.location.replace(I18n.t('app.get.google'));
     }
     return null;
