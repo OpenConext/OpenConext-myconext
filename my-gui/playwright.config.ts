@@ -8,6 +8,7 @@ const port = 3001;
 
 export default defineConfig({
     testDir: './e2e',
+    globalSetup: './e2e/global-setup.ts',
     // all tests share the one user of the `test` profile
     fullyParallel: false,
     workers: 1,
