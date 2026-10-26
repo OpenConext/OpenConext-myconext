@@ -577,7 +577,7 @@ const nl = {
     "Info": "Download de eduID app (van SURF) in een van de app-stores",
     "Google": "https://play.google.com/store/apps/details?id=nl.eduid",
     "Apple": "https://apps.apple.com/",
-    "After": "Heb je de app geïnstalleerd? Druk dan op ‘Volgende’.",
+    "After": "Heb je de app geïnstalleerd? Druk dan op ‘Ga door’.",
     "Back": "Terug",
     "Next": "Ga door"
   },
@@ -587,7 +587,7 @@ const nl = {
     "CodeIncorrect": "De code is onjuist",
     "SendSMSAgain": "Nieuwe code",
     "MaxAttemptsPre": "Maximum aantal pogingen bereikt. Druk",
-    "MaxAttemptsPost": "om een ander telefoonnummer te gebruiken of de verstuur een nieuwe code",
+    "MaxAttemptsPost": "om een ander telefoonnummer te gebruiken of vraag een nieuwe code aan.",
     "Here": " hier ",
     "MaxAttemptsPostNoReEnter": "om een nieuwe code te ontvangen"
   },
