@@ -1,12 +1,8 @@
 import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
-import {
-    Button,
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from '@surfnet/curve-react';
+import { OtpInput } from '@myconext/shared-gui';
+import { Button } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
@@ -102,24 +98,13 @@ export default function Code() {
                     submitCode(code.trim());
                 }}
             >
-                <InputOTP
-                    containerClassName={styles.otp}
-                    aria-label={I18n.t('codeScreen.inputLabel')}
-                    maxLength={6}
+                <OtpInput
+                    ariaLabel={I18n.t('codeScreen.inputLabel')}
                     value={code}
                     onChange={setCode}
                     disabled={isVerifying}
-                    onComplete={(value: string) => submitCode(value.trim())}
-                >
-                    <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                </InputOTP>
+                    onComplete={(value) => submitCode(value.trim())}
+                />
                 {verifyFailed && (
                     <p role="alert">Invalid code, please try again.</p>
                 )}

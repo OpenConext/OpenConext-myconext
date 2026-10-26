@@ -6,27 +6,6 @@
     gap: spacing(6);
 }
 
-.otp {
-    display: flex;
-    justify-content: center;
-
-    [data-slot='input-otp-group'] {
-        gap: spacing(2);
-    }
-
-    [data-slot='input-otp-slot'] {
-        border: 1px solid var(--border);
-        border-radius: var(--radius-md);
-        background-color: var(--background);
-        color: var(--foreground);
-
-        &[data-active='true'] {
-            border-color: var(--ring);
-            box-shadow: none;
-        }
-    }
-}
-
 .submit {
     width: 100%;
 }
