@@ -1,0 +1,12 @@
+Hi,
+
+{{name}} ({{email}}) has provided the following feedback{{#environment}} for the {{environment}} environment{{/environment}} at {{date}}:
+{{#url}}
+Page URL: {{{url}}}
+{{/url}}
+
+{{{message}}}
+
+Follow-up questions can be sent to {{email}}
+
+{{> footer_en.txt}}

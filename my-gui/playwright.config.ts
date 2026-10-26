@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // The tests expect the stack to be running: mongo and mailpit (docker compose),
-// myconext-server with the `test` profile (:8081, every request is authenticated
+// myconext-server with the `test,e2e` profiles (:8081, every request is authenticated
 // as the seeded user) and the tiqr-mock (:8088). The my-gui dev server is
 // started here unless it is already running.
 const port = 3003;

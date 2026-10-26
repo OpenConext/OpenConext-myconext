@@ -20,6 +20,9 @@ export type Config = {
     featureWarningEducationalEmailDomain?: boolean;
     featureAllowList?: boolean;
     myconextBaseUrl?: string;
+    // recipient and sender of the feedback mail
+    supportEmail?: string;
+    feedbackFromEmail?: string;
     [key: string]: unknown;
 };
 

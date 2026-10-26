@@ -21,6 +21,9 @@ public class MailConfiguration {
     @Value("${email.from_deprovisioning}")
     private String emailFromDeprovisioning;
 
+    @Value("${email.support}")
+    private String supportEmail;
+
     @Value("${email.from_code}")
     private String emailFromCode;
 
@@ -65,7 +68,7 @@ public class MailConfiguration {
 
     @Bean
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, () -> guiRedirectResolver.select(mySURFconextURL, myGuiURL), loginSURFconextURL, objectMapper, mailTemplatesDirectory,
+        return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, supportEmail, () -> guiRedirectResolver.select(mySURFconextURL, myGuiURL), loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds, environmentName);
     }
 }

@@ -57,6 +57,36 @@ const nl: AppTranslation = {
         about: 'Over eduID',
         aboutUrl: 'https://eduid.nl',
     },
+    feedback: {
+        title: 'Feedback geven',
+        info: 'Bevalt wat je ziet? Heb je een suggestie? Laat ons hier weten wat je ervan vindt.',
+        disclaimer:
+            'We gebruiken deze informatie om problemen op te lossen, onze producten te verbeteren en je te helpen. We kunnen contact met je opnemen over je feedback. Voor meer informatie, raadpleeg onze <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/privacy/">Privacyverklaring</a>.',
+        help: 'Hulp nodig?',
+        helpInfo:
+            'Voor vragen of problemen kun je contact opnemen via <a href="mailto:{{email}}">{{email}}</a>',
+        flash: 'Je feedback is verzonden. Bedankt!',
+        widgetLabel: 'Feedback',
+        cancel: 'Annuleren',
+        submit: 'Versturen',
+        includeScreenshot:
+            'Ik ga akkoord dat automatisch een screenshot van de huidige pagina wordt bijgevoegd bij het feedbackbericht',
+        tooLarge:
+            'De screenshot is te groot (max. 5 MB). Hij is niet bijgevoegd.',
+        preview: {
+            to: 'Aan',
+            from: 'Van',
+            subject: 'Onderwerp',
+            date: 'Datum',
+            subjectLineInfo: 'Voorbeeld van de feedbackmail',
+            subjectLine: 'eduID feedback',
+            messagePlaceholder: 'Je bericht verschijnt hier...',
+            screenshotLabel: 'Bijgevoegde screenshot',
+            greeting: 'Hallo,',
+            providedFeedback: '{{name}} heeft de volgende feedback gegeven:',
+            followUp: 'Vervolgvragen kunnen worden gestuurd naar {{email}}',
+        },
+    },
     home: {
         title: 'Welkom {{name}}',
         lead: 'Hier bekijk en wijzig je je gegevens, bepaal je hoe je inlogt en beheer je aan welke instellingen en diensten je eduID gekoppeld is.',

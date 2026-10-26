@@ -29,10 +29,10 @@ import {
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, logout, updateLanguage } from '../api';
+import { fetchConfig, logout } from '../api';
 import eduidLogo from '../assets/eduid-logo.svg';
 import { useBadgeCounts } from '../hooks/useBadgeCounts';
-import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
+import I18n from '../locale/I18n';
 import { navigationItems } from '../navigation';
 import { useAppStore } from '../store/store';
 import { CountBadge } from './CountBadge';
@@ -70,11 +70,6 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
         ({ to }) =>
             to !== '/institutions' || config?.enableAccountLinking !== false,
     );
-    const baseDomain =
-        typeof config?.baseDomain === 'string' ? config.baseDomain : undefined;
-    const languages = AVAILABLE_LANGUAGES.filter((lang) =>
-        (config?.supportedLanguages ?? '').split(',').includes(lang),
-    );
 
     return (
         <header className="top-navigation">
@@ -110,30 +105,6 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className="top-navigation__actions top-navigation__desktop">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger
-                            render={<Button variant="ghost" />}
-                        >
-                            {I18n.t('code')}
-                            <CaretDownIcon />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            {languages.map((lang) => (
-                                <DropdownMenuItem
-                                    key={lang}
-                                    onClick={() =>
-                                        switchLocale(
-                                            lang,
-                                            baseDomain,
-                                            updateLanguage,
-                                        )
-                                    }
-                                >
-                                    {I18n.t(`languages.${lang}`)}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                     <DropdownMenu>
                         <DropdownMenuTrigger
                             data-testid="user-menu"
@@ -207,27 +178,6 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
                                 </SheetClose>
                             ))}
                         </nav>
-                        <div className="top-navigation__sheet-section">
-                            {languages.map((lang) => (
-                                <Button
-                                    key={lang}
-                                    variant={
-                                        lang === I18n.locale
-                                            ? 'secondary'
-                                            : 'ghost'
-                                    }
-                                    onClick={() =>
-                                        switchLocale(
-                                            lang,
-                                            baseDomain,
-                                            updateLanguage,
-                                        )
-                                    }
-                                >
-                                    {I18n.t(`languages.${lang}`)}
-                                </Button>
-                            ))}
-                        </div>
                         <div className="top-navigation__sheet-section">
                             <Button
                                 variant="ghost"

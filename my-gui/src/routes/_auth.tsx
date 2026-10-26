@@ -7,6 +7,7 @@ import { fetchConfig, fetchMe, redirectToLogin } from '../api';
 import '../components/AuthLayout.scss';
 import { PageFooter } from '../components/PageFooter';
 import { TopNavigation } from '../components/TopNavigation';
+import { UserFeedbackWidget } from '../components/UserFeedbackWidget';
 import I18n from '../locale/I18n';
 
 export default function ProtectedLayout() {
@@ -43,6 +44,7 @@ export default function ProtectedLayout() {
                 <Outlet />
             </main>
             <PageFooter />
+            <UserFeedbackWidget />
         </div>
     );
 }

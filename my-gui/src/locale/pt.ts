@@ -57,6 +57,37 @@ const pt: AppTranslation = {
         about: 'About eduID',
         aboutUrl: 'https://eduid.nl',
     },
+    feedback: {
+        title: 'Enviar feedback',
+        info: 'Gosta do que vê? Tem uma sugestão? Diga-nos aqui o que pensa.',
+        disclaimer:
+            'Usaremos estas informações para corrigir problemas, melhorar os nossos produtos e ajudá-lo. Poderemos contactá-lo sobre o seu feedback. Para mais informações, consulte a nossa <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/privacy-policy/">Política de Privacidade</a>.',
+        help: 'Precisa de ajuda?',
+        helpInfo:
+            'Para questões ou problemas, contacte-nos através de <a href="mailto:{{email}}">{{email}}</a>',
+        flash: 'O seu feedback foi enviado. Obrigado!',
+        widgetLabel: 'Feedback',
+        cancel: 'Cancelar',
+        submit: 'Enviar',
+        includeScreenshot:
+            'Concordo que seja incluída automaticamente uma captura de ecrã da página atual na mensagem de feedback',
+        tooLarge:
+            'A captura de ecrã é demasiado grande (máx. 5 MB). Não foi anexada.',
+        preview: {
+            to: 'Para',
+            from: 'De',
+            subject: 'Assunto',
+            date: 'Data',
+            subjectLineInfo: 'Pré-visualização do e-mail de feedback',
+            subjectLine: 'eduID feedback',
+            messagePlaceholder: 'A sua mensagem aparecerá aqui...',
+            screenshotLabel: 'Captura de ecrã anexada',
+            greeting: 'Olá,',
+            providedFeedback: '{{name}} enviou o seguinte feedback:',
+            followUp:
+                'Perguntas de seguimento podem ser enviadas para {{email}}',
+        },
+    },
     home: {
         title: 'Welcome {{name}}',
         lead: 'Here you can view and edit your details, decide how you log in and manage which institutions and services your eduID is linked to.',

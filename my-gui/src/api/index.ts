@@ -3,6 +3,7 @@ export * from './activities.ts';
 export * from './config.ts';
 export * from './createFromInstitution.ts';
 export * from './email.ts';
+export * from './feedback.ts';
 export * from './identity.ts';
 export * from './lang.ts';
 export * from './logout.ts';

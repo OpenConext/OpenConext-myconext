@@ -86,5 +86,9 @@
   "linked_account_added_institution": {
     "en": "Your institutional account was linked to an eduID",
     "nl": "Je instellingsaccount is gekoppeld aan een eduID"
+  },
+  "feedback": {
+    "en": "eduID feedback",
+    "nl": "eduID feedback"
   }
 }

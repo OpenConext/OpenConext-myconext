@@ -90,6 +90,8 @@ public class LoginController {
                            @Value("${feature.enable_account_linking}") boolean enableAccountLinking,
                            @Value("${feature.use_app}") boolean useApp,
                            @Value("${supportedLanguages}") String supportedLanguages,
+                           @Value("${email.support}") String supportEmail,
+                           @Value("${email.from_code}") String emailFromCode,
                            CreateFromInstitutionProperties createFromInstitutionProperties,
                            GuiRedirectResolver guiRedirectResolver
     ) {
@@ -102,6 +104,8 @@ public class LoginController {
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("accountBaseUrl", accountRedirectUrl);
         this.config.put("myconextBaseUrl", myconextRedirectUrl);
+        this.config.put("supportEmail", supportEmail);
+        this.config.put("feedbackFromEmail", emailFromCode);
         this.config.put("servicedeskBaseUrl", servicedeskRedirectUrl);
         this.config.put("accountWebAuthUrl", String.format("%s/webauthn", accountRedirectUrl));
         this.config.put("myconextWebAuthnRedirectUrl", String.format("%s/security", myconextRedirectUrl));

@@ -15,6 +15,7 @@ import myconext.repository.EmailsSendRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,6 +42,7 @@ public class MailBox {
     private final String emailFromAppNudge;
     private final String emailFromNewDevice;
     private final String errorEmail;
+    private final String supportEmail;
     private final Map<String, Map<String, String>> subjects;
 
     private final MustacheFactory mustacheFactory;
@@ -59,6 +61,7 @@ public class MailBox {
                    String emailFromAppNudge,
                    String emailFromNewDevice,
                    String errorEmail,
+                   String supportEmail,
                    Supplier<String> mySURFconextURL,
                    String loginSURFconextURL,
                    ObjectMapper objectMapper,
@@ -72,6 +75,7 @@ public class MailBox {
         this.emailFromAppNudge = emailFromAppNudge;
         this.emailFromNewDevice = emailFromNewDevice;
         this.errorEmail = errorEmail;
+        this.supportEmail = supportEmail;
         this.mySURFconextURL = mySURFconextURL;
         this.loginSURFconextURL = loginSURFconextURL;
         this.emailsSendRepository = emailsSendRepository;
@@ -272,6 +276,22 @@ public class MailBox {
         sendMail("error_email", title, variables, preferredLanguage(user), errorEmail, false);
     }
 
+    public void sendFeedbackMail(User user, String message, String url, byte[] screenshotBytes, String screenshotName) {
+        String title = "eduID feedback";
+        if (StringUtils.hasText(this.environmentName)) {
+            title = String.format("[%s environment] %s", this.environmentName.toUpperCase(), title);
+        }
+        Map<String, Object> variables = variables(user, title);
+        variables.put("email", user.getEmail());
+        variables.put("message", message);
+        variables.put("url", url);
+        variables.put("date", java.time.LocalDate.now().toString());
+        variables.put("environment", this.environmentName);
+        MailAttachment attachment = screenshotBytes != null && screenshotBytes.length > 0 ?
+                new MailAttachment(StringUtils.hasText(screenshotName) ? screenshotName : "feedback.png", screenshotBytes, "image/png") : null;
+        sendMail("feedback", title, variables, "en", supportEmail, false, null, attachment);
+    }
+
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
@@ -288,6 +308,10 @@ public class MailBox {
 
     @SneakyThrows
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam, String email) {
+        this.sendMail(templateName, subject, variables, language, to, checkSpam, email, null);
+    }
+
+    private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam, String email, MailAttachment attachment) {
         LOG.info(String.format("Send %s email to %s", templateName, to));
         if (checkSpam) {
             Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
@@ -305,6 +329,9 @@ public class MailBox {
             helper.setSubject(subject);
             helper.setTo(to);
             setText(html, text, helper);
+            if (attachment != null) {
+                helper.addAttachment(attachment.name(), new ByteArrayResource(attachment.content()), attachment.contentType());
+            }
             helper.setFrom(email != null && !email.isBlank() ? email : emailFromCode);
             doSendMail(mimeMessage);
         } catch (Exception e) {
@@ -351,6 +378,10 @@ public class MailBox {
         } else {
             return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + "subjects.json").getInputStream();
         }
+    }
+
+
+    private record MailAttachment(String name, byte[] content, String contentType) {
     }
 
 }
