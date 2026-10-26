@@ -4,6 +4,11 @@
         flex-direction: column;
         align-items: flex-start;
         gap: calc(var(--spacing) * 4);
+
+        a {
+            text-decoration: underline;
+            color: var(--primary-strong);
+        }
     }
 
     p {
