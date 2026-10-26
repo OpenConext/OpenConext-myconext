@@ -27,7 +27,7 @@ import {
     fetchTestWebAuthnUrl,
     updateCredential,
 } from '../api';
-import type { PublicKeyCredential } from '../api';
+import type { PublicKeyCredential, User } from '../api';
 import I18n from '../locale/I18n';
 import { setUser } from '../store/me';
 import { formatDateTime } from '../utils/format';
@@ -50,7 +50,7 @@ export const EditPasskeyDialog = ({
     const [name, setName] = useState(credential.name);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
 
-    const onSuccess = (updated: unknown, message: string) => {
+    const onSuccess = (updated: User, message: string) => {
         setUser(updated);
         toast.success(I18n.t(message));
         onClose();

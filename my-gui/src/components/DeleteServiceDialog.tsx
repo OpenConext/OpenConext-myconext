@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 
 import { LinkBreakIcon } from '@phosphor-icons/react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { deleteServiceAndTokens, deleteTokens } from '../api';
 import I18n from '../locale/I18n';
