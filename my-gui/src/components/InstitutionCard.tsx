@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { BuildingOfficeIcon, CaretDownIcon } from '@phosphor-icons/react';
+import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import { Badge, Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,6 +18,7 @@ import {
     isExpired,
     roleNames,
 } from '../utils/verification';
+import { ExpandableCardHeader } from './ExpandableCardHeader';
 import './InstitutionCard.scss';
 
 type InstitutionCardProps = {
@@ -50,44 +51,26 @@ export const InstitutionCard = ({
             data-testid="institution-card"
             className={`institution-card${bordered ? ' institution-card--bordered' : ''}`}
         >
-            <button
-                type="button"
-                className="institution-card__header"
-                data-testid="institution-card-toggle"
-                aria-expanded={open}
-                onClick={() => setOpen(!open)}
-            >
-                {account.logoUrl ? (
-                    <img
-                        className="institution-card__logo"
-                        src={account.logoUrl}
-                        alt=""
-                    />
-                ) : (
-                    <span className="institution-card__logo institution-card__logo--placeholder">
-                        <BuildingOfficeIcon />
-                    </span>
-                )}
-                <span className="institution-card__title">
-                    <span className="institution-card__name">
+            <ExpandableCardHeader
+                testId="institution-card-toggle"
+                logoUrl={account.logoUrl}
+                placeholderIcon={<BuildingOfficeIcon />}
+                name={
+                    <>
                         {institutionName(account)}
                         {expired && (
                             <Badge variant="secondary">
                                 {I18n.t('institutions.expired')}
                             </Badge>
                         )}
-                    </span>
-                    <span className="institution-card__added">
-                        {I18n.t('institutions.added', {
-                            time: timeAgo(account.createdAt),
-                        })}
-                    </span>
-                </span>
-                <CaretDownIcon
-                    className="institution-card__caret"
-                    data-open={open ? '' : undefined}
-                />
-            </button>
+                    </>
+                }
+                subtitle={I18n.t('institutions.added', {
+                    time: timeAgo(account.createdAt),
+                })}
+                open={open}
+                onToggle={() => setOpen(!open)}
+            />
             {open && (
                 <>
                     <dl className="institution-card__details">

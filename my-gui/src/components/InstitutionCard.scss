@@ -13,62 +13,6 @@
         border-radius: var(--radius-md);
     }
 
-    &__header {
-        display: flex;
-        gap: calc(var(--spacing) * 2.5);
-        align-items: center;
-        width: 100%;
-        cursor: pointer;
-        text-align: left;
-    }
-
-    &__logo {
-        flex-shrink: 0;
-        width: calc(var(--spacing) * 12);
-        height: calc(var(--spacing) * 12);
-        object-fit: contain;
-
-        &--placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-md);
-            background-color: var(--muted);
-            font-size: 24px;
-        }
-    }
-
-    &__title {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: calc(var(--spacing) * 1.5);
-        min-width: 0;
-        font-size: var(--text-sm-font-size);
-        line-height: 1;
-    }
-
-    &__name {
-        display: flex;
-        gap: calc(var(--spacing) * 2);
-        align-items: center;
-        font-weight: var(--font-weight-medium);
-        color: var(--foreground);
-    }
-
-    &__added {
-        color: var(--muted-foreground);
-    }
-
-    &__caret {
-        flex-shrink: 0;
-        transition: transform 150ms;
-
-        &[data-open] {
-            transform: rotate(180deg);
-        }
-    }
-
     &__details {
         display: grid;
         grid-template-columns: max-content 1fr;

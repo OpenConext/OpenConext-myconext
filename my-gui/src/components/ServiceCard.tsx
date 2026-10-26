@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
-import { AppWindowIcon, CaretDownIcon } from '@phosphor-icons/react';
+import { AppWindowIcon } from '@phosphor-icons/react';
 import { Button, Separator } from '@surfnet/curve-react';
 
 import I18n from '../locale/I18n';
 import { formatDate, formatRelative } from '../utils/format';
 import type { Service } from '../utils/services';
+import { ExpandableCardHeader } from './ExpandableCardHeader';
 import './ServiceCard.scss';
 
 type ServiceCardProps = {
@@ -27,38 +28,19 @@ export const ServiceCard = ({
 
     return (
         <div className="service-card">
-            <button
-                type="button"
-                className="service-card__header"
-                aria-expanded={open}
-                onClick={() => setOpen(!open)}
-            >
-                {service.logoUrl ? (
-                    <img
-                        className="service-card__logo"
-                        src={service.logoUrl}
-                        alt=""
-                    />
-                ) : (
-                    <span className="service-card__logo service-card__logo--placeholder">
-                        <AppWindowIcon />
-                    </span>
-                )}
-                <span className="service-card__title">
-                    <span className="service-card__name">{service.name}</span>
-                    {service.lastLogin && (
-                        <span className="service-card__login">
-                            {I18n.t('activity.services.loggedIn', {
-                                time: formatRelative(service.lastLogin, now),
-                            })}
-                        </span>
-                    )}
-                </span>
-                <CaretDownIcon
-                    className="service-card__caret"
-                    data-open={open ? '' : undefined}
-                />
-            </button>
+            <ExpandableCardHeader
+                logoUrl={service.logoUrl}
+                placeholderIcon={<AppWindowIcon />}
+                name={service.name}
+                subtitle={
+                    service.lastLogin &&
+                    I18n.t('activity.services.loggedIn', {
+                        time: formatRelative(service.lastLogin, now),
+                    })
+                }
+                open={open}
+                onToggle={() => setOpen(!open)}
+            />
             {open && (
                 <div className="service-card__details">
                     {token && (

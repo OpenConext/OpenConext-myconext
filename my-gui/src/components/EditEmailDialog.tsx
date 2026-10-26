@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -17,9 +17,6 @@ import {
     FieldError,
     FieldLabel,
     Input,
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
     Spinner,
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -27,17 +24,21 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
     fetchConfig,
     generateEmailCode,
-    logout,
     resendEmailCode,
     verifyEmailCode,
 } from '../api';
 import type { User } from '../api';
+import {
+    CODE_LENGTH,
+    isRateLimited,
+    logoutAfterRateLimit,
+    useCodeVerification,
+} from '../hooks/useCodeVerification';
 import I18n from '../locale/I18n';
+import { CodeResend } from './CodeResend';
 import './EditEmailDialog.scss';
+import { OtpInput } from './OtpInput';
 
-// the input is re-enabled after the failed request has settled
-const FOCUS_DELAY = 50;
-const CODE_LENGTH = 6;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Step = 'email' | 'outstanding' | 'code';
@@ -47,56 +48,44 @@ type EditEmailDialogProps = {
     onClose: () => void;
 };
 
-const isRateLimited = (error: unknown) =>
-    error instanceof Response && (error.status === 400 || error.status === 403);
-
 // mounted only while open, so every change starts at the first step
 export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
     const navigate = useNavigate();
-    const otpRef = useRef<HTMLInputElement>(null);
-    // after a wrong code the user has to confirm explicitly
-    const autoSubmit = useRef(true);
     const [step, setStep] = useState<Step>('email');
     const [email, setEmail] = useState('');
     const [touched, setTouched] = useState(false);
     const [duplicate, setDuplicate] = useState(false);
-    const [code, setCode] = useState('');
-    const [wrongCode, setWrongCode] = useState(false);
-    const [canResend, setCanResend] = useState(false);
-    const [resent, setResent] = useState(false);
 
     const { data: config } = useQuery({
         queryKey: ['config'],
         queryFn: fetchConfig,
     });
     const resendDelay = (config?.emailSpamThresholdSeconds ?? 0) * 1000;
+    const {
+        otpRef,
+        autoSubmit,
+        code,
+        wrongCode,
+        canResend,
+        resent,
+        reset,
+        markResent,
+        markWrongCode,
+        changeCode,
+    } = useCodeVerification(resendDelay);
 
     const trimmed = email.trim();
     const sameAsCurrent = trimmed.toLowerCase() === user.email.toLowerCase();
     const valid = EMAIL.test(trimmed) && !sameAsCurrent;
 
-    // too many wrong codes: the server locks the account, so log out
-    const logoutAfterRateLimit = async () => {
-        await logout();
-        window.location.assign(
-            `${config?.accountBaseUrl ?? ''}/doLogout?param=${encodeURIComponent('ratelimit=true')}`,
-        );
-    };
-
-    const allowResendLater = () => {
-        setCanResend(false);
-        setTimeout(() => setCanResend(true), resendDelay);
-    };
+    const logoutRateLimited = () =>
+        logoutAfterRateLimit(config?.accountBaseUrl ?? '');
 
     const requestCode = useMutation({
         mutationFn: (force: boolean) => generateEmailCode(trimmed, force),
         onSuccess: () => {
-            setCode('');
-            autoSubmit.current = true;
-            setWrongCode(false);
-            setResent(false);
+            reset();
             setStep('code');
-            allowResendLater();
             toast.info(I18n.t('toast.emailCodeSent', { email: trimmed }));
         },
         onError: (error) => {
@@ -106,18 +95,15 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
             } else if (error instanceof Response && error.status === 406) {
                 setStep('outstanding');
             } else {
-                void logoutAfterRateLimit();
+                void logoutRateLimited();
             }
         },
     });
 
     const resend = useMutation({
         mutationFn: resendEmailCode,
-        onSuccess: () => {
-            setResent(true);
-            allowResendLater();
-        },
-        onError: logoutAfterRateLimit,
+        onSuccess: markResent,
+        onError: logoutRateLimited,
     });
 
     const verify = useMutation({
@@ -129,12 +115,9 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
             ),
         onError: (error) => {
             if (isRateLimited(error)) {
-                void logoutAfterRateLimit();
+                void logoutRateLimited();
             } else {
-                setWrongCode(true);
-                autoSubmit.current = false;
-                // the input is disabled while verifying, focus once enabled
-                setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
+                markWrongCode();
             }
         },
     });
@@ -258,42 +241,23 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                                 {I18n.t('security.emailFlow.codeSentTo')}
                                 <strong>{trimmed}</strong>
                             </p>
-                            <InputOTP
+                            <OtpInput
                                 ref={otpRef}
-                                autoFocus
-                                data-testid="edit-email-code"
-                                maxLength={CODE_LENGTH}
-                                pattern="^\d+$"
-                                inputMode="numeric"
-                                autoComplete="one-time-code"
-                                aria-label={I18n.t(
+                                testId="edit-email-code"
+                                ariaLabel={I18n.t(
                                     'security.emailFlow.codeLabel',
                                 )}
                                 value={code}
                                 disabled={verify.isPending}
                                 containerClassName="edit-email__otp"
-                                onChange={(value) => {
-                                    setCode(value);
-                                    setWrongCode(false);
-                                }}
+                                slotsClassName="edit-email__slots"
+                                onChange={changeCode}
                                 onComplete={(value) => {
                                     if (autoSubmit.current) {
                                         submitCode(value);
                                     }
                                 }}
-                            >
-                                <InputOTPGroup className="edit-email__slots">
-                                    {Array.from(
-                                        { length: CODE_LENGTH },
-                                        (_, index) => (
-                                            <InputOTPSlot
-                                                key={index}
-                                                index={index}
-                                            />
-                                        ),
-                                    )}
-                                </InputOTPGroup>
-                            </InputOTP>
+                            />
                             {wrongCode && (
                                 <FieldError>
                                     {I18n.t('security.emailFlow.wrongCode')}
@@ -312,25 +276,19 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                                 {I18n.t('security.emailFlow.confirm')}
                             </Button>
                         </DialogFooter>
-                        <p className="edit-email__resend">
-                            {resent
-                                ? I18n.t('security.emailFlow.resent')
-                                : null}{' '}
-                            {canResend && (
-                                <>
-                                    {I18n.t('security.emailFlow.resendPrompt')}{' '}
-                                    <Button
-                                        type="button"
-                                        variant="link"
-                                        className="edit-email__link"
-                                        disabled={resend.isPending}
-                                        onClick={() => resend.mutate()}
-                                    >
-                                        {I18n.t('security.emailFlow.resend')}
-                                    </Button>
-                                </>
+                        <CodeResend
+                            className="edit-email__resend"
+                            linkClassName="edit-email__link"
+                            resent={resent}
+                            canResend={canResend}
+                            pending={resend.isPending}
+                            resentLabel={I18n.t('security.emailFlow.resent')}
+                            promptLabel={I18n.t(
+                                'security.emailFlow.resendPrompt',
                             )}
-                        </p>
+                            resendLabel={I18n.t('security.emailFlow.resend')}
+                            onResend={() => resend.mutate()}
+                        />
                     </form>
                 )}
             </DialogContent>

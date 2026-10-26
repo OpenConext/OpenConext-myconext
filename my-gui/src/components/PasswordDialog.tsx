@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 
 import { toast } from 'sonner';
@@ -17,9 +17,6 @@ import {
     FieldGroup,
     FieldLabel,
     Input,
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
     Spinner,
 } from '@surfnet/curve-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -29,18 +26,22 @@ import {
     fetchOutstandingEmailLinks,
     generatePasswordCode,
     isPasswordHashValid,
-    logout,
     resendPasswordCode,
     setLoginPreference,
     updatePassword,
     verifyPasswordCode,
 } from '../api';
 import type { User } from '../api';
+import {
+    CODE_LENGTH,
+    isRateLimited,
+    logoutAfterRateLimit,
+    useCodeVerification,
+} from '../hooks/useCodeVerification';
 import I18n from '../locale/I18n';
+import { CodeResend } from './CodeResend';
+import { OtpInput } from './OtpInput';
 import './PasswordDialog.scss';
-
-// the input is re-enabled after the failed request has settled
-const FOCUS_DELAY = 50;
 
 type PasswordDialogProps = {
     user: User;
@@ -52,15 +53,11 @@ type PasswordDialogProps = {
 type Step =
     'confirm' | 'outstanding' | 'code' | 'password' | 'delete' | 'expired';
 
-const CODE_LENGTH = 6;
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_PASSWORD_LENGTH = 128;
 
 // counts code points rather than UTF-16 units, like the server
 const passwordLength = (password: string) => Array.from(password).length;
-
-const isRateLimited = (error: unknown) =>
-    error instanceof Response && (error.status === 400 || error.status === 403);
 
 // mounted only while open, so every flow starts at the first step
 export const PasswordDialog = ({
@@ -72,15 +69,8 @@ export const PasswordDialog = ({
     const usePassword = Boolean(user.usePassword);
     const prefix = usePassword ? 'update' : 'add';
 
-    const otpRef = useRef<HTMLInputElement>(null);
-    // after a wrong code the user has to confirm explicitly
-    const autoSubmit = useRef(true);
     const [stepState, setStep] = useState<Step>('confirm');
-    const [code, setCode] = useState('');
     const [verifiedHash, setHash] = useState('');
-    const [wrongCode, setWrongCode] = useState(false);
-    const [canResend, setCanResend] = useState(false);
-    const [resent, setResent] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [tooLong, setTooLong] = useState(false);
@@ -116,39 +106,32 @@ export const PasswordDialog = ({
 
     const accountBaseUrl = config?.accountBaseUrl ?? '';
     const resendDelay = (config?.emailSpamThresholdSeconds ?? 0) * 1000;
-
-    // too many wrong codes: the server locks the account, so log out
-    const logoutAfterRateLimit = async () => {
-        await logout();
-        window.location.assign(
-            `${accountBaseUrl}/doLogout?param=${encodeURIComponent('ratelimit=true')}`,
-        );
-    };
-
-    const allowResendLater = () => {
-        setCanResend(false);
-        setTimeout(() => setCanResend(true), resendDelay);
-    };
+    const {
+        otpRef,
+        autoSubmit,
+        code,
+        wrongCode,
+        canResend,
+        resent,
+        reset,
+        markResent,
+        markWrongCode,
+        changeCode,
+    } = useCodeVerification(resendDelay);
+    const logoutRateLimited = () => logoutAfterRateLimit(accountBaseUrl);
 
     const sendCode = useMutation({
         mutationFn: generatePasswordCode,
         onSuccess: () => {
-            setCode('');
-            autoSubmit.current = true;
-            setWrongCode(false);
-            setResent(false);
+            reset();
             setStep('code');
-            allowResendLater();
         },
     });
 
     const resendCode = useMutation({
         mutationFn: resendPasswordCode,
-        onSuccess: () => {
-            setResent(true);
-            allowResendLater();
-        },
-        onError: logoutAfterRateLimit,
+        onSuccess: markResent,
+        onError: logoutRateLimited,
     });
 
     const verifyCode = useMutation({
@@ -159,12 +142,9 @@ export const PasswordDialog = ({
         },
         onError: (error) => {
             if (isRateLimited(error)) {
-                void logoutAfterRateLimit();
+                void logoutRateLimited();
             } else {
-                setWrongCode(true);
-                autoSubmit.current = false;
-                // the input is disabled while verifying, focus once enabled
-                setTimeout(() => otpRef.current?.focus(), FOCUS_DELAY);
+                markWrongCode();
             }
         },
     });
@@ -285,42 +265,23 @@ export const PasswordDialog = ({
                                 {I18n.t('security.password.flow.codeSentTo')}
                                 <strong>{user.email}</strong>
                             </p>
-                            <InputOTP
+                            <OtpInput
                                 ref={otpRef}
-                                autoFocus
-                                data-testid="password-code"
-                                maxLength={CODE_LENGTH}
-                                pattern="^\d+$"
-                                inputMode="numeric"
-                                autoComplete="one-time-code"
-                                aria-label={I18n.t(
+                                testId="password-code"
+                                ariaLabel={I18n.t(
                                     'security.password.flow.codeLabel',
                                 )}
                                 value={code}
                                 disabled={verifyCode.isPending}
                                 containerClassName="password-dialog__otp"
-                                onChange={(value) => {
-                                    setCode(value);
-                                    setWrongCode(false);
-                                }}
+                                slotsClassName="password-dialog__slots"
+                                onChange={changeCode}
                                 onComplete={(value) => {
                                     if (autoSubmit.current) {
                                         submitCode(value);
                                     }
                                 }}
-                            >
-                                <InputOTPGroup className="password-dialog__slots">
-                                    {Array.from(
-                                        { length: CODE_LENGTH },
-                                        (_, index) => (
-                                            <InputOTPSlot
-                                                key={index}
-                                                index={index}
-                                            />
-                                        ),
-                                    )}
-                                </InputOTPGroup>
-                            </InputOTP>
+                            />
                             {wrongCode && (
                                 <FieldError>
                                     {I18n.t('security.password.flow.codeError')}
@@ -339,29 +300,23 @@ export const PasswordDialog = ({
                                 {I18n.t('security.password.flow.confirm')}
                             </Button>
                         </DialogFooter>
-                        <p className="password-dialog__resend">
-                            {resent
-                                ? I18n.t('security.password.flow.resent')
-                                : null}{' '}
-                            {canResend && (
-                                <>
-                                    {I18n.t(
-                                        'security.password.flow.resendPrompt',
-                                    )}{' '}
-                                    <Button
-                                        type="button"
-                                        variant="link"
-                                        className="password-dialog__link"
-                                        disabled={resendCode.isPending}
-                                        onClick={() => resendCode.mutate()}
-                                    >
-                                        {I18n.t(
-                                            'security.password.flow.resend',
-                                        )}
-                                    </Button>
-                                </>
+                        <CodeResend
+                            className="password-dialog__resend"
+                            linkClassName="password-dialog__link"
+                            resent={resent}
+                            canResend={canResend}
+                            pending={resendCode.isPending}
+                            resentLabel={I18n.t(
+                                'security.password.flow.resent',
                             )}
-                        </p>
+                            promptLabel={I18n.t(
+                                'security.password.flow.resendPrompt',
+                            )}
+                            resendLabel={I18n.t(
+                                'security.password.flow.resend',
+                            )}
+                            onResend={() => resendCode.mutate()}
+                        />
                     </form>
                 )}
 
