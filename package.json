@@ -1,0 +1,9 @@
+{
+    "name": "myconext-gui-workspace",
+    "private": true,
+    "workspaces": [
+        "my-gui",
+        "login-gui",
+        "shared-gui"
+    ]
+}
