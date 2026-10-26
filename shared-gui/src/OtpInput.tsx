@@ -1,6 +1,6 @@
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@surfnet/curve-react';
 
-import './OtpInput.scss';
+import styles from './OtpInput.module.scss';
 
 const OTP_LENGTH = 6;
 
@@ -28,7 +28,7 @@ export const OtpInput = ({
         aria-label={ariaLabel}
         value={value}
         disabled={disabled}
-        containerClassName="shared-otp"
+        containerClassName={styles.otp}
         onChange={onChange}
         onComplete={onComplete}
     >
