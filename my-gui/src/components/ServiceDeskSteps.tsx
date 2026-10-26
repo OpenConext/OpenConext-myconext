@@ -27,11 +27,12 @@ import {
     ItemMedia,
     ItemTitle,
 } from '@surfnet/curve-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { createControlCode, deleteControlCode } from '../api';
 import type { ControlCode, User } from '../api';
 import I18n from '../locale/I18n';
+import { setUser } from '../store/me';
 import './ServiceDeskSteps.scss';
 
 type Step = 'form' | 'code';
@@ -139,7 +140,6 @@ export const ServiceDeskSteps = ({
     onBack,
     onClose,
 }: ServiceDeskStepsProps) => {
-    const queryClient = useQueryClient();
     const controlCode = user.controlCode ?? undefined;
     const [step, setStep] = useState<Step>(controlCode ? 'code' : 'form');
     const [lastName, setLastName] = useState(controlCode?.lastName ?? '');
@@ -159,7 +159,7 @@ export const ServiceDeskSteps = ({
     } = useMutation({
         mutationFn: createControlCode,
         onSuccess: (created) => {
-            queryClient.setQueryData(['me'], { ...user, controlCode: created });
+            setUser({ ...user, controlCode: created });
             setStep('code');
         },
     });
@@ -167,7 +167,7 @@ export const ServiceDeskSteps = ({
     const { mutate: remove, isPending: removing } = useMutation({
         mutationFn: deleteControlCode,
         onSuccess: (updated) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             toast.success(I18n.t('toast.controlCodeDeleted'));
             onClose();
         },

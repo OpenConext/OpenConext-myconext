@@ -1,11 +1,12 @@
 import { toast } from 'sonner';
 
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { removeLinkedAccount } from '../api';
 import type { LinkedAccount } from '../api';
 import I18n from '../locale/I18n';
+import { setUser } from '../store/me';
 import { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
 
 type DeleteInstitutionDialogProps = {
@@ -18,11 +19,10 @@ export const DeleteInstitutionDialog = ({
     account,
     onClose,
 }: DeleteInstitutionDialogProps) => {
-    const queryClient = useQueryClient();
     const { mutate, isPending, isError } = useMutation({
         mutationFn: () => removeLinkedAccount(account),
         onSuccess: (updated) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             toast.success(I18n.t('toast.institutionRemoved'));
             onClose();
         },

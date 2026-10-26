@@ -16,9 +16,7 @@ import {
     AlertTitle,
     Button,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, fetchMe } from '../../api';
 import { ActivateAppDialog } from '../../components/ActivateAppDialog';
 import { AddPasskeyDialog } from '../../components/AddPasskeyDialog';
 import { ChangeRecoveryDialog } from '../../components/ChangeRecoveryDialog';
@@ -29,6 +27,8 @@ import { LoginMethodRow } from '../../components/LoginMethodRow';
 import { PageHeader } from '../../components/PageHeader';
 import { PasswordDialog } from '../../components/PasswordDialog';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
+import { useUserStore } from '../../store/me';
 import { formatDate, formatDateTime } from '../../utils/format';
 import './route.scss';
 
@@ -43,11 +43,8 @@ export default function Security() {
     // set by the redirect after a passkey test, or by the change button
     const [editingId, setEditingId] = useState<string | null>(null);
     const credentialId = editingId ?? searchParams.get('credential');
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const me = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
 
     // after creating an eduID from an institution the server sends the user here
     const welcome = searchParams.get('new');

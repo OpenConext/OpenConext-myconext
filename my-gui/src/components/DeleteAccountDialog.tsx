@@ -14,10 +14,12 @@ import {
     FieldLabel,
     Input,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { deleteAccount, fetchConfig, fetchMe } from '../api';
+import { deleteAccount } from '../api';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
+import { useUserStore } from '../store/me';
 import { hasSecondFactor } from '../utils/secondFactor';
 import './DeleteAccountDialog.scss';
 import { SecondFactorDialog } from './SecondFactorDialog';
@@ -33,11 +35,8 @@ const sanitize = (input: string) => input.toLowerCase().replace(/["']/g, '');
 export const DeleteAccountDialog = ({ onClose }: DeleteAccountDialogProps) => {
     const [confirmation, setConfirmation] = useState('');
     const [verifying, setVerifying] = useState(false);
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const me = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
 
     const { mutate, isPending, isError } = useMutation({
         mutationFn: deleteAccount,

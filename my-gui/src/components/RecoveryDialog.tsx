@@ -25,10 +25,9 @@ import {
     ItemTitle,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import {
-    fetchConfig,
     finishEnrollment,
     generateBackupCode,
     regenerateBackupCode,
@@ -39,6 +38,8 @@ import {
 } from '../api';
 import appReady from '../assets/app/app-ready.png';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
+import { refreshUser } from '../store/me';
 import './RecoveryDialog.scss';
 
 // the input is re-enabled after the failed request has settled
@@ -67,7 +68,6 @@ export const RecoveryDialog = ({
     change = false,
     onClose,
 }: RecoveryDialogProps) => {
-    const queryClient = useQueryClient();
     const otpRef = useRef<HTMLInputElement>(null);
     // after a wrong code the user has to confirm explicitly
     const autoSubmit = useRef(true);
@@ -80,14 +80,11 @@ export const RecoveryDialog = ({
     const [recoveryCode, setRecoveryCode] = useState('');
     const [copied, setCopied] = useState(false);
 
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
 
     // the app stays active, only its recovery method changed
     const finishChange = async () => {
-        await queryClient.invalidateQueries({ queryKey: ['me'] });
+        await refreshUser();
         toast.success(I18n.t('toast.recoveryChanged'));
         onClose();
     };

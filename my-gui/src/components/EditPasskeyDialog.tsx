@@ -20,7 +20,7 @@ import {
     Input,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import {
     deleteCredential,
@@ -29,6 +29,7 @@ import {
 } from '../api';
 import type { PublicKeyCredential } from '../api';
 import I18n from '../locale/I18n';
+import { setUser } from '../store/me';
 import { formatDateTime } from '../utils/format';
 import { signalPasskeyDeleted } from '../utils/passkey';
 import './PasskeyDialog.scss';
@@ -46,12 +47,11 @@ export const EditPasskeyDialog = ({
     testResult,
     onClose,
 }: EditPasskeyDialogProps) => {
-    const queryClient = useQueryClient();
     const [name, setName] = useState(credential.name);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
 
     const onSuccess = (updated: unknown, message: string) => {
-        queryClient.setQueryData(['me'], updated);
+        setUser(updated);
         toast.success(I18n.t(message));
         onClose();
     };
@@ -69,7 +69,7 @@ export const EditPasskeyDialog = ({
             };
         },
         onSuccess: ({ updated, signalled }) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             toast.success(
                 I18n.t('toast.passkeyDeleted'),
                 signalled

@@ -9,9 +9,7 @@ import {
     AlertTitle,
     Button,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, fetchMe } from '../../api';
 import type { LinkedAccount } from '../../api';
 import { DeleteInstitutionDialog } from '../../components/DeleteInstitutionDialog';
 import { EditChosenNameDialog } from '../../components/EditChosenNameDialog';
@@ -22,6 +20,8 @@ import { PageHeader } from '../../components/PageHeader';
 import { VerifiedDataDialog } from '../../components/VerifiedDataDialog';
 import { VerifyIdentityDialog } from '../../components/VerifyIdentityDialog';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
+import { useUserStore } from '../../store/me';
 import { formatDate, formatDateOfBirth } from '../../utils/format';
 import {
     accountKey,
@@ -33,11 +33,8 @@ import {
 import './route.scss';
 
 export default function Identity() {
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const me = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
     const [editingName, setEditingName] = useState(false);
     const [editingChosenName, setEditingChosenName] = useState(false);
     const [verifyingState, setVerifying] = useState(false);

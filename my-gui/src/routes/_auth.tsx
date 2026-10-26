@@ -1,45 +1,50 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router';
 
-import { useQuery } from '@tanstack/react-query';
-
-import { fetchConfig, fetchMe, redirectToLogin } from '../api';
+import { redirectToLogin } from '../api';
 import '../components/AuthLayout.scss';
 import { PageFooter } from '../components/PageFooter';
 import { TopNavigation } from '../components/TopNavigation';
 import { UserFeedbackWidget } from '../components/UserFeedbackWidget';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
+import { loadUser, useUserStore } from '../store/me';
 
 export default function ProtectedLayout() {
-    const config = useQuery({ queryKey: ['config'], queryFn: fetchConfig });
-    const isAuthenticated = config.data?.isAuthenticated ?? false;
+    const config = useConfigStore((state) => state.config);
+    const configError = useConfigStore((state) => state.isError);
+    const isAuthenticated = config?.isAuthenticated ?? false;
 
-    const me = useQuery({
-        queryKey: ['me'],
-        queryFn: fetchMe,
-        enabled: isAuthenticated,
-    });
+    const me = useUserStore((state) => state.user);
+    const meError = useUserStore((state) => state.isError);
+
+    // the user is fetched once, as soon as the config says it is logged in
+    useEffect(() => {
+        if (isAuthenticated) {
+            void loadUser();
+        }
+    }, [isAuthenticated]);
 
     useEffect(() => {
-        if (config.data && !isAuthenticated && config.data.loginUrl) {
+        if (config && !isAuthenticated && config.loginUrl) {
             redirectToLogin(
-                config.data.loginUrl,
+                config.loginUrl,
                 window.location.pathname + window.location.search,
             );
         }
-    }, [config.data, isAuthenticated]);
+    }, [config, isAuthenticated]);
 
-    if (config.isError || me.isError) {
+    if (configError || meError) {
         return <div>{I18n.t('common.error')}</div>;
     }
 
-    if (!isAuthenticated || !me.data) {
+    if (!isAuthenticated || !me) {
         return <div>{I18n.t('common.loading')}</div>;
     }
 
     return (
         <div className="auth-layout">
-            <TopNavigation userName={me.data.chosenName} />
+            <TopNavigation userName={me.chosenName} />
             <main className="auth-layout__main">
                 <Outlet />
             </main>

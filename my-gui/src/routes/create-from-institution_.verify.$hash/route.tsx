@@ -2,13 +2,9 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
 import { Button, FieldError, Spinner } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import {
-    fetchConfig,
-    resendInstitutionMail,
-    verifyInstitutionEduId,
-} from '../../api';
+import { resendInstitutionMail, verifyInstitutionEduId } from '../../api';
 import { CodeResend } from '../../components/CodeResend';
 import { GuestLayout } from '../../components/GuestLayout';
 import { OtpInput } from '../../components/OtpInput';
@@ -17,6 +13,7 @@ import {
     useCodeVerification,
 } from '../../hooks/useCodeVerification';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
 import './route.scss';
 
 type VerifyState = { email?: string; newUser?: boolean } | null;
@@ -27,10 +24,7 @@ export default function VerifyFromInstitution() {
     const navigate = useNavigate();
     const state = useLocation().state as VerifyState;
 
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
     const resendDelay = (config?.emailSpamThresholdSeconds ?? 0) * 1000;
     const {
         otpRef,

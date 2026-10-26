@@ -27,13 +27,14 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { fetchConfig, logout } from '../api';
+import { logout } from '../api';
 import eduidLogo from '../assets/eduid-logo.svg';
 import { useBadgeCounts } from '../hooks/useBadgeCounts';
 import I18n from '../locale/I18n';
 import { navigationItems } from '../navigation';
+import { useConfigStore } from '../store/config';
 import { useAppStore } from '../store/store';
 import { CountBadge } from './CountBadge';
 import { DeleteAccountDialog } from './DeleteAccountDialog';
@@ -60,10 +61,7 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
         onSuccess: () => navigate('/landing?logout=true'),
     });
 
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
     const badgeCounts = useBadgeCounts();
     // institutions are hidden when the server disabled linking accounts
     const visibleItems = navigationItems.filter(

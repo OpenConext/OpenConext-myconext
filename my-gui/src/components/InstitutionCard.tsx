@@ -2,11 +2,10 @@ import { useState } from 'react';
 
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import { Badge, Button } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig } from '../api';
 import type { LinkedAccount } from '../api';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
 import { formatDate } from '../utils/format';
 import { timeAgo } from '../utils/timeAgo';
 import {
@@ -38,10 +37,7 @@ export const InstitutionCard = ({
     bordered,
 }: InstitutionCardProps) => {
     const [open, setOpen] = useState(defaultOpen ?? false);
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
     const days = config?.expirationNonValidatedDurationDays;
     const expired = isExpired(account, days);
     const roles = roleNames(account);

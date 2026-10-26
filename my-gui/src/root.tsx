@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.scss';
 import I18n from './locale/I18n';
+import { useConfigStore } from './store/config';
 import { useAppStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,11 @@ export default function Root() {
     // Global TanStack Query Client initialization
     const [queryClient] = useState(() => new QueryClient());
     const dark = useAppStore((state) => state.dark);
+
+    // the config is fetched once, when the app starts
+    useEffect(() => {
+        void useConfigStore.getState().loadConfig();
+    }, []);
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', dark);

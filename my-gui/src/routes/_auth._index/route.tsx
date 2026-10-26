@@ -12,9 +12,7 @@ import {
     Button,
     buttonVariants,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, fetchMe } from '../../api';
 import activityBadge from '../../assets/home/activity-badge.svg';
 import activity from '../../assets/home/activity.svg';
 import identityBadge from '../../assets/home/identity-badge.svg';
@@ -27,6 +25,8 @@ import { ActivityList } from '../../components/ActivityList';
 import { HomeCard } from '../../components/HomeCard';
 import { useBadgeCounts } from '../../hooks/useBadgeCounts';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
+import { useUserStore } from '../../store/me';
 import { useAppStore } from '../../store/store';
 import { activityText, withHistory } from '../../utils/activity';
 import { formatDateTime } from '../../utils/format';
@@ -35,11 +35,8 @@ import './route.scss';
 const RECENT_LIMIT = 4;
 
 export default function Home() {
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const me = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
     const linking = config?.enableAccountLinking !== false;
     const counts = useBadgeCounts();
     const recentActivities = me

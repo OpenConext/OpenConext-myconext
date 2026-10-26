@@ -15,11 +15,12 @@ import {
     FieldLabel,
     Input,
 } from '@surfnet/curve-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { updateName } from '../api';
 import type { User } from '../api';
 import I18n from '../locale/I18n';
+import { setUser } from '../store/me';
 import './EditNameDialog.scss';
 
 type EditChosenNameDialogProps = {
@@ -32,13 +33,12 @@ export const EditChosenNameDialog = ({
     user,
     onClose,
 }: EditChosenNameDialogProps) => {
-    const queryClient = useQueryClient();
     const [chosenName, setChosenName] = useState(user.chosenName);
 
     const { mutate, isPending, isError } = useMutation({
         mutationFn: updateName,
         onSuccess: (updated) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             toast.success(I18n.t('toast.nameUpdated'));
             onClose();
         },

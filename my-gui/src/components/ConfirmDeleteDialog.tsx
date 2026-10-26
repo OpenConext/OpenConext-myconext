@@ -13,10 +13,9 @@ import {
     AlertDialogTitle,
     FieldError,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchMe } from '../api';
 import I18n from '../locale/I18n';
+import { useUserStore } from '../store/me';
 import { hasSecondFactor } from '../utils/secondFactor';
 import './ConfirmDeleteDialog.scss';
 import { SecondFactorDialog } from './SecondFactorDialog';
@@ -53,7 +52,7 @@ export const ConfirmDeleteDialog = ({
     onClose,
 }: ConfirmDeleteDialogProps) => {
     const [verifying, setVerifying] = useState(false);
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
+    const me = useUserStore((state) => state.user);
 
     if (verifying) {
         return (

@@ -21,11 +21,12 @@ import {
     InputOTPSlot,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { deactivateApp, sendDeactivationCode } from '../api';
 import type { User } from '../api';
 import I18n from '../locale/I18n';
+import { refreshUser } from '../store/me';
 import './DeactivateAppDialog.scss';
 
 // the input is re-enabled after the failed request has settled
@@ -43,7 +44,6 @@ export const DeactivateAppDialog = ({
     user,
     onClose,
 }: DeactivateAppDialogProps) => {
-    const queryClient = useQueryClient();
     // users that saved a recovery code type it instead of getting a code sent
     const useRecoveryCode = Boolean(user.registration?.recoveryCode);
     const otpRef = useRef<HTMLInputElement>(null);
@@ -63,7 +63,7 @@ export const DeactivateAppDialog = ({
     const deactivate = useMutation({
         mutationFn: deactivateApp,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ['me'] });
+            await refreshUser();
             toast.success(I18n.t('toast.appDeactivated'));
             onClose();
         },

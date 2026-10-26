@@ -14,11 +14,11 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, redirectToLogin } from '../../api';
+import { redirectToLogin } from '../../api';
 import { GuestLayout } from '../../components/GuestLayout';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
 import './route.scss';
 
 const REASONS = {
@@ -30,10 +30,7 @@ const REASONS = {
 function LandingContent() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
 
     const reason = (['logout', 'delete', 'ratelimit'] as const).find((key) =>
         searchParams.get(key),

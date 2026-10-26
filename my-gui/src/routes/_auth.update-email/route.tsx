@@ -4,16 +4,16 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 
 import { Alert, AlertDescription, Spinner } from '@surfnet/curve-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { confirmEmail } from '../../api';
 import I18n from '../../locale/I18n';
+import { setUser } from '../../store/me';
 
 // the change is applied by the hash from the mail or from the verified code
 export default function UpdateEmail() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
     const hash = searchParams.get('h') ?? '';
     // from the security page, otherwise the user came from a mailed link
     const target =
@@ -33,11 +33,11 @@ export default function UpdateEmail() {
 
     useEffect(() => {
         if (user) {
-            queryClient.setQueryData(['me'], user);
+            setUser(user);
             toast.success(I18n.t('toast.emailConfirmed'));
             void navigate(target, { replace: true });
         }
-    }, [user, queryClient, navigate, target]);
+    }, [user, navigate, target]);
 
     if (failed) {
         return (

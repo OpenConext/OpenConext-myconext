@@ -18,7 +18,6 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
-    fetchConfig,
     fetchIdinIssuers,
     startLinkAccountFlow,
     startVerifyAccountFlow,
@@ -27,6 +26,7 @@ import type { User } from '../api';
 import eidas from '../assets/identity/eidas.svg';
 import idin from '../assets/identity/idin.svg';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
 import { ServiceDeskSteps } from './ServiceDeskSteps';
 import './VerifyIdentityDialog.scss';
 
@@ -53,10 +53,7 @@ export const VerifyIdentityDialog = ({
 }: VerifyIdentityDialogProps) => {
     const [view, setView] = useState<View>(initialView);
     const showBanks = view === 'banks';
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
 
     const { data: issuers, isPending: loadingIssuers } = useQuery({
         queryKey: ['idinIssuers'],

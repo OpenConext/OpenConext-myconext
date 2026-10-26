@@ -12,11 +12,12 @@ import {
     DialogTitle,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { pollEnrollment, startEnrollment } from '../api';
 import type { StartEnrollment } from '../api';
 import I18n from '../locale/I18n';
+import { refreshUser } from '../store/me';
 import { isMobile } from '../utils/device';
 import './ActivateAppDialog.scss';
 import { RecoveryDialog } from './RecoveryDialog';
@@ -34,7 +35,6 @@ const isTouchDevice = () => 'ontouchstart' in document.documentElement;
 
 // mounted only while open, so every flow starts at the download step
 export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
-    const queryClient = useQueryClient();
     const [timedOut, setTimedOut] = useState(false);
     const [resume, setResume] = useState(false);
 
@@ -65,7 +65,7 @@ export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
     // the security page shows the app once the enrollment is processed
     const handleClose = () => {
         if (enrollment) {
-            void queryClient.invalidateQueries({ queryKey: ['me'] });
+            void refreshUser();
         }
         onClose();
     };

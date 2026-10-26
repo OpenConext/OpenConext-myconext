@@ -1,15 +1,13 @@
 import { UserFeedbackWidget as SharedUserFeedbackWidget } from '@myconext/shared-gui';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, fetchMe, sendFeedback } from '../api';
+import { sendFeedback } from '../api';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
+import { useUserStore } from '../store/me';
 
 export const UserFeedbackWidget = () => {
-    const { data: user } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const user = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
 
     return (
         <SharedUserFeedbackWidget

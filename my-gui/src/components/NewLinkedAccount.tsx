@@ -1,8 +1,6 @@
 import { useSearchParams } from 'react-router';
 
-import { useQuery } from '@tanstack/react-query';
-
-import { fetchMe } from '../api';
+import { useUserStore } from '../store/me';
 import { isValid } from '../utils/verification';
 import { LinkedAccountDialog } from './LinkedAccountDialog';
 
@@ -10,7 +8,7 @@ import { LinkedAccountDialog } from './LinkedAccountDialog';
 // institution and with `?verify=<idp>` after linking iDIN or eIDAS
 export const NewLinkedAccount = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
+    const me = useUserStore((state) => state.user);
 
     const institution = searchParams.get('institution');
     const verify = searchParams.get('verify');

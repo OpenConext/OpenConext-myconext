@@ -3,12 +3,14 @@ import { useState } from 'react';
 import { ClockIcon } from '@phosphor-icons/react';
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchActivities, fetchConfig, fetchMe, fetchTokens } from '../../api';
+import { fetchActivities, fetchTokens } from '../../api';
 import { ActivityList } from '../../components/ActivityList';
 import { DeleteServiceDialog } from '../../components/DeleteServiceDialog';
 import { PageHeader } from '../../components/PageHeader';
 import { ServiceCard } from '../../components/ServiceCard';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
+import { useUserStore } from '../../store/me';
 import { withHistory } from '../../utils/activity';
 import { type Service, buildServices } from '../../utils/services';
 import './route.scss';
@@ -22,11 +24,8 @@ export default function Activity() {
         service: Service;
         kind: 'delete' | 'revoke';
     }>();
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const me = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
     const { data: activities = [] } = useQuery({
         queryKey: ['activities'],
         queryFn: fetchActivities,

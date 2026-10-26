@@ -16,10 +16,11 @@ import {
     Input,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { fetchConfig, startWebAuthnFlow } from '../api';
+import { startWebAuthnFlow } from '../api';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
 import './PasskeyDialog.scss';
 
 type AddPasskeyDialogProps = {
@@ -29,10 +30,7 @@ type AddPasskeyDialogProps = {
 // mounted only while open
 export const AddPasskeyDialog = ({ onClose }: AddPasskeyDialogProps) => {
     const [name, setName] = useState('');
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
 
     const { mutate, isPending, isSuccess, isError } = useMutation({
         mutationFn: startWebAuthnFlow,

@@ -6,18 +6,15 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, updateLanguage } from '../api';
+import { updateLanguage } from '../api';
 import surfLogo from '../assets/surf-logo.svg';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
+import { useConfigStore } from '../store/config';
 import './PageFooter.scss';
 
 export const PageFooter = () => {
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
     const baseDomain =
         typeof config?.baseDomain === 'string' ? config.baseDomain : undefined;
     const languages = AVAILABLE_LANGUAGES.filter((lang) =>

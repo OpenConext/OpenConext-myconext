@@ -15,24 +15,23 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { fetchConfig, fetchMe, startLinkAccountFlow } from '../../api';
+import { startLinkAccountFlow } from '../../api';
 import type { LinkedAccount } from '../../api';
 import { DeleteInstitutionDialog } from '../../components/DeleteInstitutionDialog';
 import { InstitutionCard } from '../../components/InstitutionCard';
 import { NewLinkedAccount } from '../../components/NewLinkedAccount';
 import { PageHeader } from '../../components/PageHeader';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
+import { useUserStore } from '../../store/me';
 import { accountKey } from '../../utils/verification';
 import './route.scss';
 
 export default function Institutions() {
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const me = useUserStore((state) => state.user);
+    const config = useConfigStore((state) => state.config);
     const linking = config?.enableAccountLinking !== false;
     const [deleting, setDeleting] = useState<LinkedAccount>();
     const [searchParams] = useSearchParams();

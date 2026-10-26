@@ -20,12 +20,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
     allowedEmailDomains,
     createInstitutionEduId,
-    fetchConfig,
     fetchInstitutionInfo,
     institutionalEmailDomains,
 } from '../../api';
 import { GuestLayout } from '../../components/GuestLayout';
 import I18n from '../../locale/I18n';
+import { useConfigStore } from '../../store/config';
 import './route.scss';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,10 +46,7 @@ export default function LinkFromInstitution() {
     const [inUse, setInUse] = useState(false);
     const [forbidden, setForbidden] = useState(false);
 
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
     const { data: info, isError } = useQuery({
         queryKey: ['institutionInfo', hash],
         queryFn: () => fetchInstitutionInfo(hash),

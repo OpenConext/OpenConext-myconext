@@ -1,6 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { fetchMe } from '../api';
+import { useUserStore } from '../store/me';
 
 export type BadgeCounts = {
     identity: number;
@@ -9,7 +7,7 @@ export type BadgeCounts = {
 };
 
 export const useBadgeCounts = (): BadgeCounts => {
-    const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
+    const me = useUserStore((state) => state.user);
 
     return {
         // the identity tab always shows a badge, as in the design

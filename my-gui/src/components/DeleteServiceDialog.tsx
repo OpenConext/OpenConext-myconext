@@ -1,10 +1,11 @@
 import { toast } from 'sonner';
 
 import { LinkBreakIcon } from '@phosphor-icons/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { deleteServiceAndTokens, deleteTokens } from '../api';
 import I18n from '../locale/I18n';
+import { setUser } from '../store/me';
 import type { Service } from '../utils/services';
 import { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
 
@@ -29,7 +30,7 @@ export const DeleteServiceDialog = ({
                 ? deleteServiceAndTokens(service.entityId, service.tokens)
                 : deleteTokens(service.tokens),
         onSuccess: async (updated) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             await queryClient.invalidateQueries({ queryKey: ['tokens'] });
             toast.success(
                 I18n.t(

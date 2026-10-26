@@ -16,6 +16,7 @@ docker compose up -d mongo mailpit        # from the repo root
 The my-gui dev server (:3003) is started by Playwright when it is not running.
 
 ```bash
+cd ./my-gui
 yarn e2e        # headless
 yarn e2e:ui     # Playwright UI mode
 ```

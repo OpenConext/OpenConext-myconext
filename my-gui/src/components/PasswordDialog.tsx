@@ -19,10 +19,9 @@ import {
     Input,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
-    fetchConfig,
     fetchOutstandingEmailLinks,
     generatePasswordCode,
     isPasswordHashValid,
@@ -39,6 +38,8 @@ import {
     useCodeVerification,
 } from '../hooks/useCodeVerification';
 import I18n from '../locale/I18n';
+import { useConfigStore } from '../store/config';
+import { setUser } from '../store/me';
 import { CodeResend } from './CodeResend';
 import { OtpInput } from './OtpInput';
 import './PasswordDialog.scss';
@@ -65,7 +66,6 @@ export const PasswordDialog = ({
     initialHash,
     onClose,
 }: PasswordDialogProps) => {
-    const queryClient = useQueryClient();
     const usePassword = Boolean(user.usePassword);
     const prefix = usePassword ? 'update' : 'add';
 
@@ -75,10 +75,7 @@ export const PasswordDialog = ({
     const [confirmPassword, setConfirmPassword] = useState('');
     const [tooLong, setTooLong] = useState(false);
 
-    const { data: config } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const config = useConfigStore((state) => state.config);
     const { data: outstanding } = useQuery({
         queryKey: ['outstandingEmailLinks'],
         queryFn: fetchOutstandingEmailLinks,
@@ -171,7 +168,7 @@ export const PasswordDialog = ({
     const removePassword = useMutation({
         mutationFn: () => updatePassword(user.id, null, hash),
         onSuccess: (updated) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             toast.success(I18n.t('toast.passwordDeleted'));
             onClose();
         },

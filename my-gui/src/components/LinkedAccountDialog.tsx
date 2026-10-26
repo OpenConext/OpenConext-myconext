@@ -16,11 +16,12 @@ import {
     RadioGroupItem,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { preferLinkedAccount } from '../api';
 import type { LinkedAccount } from '../api';
 import I18n from '../locale/I18n';
+import { setUser } from '../store/me';
 import { formatDateOfBirth } from '../utils/format';
 import {
     accountFamilyName,
@@ -47,7 +48,6 @@ export const LinkedAccountDialog = ({
     accounts,
     onClose,
 }: LinkedAccountDialogProps) => {
-    const queryClient = useQueryClient();
     // with more accounts the user decides which one the names come from
     const choose = accounts.length > 1;
     const [selected, setSelected] = useState(identifier(account));
@@ -55,7 +55,7 @@ export const LinkedAccountDialog = ({
     const { mutate, isPending } = useMutation({
         mutationFn: preferLinkedAccount,
         onSuccess: (updated, chosen) => {
-            queryClient.setQueryData(['me'], updated);
+            setUser(updated);
             toast.success(
                 I18n.t('toast.institutionPreferred', {
                     name: institutionName(chosen),
