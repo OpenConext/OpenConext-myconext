@@ -1,7 +1,12 @@
 import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
-import { Button, Input } from '@surfnet/curve-react';
+import {
+    Button,
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
@@ -90,7 +95,6 @@ export default function Code() {
 
     return (
         <Container email={email} onBack={goToLogin} footer={footer}>
-            {/* TODO: replace with the 6-slot InputOTP once it is designed in */}
             <form
                 className={styles.form}
                 onSubmit={(e) => {
@@ -98,14 +102,24 @@ export default function Code() {
                     submitCode(code.trim());
                 }}
             >
-                <Input
-                    type="text"
-                    autoComplete="one-time-code"
+                <InputOTP
+                    containerClassName={styles.otp}
                     aria-label={I18n.t('codeScreen.inputLabel')}
-                    aria-invalid={verifyFailed}
+                    maxLength={6}
                     value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                />
+                    onChange={setCode}
+                    disabled={isVerifying}
+                    onComplete={(value: string) => submitCode(value.trim())}
+                >
+                    <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                </InputOTP>
                 {verifyFailed && (
                     <p role="alert">Invalid code, please try again.</p>
                 )}
@@ -123,7 +137,7 @@ export default function Code() {
                 <span>{I18n.t('codeScreen.noEmail')}</span>
                 <Button
                     variant="link"
-                    className={styles.link}
+                    className={`${styles.link} ${styles.resend}`}
                     onClick={() => generateCode()}
                 >
                     {I18n.t('codeScreen.resend')}
