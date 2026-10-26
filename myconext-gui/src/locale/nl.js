@@ -578,7 +578,7 @@ const nl = {
     "Info": "Download de eduID app (van SURF) in een van de app-stores",
     "Google": "https://play.google.com/store/apps/details?id=nl.eduid",
     "Apple": "https://apps.apple.com/us/app/eduid/id1600756434",
-    "After": "Heb je de app geïnstalleerd? Druk dan op ‘Volgende’.",
+    "After": "Heb je de app geïnstalleerd? Druk dan op ‘Ga door’.",
     "Back": "Terug",
     "Next": "Ga door"
   },
