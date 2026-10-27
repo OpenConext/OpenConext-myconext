@@ -1,3 +1,5 @@
+import type { Ref } from 'react';
+
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@surfnet/curve-react';
 
 import styles from './OtpInput.module.scss';
@@ -10,6 +12,8 @@ export type OtpInputProps = {
     onComplete: (value: string) => void;
     ariaLabel: string;
     disabled?: boolean;
+    ref?: Ref<HTMLInputElement>;
+    testId?: string;
 };
 
 export const OtpInput = ({
@@ -18,9 +22,13 @@ export const OtpInput = ({
     onComplete,
     ariaLabel,
     disabled = false,
+    ref,
+    testId,
 }: OtpInputProps) => (
     <InputOTP
+        ref={ref}
         autoFocus
+        data-testid={testId}
         maxLength={OTP_LENGTH}
         pattern="^\d+$"
         inputMode="numeric"

@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 
 import { toast } from 'sonner';
 
+import { OtpInput } from '@myconext/shared-gui';
 import {
     Button,
     Dialog,
@@ -41,7 +42,6 @@ import I18n from '../locale/I18n';
 import { useConfigStore } from '../store/config';
 import { setUser } from '../store/me';
 import { CodeResend } from './CodeResend';
-import { OtpInput } from './OtpInput';
 import './PasswordDialog.scss';
 
 type PasswordDialogProps = {
@@ -270,8 +270,6 @@ export const PasswordDialog = ({
                                 )}
                                 value={code}
                                 disabled={verifyCode.isPending}
-                                containerClassName="password-dialog__otp"
-                                slotsClassName="password-dialog__slots"
                                 onChange={changeCode}
                                 onComplete={(value) => {
                                     if (autoSubmit.current) {
