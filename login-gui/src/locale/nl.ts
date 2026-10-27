@@ -15,6 +15,12 @@ const nl: AppTranslation = {
         email: 'E-mailadres',
         accountNotFound:
             'We konden geen eduID vinden met dit e-mailadres. Probeer een ander adres.',
+        descriptionWithService: 'om door te gaan naar {{serviceName}}',
+        description: 'om door te gaan',
+        loading: 'Laden...',
+        submit: 'Ga door',
+        noAccount: 'Heb je nog geen eduID?',
+        createAccount: 'Maak een eduID aan',
     },
     codeScreen: {
         title: 'Log in met eduID',
