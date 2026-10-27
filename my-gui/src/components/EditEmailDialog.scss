@@ -25,15 +25,6 @@
     }
 }
 
-.edit-email__slots {
-    gap: calc(var(--spacing) * 2);
-
-    [data-slot='input-otp-slot'] {
-        border: 1px solid var(--input);
-        border-radius: var(--radius-md);
-    }
-}
-
 .edit-email__confirm > button {
     flex: 1;
 }
