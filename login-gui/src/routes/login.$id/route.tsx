@@ -19,9 +19,9 @@ import styles from './route.module.scss';
 
 const Footer = () => (
     <>
-        <p>Don't have an eduID yet?</p>
+        <p>{I18n.t('login.noAccount')}</p>
         {/* TODO: link to the registration route once it exists */}
-        <a href="#">Create an eduID</a>
+        <a href="#">{I18n.t('login.createAccount')}</a>
     </>
 );
 
@@ -31,7 +31,11 @@ const Container: FC<{ children: ReactNode; serviceName?: string }> = ({
 }) => (
     <LoginContainer
         title={I18n.t('login.title')}
-        description={`to continue to ${serviceName ?? ''}`}
+        description={
+            serviceName
+                ? I18n.t('login.descriptionWithService', { serviceName })
+                : I18n.t('login.description')
+        }
         footer={<Footer />}
     >
         {children}
@@ -45,11 +49,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [accountNotFound, setAccountNotFound] = useState(false);
 
-    const {
-        data: service,
-        isLoading,
-        isError,
-    } = useQuery({
+    const { data: service, isLoading } = useQuery({
         queryKey: ['serviceName', id],
         queryFn: () => fetchServiceName(id!),
         enabled: Boolean(id),
@@ -70,13 +70,9 @@ export default function Login() {
     });
 
     if (isLoading || isPending) {
-        return <Container serviceName={service?.name}>Loading...</Container>;
-    }
-
-    if (isError) {
         return (
             <Container serviceName={service?.name}>
-                Error loading service name
+                {I18n.t('login.loading')}
             </Container>
         );
     }
@@ -112,7 +108,7 @@ export default function Login() {
                         </AlertDescription>
                     </Alert>
                 )}
-                <Button type="submit">Continue</Button>
+                <Button type="submit">{I18n.t('login.submit')}</Button>
             </form>
         </Container>
     );

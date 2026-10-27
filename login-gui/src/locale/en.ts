@@ -15,6 +15,12 @@ const en: AppTranslation = {
         email: 'Email address',
         accountNotFound:
             'We couldn’t find an eduID with this email address. Try another one.',
+        descriptionWithService: 'to continue to {{serviceName}}',
+        description: 'to continue',
+        loading: 'Loading...',
+        submit: 'Continue',
+        noAccount: "Don't have an eduID yet?",
+        createAccount: 'Create an eduID',
     },
     codeScreen: {
         title: 'Log in with eduID',
