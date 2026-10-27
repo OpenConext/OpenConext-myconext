@@ -1,0 +1,15 @@
+.captcha {
+    // The SDK's own styles set a fixed width on these
+    width: 100% !important;
+
+    border-radius: 4px;
+    background: #f3f8fc;
+    color: var(--foreground);
+    font-size: 14px;
+    font-weight: 500;
+
+    // The Friendly Captcha attribution is not part of the design
+    :global(.frc-banner) {
+        display: none;
+    }
+}

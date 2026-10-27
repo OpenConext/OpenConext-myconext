@@ -282,6 +282,11 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.12.tgz"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
 
+"@friendlycaptcha/sdk@^0.1.26":
+  version "0.1.37"
+  resolved "https://registry.yarnpkg.com/@friendlycaptcha/sdk/-/sdk-0.1.37.tgz#f571bc4ba2fd78dd69e14af3923f6078e77a4c18"
+  integrity sha512-A3XPZgNTWC2WioxbhAGeXKtwZZorwQutMeuNVxgdxT7eMWqxOZiu8xDUoOqRBoR8O2bXuIJR+MBffhVpp4zTjQ==
+
 "@humanfs/core@^0.19.2":
   version "0.19.2"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.2.tgz"
