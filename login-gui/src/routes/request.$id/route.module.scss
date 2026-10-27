@@ -1,0 +1,20 @@
+@use '../../styles/spacing' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}
+
+.terms {
+    display: flex;
+    align-items: flex-start;
+    gap: spacing(2);
+
+    // Curve's reset strips link styling, and these anchors come from the translation
+    a {
+        color: var(--primary-strong);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+}
