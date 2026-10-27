@@ -68,7 +68,19 @@ public class MailConfiguration {
 
     @Bean
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, supportEmail, () -> guiRedirectResolver.select(mySURFconextURL, myGuiURL), loginSURFconextURL, objectMapper, mailTemplatesDirectory,
-                emailsSendRepository, emailSpamThresholdSeconds, environmentName);
+        return new MailBox(mailSender,
+                emailFromDeprovisioning,
+                emailFromCode,
+                emailFromAppNudge,
+                emailFromNewDevice,
+                errorEmail,
+                supportEmail,
+                () -> guiRedirectResolver.select(mySURFconextURL, myGuiURL),
+                loginSURFconextURL,
+                objectMapper,
+                mailTemplatesDirectory,
+                emailsSendRepository,
+                emailSpamThresholdSeconds,
+                environmentName);
     }
 }
