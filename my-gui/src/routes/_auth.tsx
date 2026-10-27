@@ -1,3 +1,4 @@
+import { Spinner } from '@surfnet/curve-react';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router';
 
@@ -39,7 +40,15 @@ export default function ProtectedLayout() {
     }
 
     if (!isAuthenticated || !me) {
-        return <div>{I18n.t('common.loading')}</div>;
+        return (
+            <div
+                className="auth-layout__loading"
+                role="status"
+                aria-label={I18n.t('common.loading')}
+            >
+                <Spinner />
+            </div>
+        );
     }
 
     return (
