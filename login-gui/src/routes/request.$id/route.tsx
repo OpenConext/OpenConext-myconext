@@ -1,7 +1,7 @@
 import { type FC, type ReactNode, useState } from 'react';
 import { Link, useParams } from 'react-router';
 
-import { sanitizeHtml } from '@myconext/shared-gui';
+import { Captcha, sanitizeHtml } from '@myconext/shared-gui';
 import {
     Button,
     Checkbox,
@@ -9,7 +9,9 @@ import {
     FieldLabel,
     Input,
 } from '@surfnet/curve-react';
+import { useQuery } from '@tanstack/react-query';
 
+import { fetchConfig } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import styles from './route.module.scss';
@@ -38,6 +40,16 @@ export default function Request() {
     const [givenName, setGivenName] = useState('');
     const [familyName, setFamilyName] = useState('');
     const [agreed, setAgreed] = useState(false);
+    const [captchaResponse, setCaptchaResponse] = useState<string | null>(null);
+
+    const { data: config, isPending } = useQuery({
+        queryKey: ['config'],
+        queryFn: fetchConfig,
+    });
+    const captchaSiteKey = config?.captchaEnabled
+        ? config.captchaSiteKey
+        : undefined;
+    const captchaPending = isPending || (!!captchaSiteKey && !captchaResponse);
 
     return (
         <Container id={id}>
@@ -45,7 +57,7 @@ export default function Request() {
                 className={styles.form}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    // TODO: submit the registration request
+                    // TODO: submit the registration request, including captchaResponse
                 }}
             >
                 <Field>
@@ -100,7 +112,14 @@ export default function Request() {
                         }}
                     />
                 </label>
-                <Button type="submit" disabled={!agreed}>
+                {captchaSiteKey && (
+                    <Captcha
+                        siteKey={captchaSiteKey}
+                        language={I18n.locale}
+                        onChange={setCaptchaResponse}
+                    />
+                )}
+                <Button type="submit" disabled={!agreed || captchaPending}>
                     {I18n.t('request.submit')}
                 </Button>
             </form>

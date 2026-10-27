@@ -1,3 +1,5 @@
+export { Captcha } from './Captcha';
+export type { CaptchaProps } from './Captcha';
 export { OtpInput } from './OtpInput';
 export type { OtpInputProps } from './OtpInput';
 export { UserFeedbackWidget } from './UserFeedbackWidget';
