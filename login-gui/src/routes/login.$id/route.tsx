@@ -1,7 +1,15 @@
 import { type FC, type ReactNode, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
+import { WarningDiamondIcon } from '@phosphor-icons/react';
+import {
+    Alert,
+    AlertDescription,
+    Button,
+    Field,
+    FieldLabel,
+    Input,
+} from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
@@ -97,7 +105,12 @@ export default function Login() {
                     />
                 </Field>
                 {accountNotFound && (
-                    <p>Account does not exist, create new account?</p>
+                    <Alert variant="warning">
+                        <WarningDiamondIcon />
+                        <AlertDescription>
+                            {I18n.t('login.accountNotFound')}
+                        </AlertDescription>
+                    </Alert>
                 )}
                 <Button type="submit">Continue</Button>
             </form>

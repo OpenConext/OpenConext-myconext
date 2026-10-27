@@ -13,6 +13,8 @@ const en: AppTranslation = {
     login: {
         title: 'Log in with myConext',
         email: 'Email address',
+        accountNotFound:
+            'We couldn’t find an eduID with this email address. Try another one.',
     },
     codeScreen: {
         title: 'Log in with eduID',
