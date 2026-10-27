@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 
-import DOMPurify from 'dompurify';
 import html2canvas from 'html2canvas-pro';
 import { toast } from 'sonner';
 
@@ -18,6 +17,7 @@ import {
 } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
+import { sanitizeHtml } from './sanitizeHtml';
 import './UserFeedbackWidget.scss';
 
 export type FeedbackPayload = {
@@ -45,9 +45,6 @@ export type UserFeedbackWidgetProps = {
 };
 
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
-
-const sanitizeHtml = (html: string) =>
-    DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
 
 export const UserFeedbackWidget = ({
     user,

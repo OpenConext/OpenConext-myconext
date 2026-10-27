@@ -22,6 +22,16 @@ const nl: AppTranslation = {
         noAccount: 'Heb je nog geen eduID?',
         createAccount: 'Maak een eduID aan',
     },
+    request: {
+        title: 'Maak een eduID aan',
+        email: 'E-mailadres',
+        givenName: 'Voornaam',
+        familyName: 'Achternaam',
+        submit: 'Ga door',
+        agree: 'Ik ga akkoord met <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/gebruiksvoorwaarden/">de voorwaarden</a> en ik heb <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/privacyverklaring/">de privacyverklaring</a> gelezen.',
+        hasAccount: 'Heb je al een eduID?',
+        login: 'Inloggen',
+    },
     codeScreen: {
         title: 'Log in met eduID',
         description: 'Vul de code in die je hebt ontvangen op {{email}}',
