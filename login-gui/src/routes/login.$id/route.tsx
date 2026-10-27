@@ -1,5 +1,5 @@
 import { type FC, type ReactNode, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 
 import { WarningDiamondIcon } from '@phosphor-icons/react';
 import {
@@ -17,18 +17,21 @@ import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import styles from './route.module.scss';
 
-const Footer = () => (
-    <>
-        <p>{I18n.t('login.noAccount')}</p>
-        {/* TODO: link to the registration route once it exists */}
-        <a href="#">{I18n.t('login.createAccount')}</a>
-    </>
-);
+const Footer = () => {
+    const { id } = useParams();
 
-const Container: FC<{ children: ReactNode; serviceName?: string }> = ({
-    children,
-    serviceName,
-}) => (
+    return (
+        <>
+            <p>{I18n.t('login.noAccount')}</p>
+            <Link to={`/request/${id}`}>{I18n.t('login.createAccount')}</Link>
+        </>
+    );
+};
+
+const Container: FC<{
+    children: ReactNode;
+    serviceName?: string;
+}> = ({ children, serviceName }) => (
     <LoginContainer
         title={I18n.t('login.title')}
         description={
