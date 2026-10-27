@@ -1091,6 +1091,7 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<Map<String, String>> testWebAuthnUrl(Authentication authentication) throws UnsupportedEncodingException {
         User user = this.userFromAuthentication(authentication);
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(true);
+        samlAuthenticationRequest.setGuiRedirectUrl(guiRedirectResolver.myconextRedirectUrl());
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
         String email = URLEncoder.encode(user.getEmail(), Charset.defaultCharset().name());
 
@@ -1152,6 +1153,7 @@ public class UserController implements UserAuthentication {
 
         String webAuthnIdentifier = hash();
         user.setWebAuthnIdentifier(webAuthnIdentifier);
+        user.setGuiRedirectUrl(guiRedirectResolver.myconextRedirectUrl());
         userRepository.save(user);
 
         return ResponseEntity.status(200).body(Collections.singletonMap("token", webAuthnIdentifier));
@@ -1166,6 +1168,7 @@ public class UserController implements UserAuthentication {
         String token = hash();
         user.setLoginPreferenceKey(token);
         user.setLoginPreference(loginPreference);
+        user.setGuiRedirectUrl(guiRedirectResolver.myconextRedirectUrl());
         userRepository.save(user);
         return ResponseEntity.ok(Collections.singletonMap("token", token));
     }
@@ -1201,7 +1204,11 @@ public class UserController implements UserAuthentication {
             return doIdpWebAuthn(response, body);
         } catch (Exception e) {
             //We always want to redirect back to the SP
-            return ResponseEntity.status(201).body(Collections.singletonMap("location", guiRedirectResolver.myconextRedirectUrl() + "/security"));
+            String redirectUrl = userRepository.findUserByWebAuthnIdentifier((String) body.get("token"))
+                    .map(User::getGuiRedirectUrl)
+                    .filter(StringUtils::hasText)
+                    .orElseGet(guiRedirectResolver::myconextRedirectUrl);
+            return ResponseEntity.status(201).body(Collections.singletonMap("location", redirectUrl + "/security"));
         }
     }
 
@@ -1220,6 +1227,8 @@ public class UserController implements UserAuthentication {
         User user = optionalUser.get();
         //remove the webAuthnIdentifier
         user.setWebAuthnIdentifier(null);
+        String redirectUrl = StringUtils.hasText(user.getGuiRedirectUrl()) ? user.getGuiRedirectUrl() : guiRedirectResolver.myconextRedirectUrl();
+        user.setGuiRedirectUrl(null);
 
         PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(this.relyingParty, user);
         //Needed to succeed the validation
@@ -1246,7 +1255,7 @@ public class UserController implements UserAuthentication {
         loginPreferenceCookie.setPath("/");
         response.addCookie(loginPreferenceCookie);
 
-        return ResponseEntity.status(201).body(Collections.singletonMap("location", guiRedirectResolver.myconextRedirectUrl() + "/security"));
+        return ResponseEntity.status(201).body(Collections.singletonMap("location", redirectUrl + "/security"));
     }
 
 
@@ -1298,11 +1307,13 @@ public class UserController implements UserAuthentication {
                 .response(pkc)
                 .build());
 
+        String spRedirectUrl = StringUtils.hasText(samlAuthenticationRequest.getGuiRedirectUrl()) ?
+                samlAuthenticationRequest.getGuiRedirectUrl() : guiRedirectResolver.myconextRedirectUrl();
         if (!result.isSuccess()) {
             if (samlAuthenticationRequest.isTestInstance()) {
                 //back to SP
                 String credentialId = credentialId(body);
-                String url = String.format("%s/credential?id=%s&success=false", guiRedirectResolver.myconextRedirectUrl(), credentialId);
+                String url = String.format("%s/credential?id=%s&success=false", spRedirectUrl, credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
             throw new ForbiddenException("Unsuccessfully SAML authentication ");
@@ -1318,7 +1329,7 @@ public class UserController implements UserAuthentication {
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
             String credentialId = credentialId(body);
-            String url = String.format("%s/credential?id=%s&success=true", guiRedirectResolver.myconextRedirectUrl(), credentialId);
+            String url = String.format("%s/credential?id=%s&success=true", spRedirectUrl, credentialId);
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 

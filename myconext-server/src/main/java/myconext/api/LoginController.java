@@ -220,6 +220,8 @@ public class LoginController {
         String preference = user.getLoginPreference();
         user.setLoginPreferenceKey(null);
         user.setLoginPreference(null);
+        String redirectUrl = StringUtils.hasText(user.getGuiRedirectUrl()) ? user.getGuiRedirectUrl() : guiRedirectResolver.myconextRedirectUrl();
+        user.setGuiRedirectUrl(null);
         userRepository.save(user);
 
         Cookie loginPreferenceCookie = new Cookie("login_preference", preference);
@@ -228,7 +230,7 @@ public class LoginController {
         loginPreferenceCookie.setPath("/");
         response.addCookie(loginPreferenceCookie);
 
-        response.sendRedirect(guiRedirectResolver.myconextRedirectUrl() + "/security");
+        response.sendRedirect(redirectUrl + "/security");
     }
 
     @GetMapping("/servicedesk/{id}")

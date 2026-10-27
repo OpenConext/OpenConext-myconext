@@ -67,6 +67,9 @@ public class User implements Serializable, UserDetails {
     private String preferredLanguage;
     @Setter
     private String webAuthnIdentifier;
+    //The GUI base url that started the passkey / login preference flow, as the flow finishes on the login host without our session
+    @Setter
+    private String guiRedirectUrl;
     @Setter
     private String userHandle;
     @Setter

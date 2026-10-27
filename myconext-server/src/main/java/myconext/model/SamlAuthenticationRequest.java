@@ -74,6 +74,10 @@ public class SamlAuthenticationRequest implements Serializable {
 
     private boolean testInstance;
 
+    //The GUI base url that started the test passkey flow, as that flow finishes on the login host without our session
+    @Setter
+    private String guiRedirectUrl;
+
     @Setter
     private LoginStatus loginStatus = LoginStatus.NOT_LOGGED_IN;
 
