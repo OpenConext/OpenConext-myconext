@@ -1,7 +1,8 @@
 import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
-import { Button, Input } from '@surfnet/curve-react';
+import { OtpInput } from '@myconext/shared-gui';
+import { Button } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
@@ -90,7 +91,6 @@ export default function Code() {
 
     return (
         <Container email={email} onBack={goToLogin} footer={footer}>
-            {/* TODO: replace with the 6-slot InputOTP once it is designed in */}
             <form
                 className={styles.form}
                 onSubmit={(e) => {
@@ -98,13 +98,12 @@ export default function Code() {
                     submitCode(code.trim());
                 }}
             >
-                <Input
-                    type="text"
-                    autoComplete="one-time-code"
-                    aria-label={I18n.t('codeScreen.inputLabel')}
-                    aria-invalid={verifyFailed}
+                <OtpInput
+                    ariaLabel={I18n.t('codeScreen.inputLabel')}
                     value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    onChange={setCode}
+                    disabled={isVerifying}
+                    onComplete={(value) => submitCode(value.trim())}
                 />
                 {verifyFailed && (
                     <p role="alert">Invalid code, please try again.</p>
@@ -123,7 +122,7 @@ export default function Code() {
                 <span>{I18n.t('codeScreen.noEmail')}</span>
                 <Button
                     variant="link"
-                    className={styles.link}
+                    className={`${styles.link} ${styles.resend}`}
                     onClick={() => generateCode()}
                 >
                     {I18n.t('codeScreen.resend')}

@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
+import { OtpInput } from '@myconext/shared-gui';
 import { Button, FieldError, Spinner } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { resendInstitutionMail, verifyInstitutionEduId } from '../../api';
 import { CodeResend } from '../../components/CodeResend';
 import { GuestLayout } from '../../components/GuestLayout';
-import { OtpInput } from '../../components/OtpInput';
 import {
     CODE_LENGTH,
     useCodeVerification,
@@ -100,8 +100,6 @@ export default function VerifyFromInstitution() {
                     ariaLabel={I18n.t('createFromInstitution.codeLabel')}
                     value={code}
                     disabled={verify.isPending}
-                    containerClassName="verify-from-institution__otp"
-                    slotsClassName="verify-from-institution__slots"
                     onChange={changeCode}
                     onComplete={(value) => {
                         if (autoSubmit.current) {

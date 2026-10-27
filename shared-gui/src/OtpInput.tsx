@@ -2,48 +2,46 @@ import type { Ref } from 'react';
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@surfnet/curve-react';
 
-import { CODE_LENGTH } from '../hooks/useCodeVerification';
+import styles from './OtpInput.module.scss';
 
-type OtpInputProps = {
-    ref: Ref<HTMLInputElement>;
+const OTP_LENGTH = 6;
+
+export type OtpInputProps = {
     value: string;
-    disabled: boolean;
-    ariaLabel: string;
-    testId: string;
-    containerClassName: string;
-    slotsClassName: string;
     onChange: (value: string) => void;
     onComplete: (value: string) => void;
+    ariaLabel: string;
+    disabled?: boolean;
+    ref?: Ref<HTMLInputElement>;
+    testId?: string;
 };
 
 export const OtpInput = ({
-    ref,
     value,
-    disabled,
-    ariaLabel,
-    testId,
-    containerClassName,
-    slotsClassName,
     onChange,
     onComplete,
+    ariaLabel,
+    disabled = false,
+    ref,
+    testId,
 }: OtpInputProps) => (
     <InputOTP
         ref={ref}
         autoFocus
         data-testid={testId}
-        maxLength={CODE_LENGTH}
+        maxLength={OTP_LENGTH}
         pattern="^\d+$"
         inputMode="numeric"
         autoComplete="one-time-code"
         aria-label={ariaLabel}
         value={value}
         disabled={disabled}
-        containerClassName={containerClassName}
+        containerClassName={styles.otp}
         onChange={onChange}
         onComplete={onComplete}
     >
-        <InputOTPGroup className={slotsClassName}>
-            {Array.from({ length: CODE_LENGTH }, (_, index) => (
+        <InputOTPGroup>
+            {Array.from({ length: OTP_LENGTH }, (_, index) => (
                 <InputOTPSlot key={index} index={index} />
             ))}
         </InputOTPGroup>

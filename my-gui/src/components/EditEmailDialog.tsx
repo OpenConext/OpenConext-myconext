@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 
 import { toast } from 'sonner';
 
+import { OtpInput } from '@myconext/shared-gui';
 import {
     Button,
     Dialog,
@@ -33,7 +34,6 @@ import I18n from '../locale/I18n';
 import { useConfigStore } from '../store/config';
 import { CodeResend } from './CodeResend';
 import './EditEmailDialog.scss';
-import { OtpInput } from './OtpInput';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -137,7 +137,11 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
     );
 
     return (
-        <Dialog open onOpenChange={(open) => !open && onClose()}>
+        <Dialog
+            open
+            disablePointerDismissal
+            onOpenChange={(open) => !open && onClose()}
+        >
             <DialogContent>
                 {step === 'email' && (
                     <form className="edit-email__form" onSubmit={submitEmail}>
@@ -242,8 +246,6 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                                 )}
                                 value={code}
                                 disabled={verify.isPending}
-                                containerClassName="edit-email__otp"
-                                slotsClassName="edit-email__slots"
                                 onChange={changeCode}
                                 onComplete={(value) => {
                                     if (autoSubmit.current) {

@@ -30,13 +30,4 @@
         height: auto;
         padding: 0;
     }
-
-    &__slots {
-        gap: calc(var(--spacing) * 2);
-
-        [data-slot='input-otp-slot'] {
-            border: 1px solid var(--input);
-            border-radius: var(--radius-md);
-        }
-    }
 }

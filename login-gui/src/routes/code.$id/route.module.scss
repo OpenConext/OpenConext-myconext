@@ -28,4 +28,9 @@
     color: var(--primary-strong);
     font-size: inherit;
     font-weight: var(--font-weight-medium);
+    line-height: inherit;
+}
+
+.resend {
+    text-transform: lowercase;
 }
