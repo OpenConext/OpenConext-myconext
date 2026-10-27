@@ -150,6 +150,7 @@ export const EditPasskeyDialog = ({
                     </DialogHeader>
                     {testResult && (
                         <Alert
+                            className="passkey-dialog__alert"
                             variant={
                                 testResult === 'success' ? 'success' : 'warning'
                             }
