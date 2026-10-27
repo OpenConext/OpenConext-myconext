@@ -209,7 +209,7 @@ export const PasswordDialog = ({
     );
 
     return (
-        <Dialog open onOpenChange={(open) => !open && onClose()}>
+        <Dialog open disablePointerDismissal onOpenChange={(open) => !open && onClose()}>
             <DialogContent>
                 {(step === 'confirm' || step === 'outstanding') && (
                     <>

@@ -137,7 +137,11 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
     );
 
     return (
-        <Dialog open onOpenChange={(open) => !open && onClose()}>
+        <Dialog
+            open
+            disablePointerDismissal
+            onOpenChange={(open) => !open && onClose()}
+        >
             <DialogContent>
                 {step === 'email' && (
                     <form className="edit-email__form" onSubmit={submitEmail}>
