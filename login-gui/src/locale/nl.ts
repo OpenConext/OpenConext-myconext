@@ -32,6 +32,11 @@ const nl: AppTranslation = {
         hasAccount: 'Heb je al een eduID?',
         login: 'Inloggen',
     },
+    requestSuccess: {
+        title: 'Je eduID is aangemaakt',
+        info: 'We hebben je ook een bevestigingsmail gestuurd.',
+        next: 'Volgende',
+    },
     codeScreen: {
         title: 'Log in met eduID',
         description: 'Vul de code in die je hebt ontvangen op {{email}}',

@@ -1,5 +1,5 @@
 import { type FC, type ReactNode, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 
 import { Captcha, sanitizeHtml } from '@myconext/shared-gui';
 import {
@@ -9,9 +9,9 @@ import {
     FieldLabel,
     Input,
 } from '@surfnet/curve-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchConfig } from '../../api';
+import { fetchConfig, fetchServiceName, generateCodeNewUser } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import styles from './route.module.scss';
@@ -34,12 +34,16 @@ const Container: FC<{ children: ReactNode; id?: string }> = ({
 );
 
 export default function Request() {
-    const { id } = useParams();
+    const { id = '' } = useParams();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [givenName, setGivenName] = useState('');
     const [familyName, setFamilyName] = useState('');
     const [agreed, setAgreed] = useState(false);
+
+    // Captcha tokens are single-use; remounting the widget yields a fresh one after a rejected attempt.
+    const [captchaKey, setCaptchaKey] = useState(0);
     const [captchaResponse, setCaptchaResponse] = useState<string | null>(null);
 
     const { data: config, isPending } = useQuery({
@@ -49,6 +53,50 @@ export default function Request() {
     const captchaSiteKey = config?.captchaEnabled
         ? config.captchaSiteKey
         : undefined;
+    const { data: service } = useQuery({
+        queryKey: ['serviceName', id],
+        queryFn: () => fetchServiceName(id),
+        enabled: !!id,
+    });
+
+    const {
+        mutate: submit,
+        isPending: isSubmitting,
+        error,
+    } = useMutation({
+        mutationFn: () =>
+            generateCodeNewUser(
+                { email, givenName, familyName },
+                id,
+                captchaResponse,
+            ),
+        onSuccess: (res) => {
+            if (res?.stepup) {
+                const params = new URLSearchParams({
+                    name: service?.name ?? '',
+                    explanation: res.explanation ?? '',
+                });
+                navigate(`/stepup/${id}?${params}`, { replace: true });
+                return;
+            }
+            // The server already sent the code, so /code must not request another one.
+            navigate(`/code/${id}`, {
+                replace: true,
+                state: { email, codeSent: true },
+            });
+        },
+        onError: (e) => {
+            setCaptchaKey((k) => k + 1);
+            if (
+                e instanceof Response &&
+                (e.status === 409 || e.status === 412)
+            ) {
+                return;
+            }
+            navigate('/expired', { replace: true });
+        },
+    });
+    const errorStatus = error instanceof Response ? error.status : undefined;
     const captchaPending = isPending || (!!captchaSiteKey && !captchaResponse);
 
     return (
@@ -57,7 +105,7 @@ export default function Request() {
                 className={styles.form}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    // TODO: submit the registration request, including captchaResponse
+                    submit();
                 }}
             >
                 <Field>
@@ -112,14 +160,29 @@ export default function Request() {
                         }}
                     />
                 </label>
+                {errorStatus === 409 && (
+                    <p role="alert">
+                        This email address is already in use.{' '}
+                        <Link to={`/login/${id}`}>
+                            {I18n.t('request.login')}
+                        </Link>
+                    </p>
+                )}
+                {errorStatus === 412 && (
+                    <p role="alert">This email address is not allowed.</p>
+                )}
                 {captchaSiteKey && (
                     <Captcha
+                        key={captchaKey}
                         siteKey={captchaSiteKey}
                         language={I18n.locale}
                         onChange={setCaptchaResponse}
                     />
                 )}
-                <Button type="submit" disabled={!agreed || captchaPending}>
+                <Button
+                    type="submit"
+                    disabled={!agreed || captchaPending || isSubmitting}
+                >
                     {I18n.t('request.submit')}
                 </Button>
             </form>

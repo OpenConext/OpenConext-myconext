@@ -32,6 +32,7 @@ export default function Code() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const email: string = state?.email ?? '';
+    const codeSent: boolean = state?.codeSent === true;
 
     const [code, setCode] = useState('');
     const hasFired = useRef(false);
@@ -52,7 +53,9 @@ export default function Code() {
         }
 
         hasFired.current = true;
-        generateCode();
+        if (!codeSent) {
+            generateCode();
+        }
     }, []);
 
     const {
