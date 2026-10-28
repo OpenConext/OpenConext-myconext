@@ -2,7 +2,7 @@ import type { AppTranslation } from './translationType';
 
 const en: AppTranslation = {
     globalVariables: {
-        productName: 'OpenConext Access',
+        productName: 'myConext',
     },
     code: 'EN',
     languages: {
@@ -11,34 +11,34 @@ const en: AppTranslation = {
         nl: 'Dutch',
     },
     login: {
-        title: 'Log in with myConext',
+        title: 'Log in with {{productName}}',
         email: 'Email address',
         accountNotFound:
-            'We couldn’t find an eduID with this email address. Try another one.',
+            'We couldn’t find a {{productName}} account with this email address. Try another one.',
         descriptionWithService: 'to continue to {{serviceName}}',
         description: 'to continue',
         loading: 'Loading...',
         submit: 'Continue',
-        noAccount: "Don't have an eduID yet?",
-        createAccount: 'Create an eduID',
+        noAccount: "Don't have a {{productName}} yet?",
+        createAccount: 'Create a {{productName}}',
     },
     request: {
-        title: 'Create an eduID',
+        title: 'Create a {{productName}}',
         email: 'Email address',
         givenName: 'First name',
         familyName: 'Last name',
         submit: 'Continue',
         agree: 'I agree with <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/terms-of-use/">the terms of service</a> and I\'ve read <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/privacy">the privacy policy</a>.',
-        hasAccount: 'Already have an eduID?',
+        hasAccount: 'Already have a {{productName}}?',
         login: 'Log in',
     },
     requestSuccess: {
-        title: 'Your eduID has been created',
+        title: 'Your {{productName}} has been created',
         info: 'We have also sent you a confirmation email.',
         next: 'Next',
     },
     codeScreen: {
-        title: 'Log in with eduID',
+        title: 'Log in with {{productName}}',
         description: 'Enter the code sent to {{email}}',
         inputLabel: 'Code',
         submit: 'Continue',

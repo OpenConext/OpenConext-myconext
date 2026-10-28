@@ -2,7 +2,7 @@ import type { AppTranslation } from './translationType';
 
 const nl: AppTranslation = {
     globalVariables: {
-        productName: 'OpenConext Access',
+        productName: 'myConext',
     },
     code: 'NL',
     languages: {
@@ -11,34 +11,34 @@ const nl: AppTranslation = {
         nl: 'Nederlands',
     },
     login: {
-        title: 'Inloggen met myConext',
+        title: 'Inloggen met {{productName}}',
         email: 'E-mailadres',
         accountNotFound:
-            'We konden geen eduID vinden met dit e-mailadres. Probeer een ander adres.',
+            'We konden geen {{productName}}-account vinden met dit e-mailadres. Probeer een ander adres.',
         descriptionWithService: 'om door te gaan naar {{serviceName}}',
         description: 'om door te gaan',
         loading: 'Laden...',
         submit: 'Ga door',
-        noAccount: 'Heb je nog geen eduID?',
-        createAccount: 'Maak een eduID aan',
+        noAccount: 'Heb je nog geen {{productName}}?',
+        createAccount: 'Maak een {{productName}} aan',
     },
     request: {
-        title: 'Maak een eduID aan',
+        title: 'Maak een {{productName}} aan',
         email: 'E-mailadres',
         givenName: 'Voornaam',
         familyName: 'Achternaam',
         submit: 'Ga door',
         agree: 'Ik ga akkoord met <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/gebruiksvoorwaarden/">de voorwaarden</a> en ik heb <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/privacyverklaring/">de privacyverklaring</a> gelezen.',
-        hasAccount: 'Heb je al een eduID?',
+        hasAccount: 'Heb je al een {{productName}}?',
         login: 'Inloggen',
     },
     requestSuccess: {
-        title: 'Je eduID is aangemaakt',
+        title: 'Je {{productName}} is aangemaakt',
         info: 'We hebben je ook een bevestigingsmail gestuurd.',
         next: 'Volgende',
     },
     codeScreen: {
-        title: 'Log in met eduID',
+        title: 'Log in met {{productName}}',
         description: 'Vul de code in die je hebt ontvangen op {{email}}',
         inputLabel: 'Code',
         submit: 'Ga door',
