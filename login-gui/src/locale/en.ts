@@ -32,6 +32,11 @@ const en: AppTranslation = {
         hasAccount: 'Already have an eduID?',
         login: 'Log in',
     },
+    requestSuccess: {
+        title: 'Your eduID has been created',
+        info: 'We have also sent you a confirmation email.',
+        next: 'Next',
+    },
     codeScreen: {
         title: 'Log in with eduID',
         description: 'Enter the code sent to {{email}}',
