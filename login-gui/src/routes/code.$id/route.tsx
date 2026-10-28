@@ -38,6 +38,7 @@ export default function Code() {
     const hasFired = useRef(false);
 
     const goToLogin = () => navigate(`/login/${id}`);
+    const goToOptions = () => navigate(`/options/${id}`, { state: { email } });
 
     const {
         mutate: generateCode,
@@ -70,7 +71,11 @@ export default function Code() {
     const footer = (
         <>
             <p>{I18n.t('codeScreen.noAccess')}</p>
-            <Button variant="link" className={styles.link} onClick={goToLogin}>
+            <Button
+                variant="link"
+                className={styles.link}
+                onClick={goToOptions}
+            >
                 {I18n.t('codeScreen.otherMethod')}
             </Button>
         </>

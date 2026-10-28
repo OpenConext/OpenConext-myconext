@@ -1,0 +1,11 @@
+.item {
+    background: transparent;
+    color: var(--primary-strong);
+    font-weight: var(--font-weight-medium);
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--muted);
+    }
+}

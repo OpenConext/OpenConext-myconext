@@ -47,6 +47,16 @@ const en: AppTranslation = {
         noAccess: "Can't access your mail?",
         otherMethod: 'Use another login method',
     },
+    options: {
+        title: 'Log in with {{productName}}',
+        description: 'Choose how you want to log in',
+        loading: 'Loading...',
+        error: 'Failed to load login options. Please try again.',
+        useApp: 'Use the {{productName}} app',
+        useWebAuthn: 'Use your security key',
+        useCode: 'Get a one-time code by email',
+        usePassword: 'Use a password',
+    },
 };
 
 export default en;
