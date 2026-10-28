@@ -7,10 +7,10 @@ type AppLanguage = {
 
 type GlobalVariables = {
     productName: string;
-}
+};
 
 export type AppTranslation = {
-    globalVariables: GlobalVariables,
+    globalVariables: GlobalVariables;
     code: string;
     languages: AppLanguage;
     [key: string]: string | Record<string, unknown>;
@@ -21,4 +21,4 @@ export type AppTranslationOverride = {
     code: string;
     languages: Partial<AppLanguage>;
     [key: string]: string | Record<string, unknown>;
-}
+};

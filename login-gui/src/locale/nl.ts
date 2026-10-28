@@ -47,6 +47,16 @@ const nl: AppTranslation = {
         noAccess: 'Kun je niet bij je e-mail?',
         otherMethod: 'Gebruik een andere inlogmethode',
     },
+    options: {
+        title: 'Log in met {{productName}}',
+        description: 'Kies hoe je wilt inloggen',
+        loading: 'Laden...',
+        error: 'Inlogopties laden mislukt. Probeer het opnieuw.',
+        useApp: 'Gebruik de {{productName}} app',
+        useWebAuthn: 'Gebruik je beveiligingssleutel',
+        useCode: 'Ontvang een eenmalige code per e-mail',
+        usePassword: 'Gebruik een wachtwoord',
+    },
 };
 
 export default nl;
