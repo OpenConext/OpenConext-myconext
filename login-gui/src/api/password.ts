@@ -1,9 +1,7 @@
 import { apiFetch } from '../utils/apiFetch.ts';
 
 export type PasswordLoginResponse = {
-    url?: string;
-    stepup?: boolean;
-    explanation?: string;
+    url: string;
 };
 
 export const passwordLoginRequest = async (

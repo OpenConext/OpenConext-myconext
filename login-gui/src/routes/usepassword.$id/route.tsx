@@ -61,11 +61,7 @@ export default function UsePassword() {
     } = useMutation({
         mutationFn: (password: string) =>
             passwordLoginRequest(email, password, id),
-        onSuccess: ({ url }) => {
-            if (url) {
-                window.location.href = url;
-            }
-        },
+        onSuccess: ({ url }) => (window.location.href = url),
         onError: (error) => {
             if (error instanceof Response && error.status === 403) {
                 setIncorrect(true);
