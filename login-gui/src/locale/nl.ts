@@ -47,6 +47,16 @@ const nl: AppTranslation = {
         noAccess: 'Kun je niet bij je e-mail?',
         otherMethod: 'Gebruik een andere inlogmethode',
     },
+    password: {
+        title: 'Log in met {{productName}}',
+        descriptionWithService: 'om door te gaan naar {{serviceName}}',
+        description: 'om door te gaan',
+        label: 'Wachtwoord',
+        submit: 'Ga door',
+        incorrect: 'Wachtwoord is onjuist',
+        error: 'Er is iets misgegaan. Probeer het opnieuw.',
+        otherMethod: 'Gebruik een andere inlogmethode',
+    },
     options: {
         title: 'Log in met {{productName}}',
         description: 'Kies hoe je wilt inloggen',
