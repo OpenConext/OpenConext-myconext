@@ -56,10 +56,12 @@ export default function Options() {
 
     const options = methods?.filter(isLoginOptionKey) ?? [];
 
-    // Only the code flow has a page in this app so far.
+    // App and security key flows have no page in this app yet.
     const selectOption = (option: LoginOptionKey) => {
         if (option === 'useCode') {
             navigate(`/code/${id}`, { state: { email } });
+        } else if (option === 'usePassword') {
+            navigate(`/usepassword/${id}`, { state: { email } });
         }
     };
 

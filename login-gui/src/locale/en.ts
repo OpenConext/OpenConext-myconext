@@ -47,6 +47,16 @@ const en: AppTranslation = {
         noAccess: "Can't access your mail?",
         otherMethod: 'Use another login method',
     },
+    password: {
+        title: 'Log in with {{productName}}',
+        descriptionWithService: 'to continue to {{serviceName}}',
+        description: 'to continue',
+        label: 'Password',
+        submit: 'Continue',
+        incorrect: 'Password is incorrect',
+        error: 'Something went wrong. Please try again.',
+        otherMethod: 'Use another login method',
+    },
     options: {
         title: 'Log in with {{productName}}',
         description: 'Choose how you want to log in',
