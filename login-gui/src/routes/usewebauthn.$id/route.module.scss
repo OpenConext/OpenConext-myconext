@@ -1,0 +1,16 @@
+@use '../../styles/spacing' as *;
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}
+
+.link {
+    height: auto;
+    padding: 0;
+    color: var(--primary-strong);
+    font-size: inherit;
+    font-weight: var(--font-weight-medium);
+    line-height: inherit;
+}

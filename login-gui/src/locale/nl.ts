@@ -57,6 +57,16 @@ const nl: AppTranslation = {
         error: 'Er is iets misgegaan. Probeer het opnieuw.',
         otherMethod: 'Gebruik een andere inlogmethode',
     },
+    webAuthn: {
+        title: 'Log in met {{productName}}',
+        descriptionWithService: 'om door te gaan naar {{serviceName}}',
+        description: 'om door te gaan',
+        explanation:
+            'Je apparaat opent een nieuw venster. Volg de instructies daar om in te loggen.',
+        submit: 'Inloggen met een passkey',
+        error: 'Je kunt de passkey op dit moment niet gebruiken',
+        otherMethod: 'Gebruik een andere inlogmethode',
+    },
     options: {
         title: 'Log in met {{productName}}',
         description: 'Kies hoe je wilt inloggen',

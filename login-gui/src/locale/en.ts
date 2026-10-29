@@ -57,6 +57,16 @@ const en: AppTranslation = {
         error: 'Something went wrong. Please try again.',
         otherMethod: 'Use another login method',
     },
+    webAuthn: {
+        title: 'Log in with {{productName}}',
+        descriptionWithService: 'to continue to {{serviceName}}',
+        description: 'to continue',
+        explanation:
+            'Your device will open a new window. Follow the instructions there to log in.',
+        submit: 'Log in with a passkey',
+        error: "You can't use the passkey at this moment",
+        otherMethod: 'Use another login method',
+    },
     options: {
         title: 'Log in with {{productName}}',
         description: 'Choose how you want to log in',
