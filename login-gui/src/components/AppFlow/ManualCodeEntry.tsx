@@ -3,29 +3,29 @@ import { useState } from 'react';
 import { OtpInput } from '@myconext/shared-gui';
 import { WarningDiamondIcon } from '@phosphor-icons/react';
 import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
-import { useMutation } from '@tanstack/react-query';
 
-import { tiqrManualResponse } from '../../api';
 import I18n from '../../locale/I18n';
-import styles from './route.module.scss';
+import styles from './AppFlow.module.scss';
 
-type ManualCodeEntryProps = {
-    sessionKey: string;
+export type ManualCode = {
+    submit: (code: string) => Promise<boolean>;
+    isVerifying: boolean;
+    failed: boolean;
 };
 
-export const ManualCodeEntry = ({ sessionKey }: ManualCodeEntryProps) => {
+type ManualCodeEntryProps = {
+    manualCode: ManualCode;
+};
+
+export const ManualCodeEntry = ({ manualCode }: ManualCodeEntryProps) => {
     const [codeRequested, setCodeRequested] = useState(false);
     const [code, setCode] = useState('');
 
-    const {
-        mutate: submitCode,
-        isPending: isVerifying,
-        isError: codeFailed,
-    } = useMutation({
-        mutationFn: (value: string) => tiqrManualResponse(sessionKey, value),
-        // On success the next poll returns SUCCESS and handles the redirect
-        onError: () => setCode(''),
-    });
+    const submitCode = async (value: string) => {
+        if (!(await manualCode.submit(value))) {
+            setCode('');
+        }
+    };
 
     return (
         <>
@@ -47,10 +47,10 @@ export const ManualCodeEntry = ({ sessionKey }: ManualCodeEntryProps) => {
                         ariaLabel={I18n.t('useApp.codeLabel')}
                         value={code}
                         onChange={setCode}
-                        disabled={isVerifying}
-                        onComplete={(value) => submitCode(value.trim())}
+                        disabled={manualCode.isVerifying}
+                        onComplete={(value) => void submitCode(value.trim())}
                     />
-                    {codeFailed && (
+                    {manualCode.failed && (
                         <Alert variant="warning">
                             <WarningDiamondIcon />
                             <AlertDescription>

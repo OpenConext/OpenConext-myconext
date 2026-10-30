@@ -2,8 +2,8 @@ import { Button } from '@surfnet/curve-react';
 
 import type { TiqrStartResponse } from '../../api';
 import I18n from '../../locale/I18n';
-import { ManualCodeEntry } from './ManualCodeEntry';
-import styles from './route.module.scss';
+import styles from './AppFlow.module.scss';
+import { type ManualCode, ManualCodeEntry } from './ManualCodeEntry';
 
 const isTouchDevice = () =>
     typeof document !== 'undefined' &&
@@ -11,9 +11,10 @@ const isTouchDevice = () =>
 
 type QrScanProps = {
     start: TiqrStartResponse;
+    manualCode: ManualCode;
 };
 
-export const QrScan = ({ start }: QrScanProps) => {
+export const QrScan = ({ start, manualCode }: QrScanProps) => {
     const qrImage = (
         <img
             className={styles.qr}
@@ -40,7 +41,7 @@ export const QrScan = ({ start }: QrScanProps) => {
                 <div className={styles.qrWrapper}>{qrImage}</div>
             )}
 
-            <ManualCodeEntry sessionKey={start.sessionKey} />
+            <ManualCodeEntry manualCode={manualCode} />
         </>
     );
 };

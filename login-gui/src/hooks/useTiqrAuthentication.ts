@@ -6,25 +6,15 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
     type TiqrPollResponse,
-    type TiqrStartResponse,
     tiqrPollAuthentication,
     tiqrStartAuthentication,
-} from '../../api';
-import { LOGIN_PREFERENCE_COOKIE } from '../../utils/loginMethods';
+} from '../api';
+import type { TiqrFlow } from '../components';
+import { LOGIN_PREFERENCE_COOKIE } from '../utils/loginMethods';
 
 const POLL_INTERVAL_MS = 1000;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
 const LOGIN_PREFERENCE_APP = 'useApp';
-
-export type TiqrFlow =
-    | { phase: 'loading' }
-    | { phase: 'startError' }
-    | { phase: 'timedOut' }
-    | {
-          phase: 'active';
-          start: TiqrStartResponse;
-          suspendedMinutes: number | null;
-      };
 
 // The server returns epoch milliseconds, or epoch seconds in some code paths
 // (TiqrController); the latter lands in the past and yields 0 ("try again").

@@ -1,7 +1,7 @@
 import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
-import styles from './route.module.scss';
+import styles from './AppFlow.module.scss';
 
 const HELP_URL = 'https://eduid.nl/help';
 
