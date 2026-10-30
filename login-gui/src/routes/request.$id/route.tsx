@@ -1,7 +1,7 @@
 import { type FC, type ReactNode, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
-import { Captcha, sanitizeHtml } from '@myconext/shared-gui';
+import { sanitizeHtml } from '@myconext/shared-gui';
 import {
     Button,
     Checkbox,
@@ -12,7 +12,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchConfig, fetchServiceName, generateCodeNewUser } from '../../api';
-import { LoginContainer } from '../../components';
+import { Captcha, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import styles from './route.module.scss';
 
