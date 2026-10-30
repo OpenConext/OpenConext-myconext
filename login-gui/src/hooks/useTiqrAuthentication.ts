@@ -6,11 +6,21 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
     type TiqrPollResponse,
+    type TiqrStartResponse,
     tiqrPollAuthentication,
     tiqrStartAuthentication,
 } from '../api';
-import type { TiqrFlow } from '../components';
 import { LOGIN_PREFERENCE_COOKIE } from '../utils/loginMethods';
+
+export type TiqrFlow =
+    | { phase: 'loading' }
+    | { phase: 'startError' }
+    | { phase: 'timedOut' }
+    | {
+          phase: 'active';
+          start: TiqrStartResponse;
+          suspendedMinutes: number | null;
+      };
 
 const POLL_INTERVAL_MS = 1000;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;

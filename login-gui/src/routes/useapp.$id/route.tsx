@@ -3,7 +3,12 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 
 import { tiqrManualResponse } from '../../api';
-import { AppFlow, type ManualCode } from '../../components';
+import {
+    LoginContainer,
+    type ManualCode,
+    UseAppFooter,
+    useAppFlowScreen,
+} from '../../components';
 import { useTiqrAuthentication } from '../../hooks';
 
 type UseAppFlowProps = {
@@ -38,15 +43,27 @@ const UseAppFlow = ({ email, id }: UseAppFlowProps) => {
         failed: codeFailed,
     };
 
+    const { title, description, showFooter, body } = useAppFlowScreen(
+        flow,
+        manualCode,
+    );
+
     const goToOptions = () => navigate(`/options/${id}`, { state: { email } });
 
     return (
-        <AppFlow
-            email={email}
-            flow={flow}
-            manualCode={manualCode}
-            onOtherMethod={goToOptions}
-        />
+        <LoginContainer
+            title={title}
+            description={description}
+            footer={
+                showFooter ? (
+                    <UseAppFooter onOtherMethod={goToOptions} />
+                ) : undefined
+            }
+            onBack={goToOptions}
+            backLabel={email}
+        >
+            {body}
+        </LoginContainer>
     );
 };
 

@@ -1,29 +1,15 @@
 import { type ReactNode, useState } from 'react';
 
-import type { TiqrStartResponse } from '../../api';
+import type { TiqrFlow } from '../../hooks/useTiqrAuthentication';
 import I18n from '../../locale/I18n';
-import { LoginContainer } from '../LoginContainer/LoginContainer';
 import type { ManualCode } from './ManualCodeEntry';
 import { PushPrompt } from './PushPrompt';
 import { QrScan } from './QrScan';
 import { StartError } from './StartError';
 import { SuspendedAlert } from './SuspendedAlert';
 import { TimedOut } from './TimedOut';
-import { UseAppFooter } from './UseAppFooter';
 
-export type { ManualCode } from './ManualCodeEntry';
-
-export type TiqrFlow =
-    | { phase: 'loading' }
-    | { phase: 'startError' }
-    | { phase: 'timedOut' }
-    | {
-          phase: 'active';
-          start: TiqrStartResponse;
-          suspendedMinutes: number | null;
-      };
-
-type Screen = {
+export type AppFlowScreen = {
     title: string;
     description?: string;
     showFooter: boolean;
@@ -35,7 +21,7 @@ const getScreen = (
     manualCode: ManualCode,
     qrRequested: boolean,
     onShowQr: () => void,
-): Screen => {
+): AppFlowScreen => {
     switch (flow.phase) {
         case 'timedOut':
             return {
@@ -91,41 +77,11 @@ const getScreen = (
     }
 };
 
-type AppFlowProps = {
-    email: string;
-    flow: TiqrFlow;
-    manualCode: ManualCode;
-    onOtherMethod: () => void;
-};
-
-export const AppFlow = ({
-    email,
-    flow,
-    manualCode,
-    onOtherMethod,
-}: AppFlowProps) => {
+export const useAppFlowScreen = (
+    flow: TiqrFlow,
+    manualCode: ManualCode,
+): AppFlowScreen => {
     const [qrRequested, setQrRequested] = useState(false);
 
-    const { title, description, showFooter, body } = getScreen(
-        flow,
-        manualCode,
-        qrRequested,
-        () => setQrRequested(true),
-    );
-
-    return (
-        <LoginContainer
-            title={title}
-            description={description}
-            footer={
-                showFooter ? (
-                    <UseAppFooter onOtherMethod={onOtherMethod} />
-                ) : undefined
-            }
-            onBack={onOtherMethod}
-            backLabel={email}
-        >
-            {body}
-        </LoginContainer>
-    );
+    return getScreen(flow, manualCode, qrRequested, () => setQrRequested(true));
 };
