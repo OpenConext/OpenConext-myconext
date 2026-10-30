@@ -1,5 +1,5 @@
 import { type FC, type ReactNode, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 
 import { WarningDiamondIcon } from '@phosphor-icons/react';
 import {
@@ -15,6 +15,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchLoginMethods, fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import { loginMethodPath, pickLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
 const Footer = () => {
@@ -46,23 +47,30 @@ const Container: FC<{
 );
 
 export default function Login() {
-    const { id } = useParams();
+    const { id = '' } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const [email, setEmail] = useState('');
     const [accountNotFound, setAccountNotFound] = useState(false);
 
     const { data: service, isLoading } = useQuery({
         queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id!),
+        queryFn: () => fetchServiceName(id),
         enabled: Boolean(id),
     });
 
     const { mutate: submitEmail, isPending } = useMutation({
         mutationFn: (email: string) => fetchLoginMethods(email),
         onSuccess: (methods) => {
-            if (methods.includes('useCode')) {
-                navigate(`/code/${id}`, { state: { email } });
+            const method = pickLoginMethod(
+                methods,
+                searchParams.has('magicLink'),
+                searchParams.has('mfa'),
+            );
+
+            if (method) {
+                navigate(loginMethodPath(method, id), { state: { email } });
             }
         },
         onError: (error) => {

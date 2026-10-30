@@ -20,19 +20,19 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchLoginMethods } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import {
+    type LoginMethod,
+    isLoginMethod,
+    loginMethodPath,
+} from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
-type LoginOptionKey = 'useApp' | 'useWebAuthn' | 'useCode' | 'usePassword';
-
-const OPTION_ICONS: Record<LoginOptionKey, ComponentType<IconProps>> = {
+const OPTION_ICONS: Record<LoginMethod, ComponentType<IconProps>> = {
     useApp: DeviceMobileIcon,
     useWebAuthn: KeyIcon,
     useCode: EnvelopeIcon,
     usePassword: PasswordIcon,
 };
-
-const isLoginOptionKey = (key: string): key is LoginOptionKey =>
-    key in OPTION_ICONS;
 
 export default function Options() {
     const { id = '' } = useParams();
@@ -54,18 +54,10 @@ export default function Options() {
         return <Navigate to={`/login/${id}`} replace />;
     }
 
-    const options = methods?.filter(isLoginOptionKey) ?? [];
+    const options = methods?.filter(isLoginMethod) ?? [];
 
-    const selectOption = (option: LoginOptionKey) => {
-        if (option === 'useApp') {
-            navigate(`/useapp/${id}`, { state: { email } });
-        } else if (option === 'useWebAuthn') {
-            navigate(`/usewebauthn/${id}`, { state: { email } });
-        } else if (option === 'useCode') {
-            navigate(`/code/${id}`, { state: { email } });
-        } else if (option === 'usePassword') {
-            navigate(`/usepassword/${id}`, { state: { email } });
-        }
+    const selectOption = (option: LoginMethod) => {
+        navigate(loginMethodPath(option, id), { state: { email } });
     };
 
     return (

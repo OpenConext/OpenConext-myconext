@@ -16,11 +16,11 @@ import {
 } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import { LOGIN_PREFERENCE_COOKIE } from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
 const POLL_INTERVAL_MS = 1000;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const LOGIN_PREFERENCE_COOKIE = 'login_preference';
 const LOGIN_PREFERENCE_APP = 'useApp';
 const HELP_URL = 'https://eduid.nl/help';
 
