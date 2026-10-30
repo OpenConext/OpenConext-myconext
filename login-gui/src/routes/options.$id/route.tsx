@@ -56,9 +56,10 @@ export default function Options() {
 
     const options = methods?.filter(isLoginOptionKey) ?? [];
 
-    // App flow has no page in this app yet.
     const selectOption = (option: LoginOptionKey) => {
-        if (option === 'useWebAuthn') {
+        if (option === 'useApp') {
+            navigate(`/useapp/${id}`, { state: { email } });
+        } else if (option === 'useWebAuthn') {
             navigate(`/usewebauthn/${id}`, { state: { email } });
         } else if (option === 'useCode') {
             navigate(`/code/${id}`, { state: { email } });
