@@ -80,6 +80,13 @@ const nl: AppTranslation = {
         error: 'Je kunt de passkey op dit moment niet gebruiken',
         otherMethod: 'Gebruik een andere inlogmethode',
     },
+    addWebAuthn: {
+        title: 'Voeg een beveiligingssleutel toe',
+        explanation:
+            'Druk op de knop hieronder om een beveiligingssleutel toe te voegen aan je eduID. Volg daarbij de instructies van je browser op.',
+        submit: 'Start',
+        error: 'De beveiligingssleutel kon niet worden toegevoegd. Probeer het opnieuw.',
+    },
     useApp: {
         title: 'Controleer je {{productName}} app',
         description:

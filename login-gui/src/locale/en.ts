@@ -80,6 +80,13 @@ const en: AppTranslation = {
         error: "You can't use the passkey at this moment",
         otherMethod: 'Use another login method',
     },
+    addWebAuthn: {
+        title: 'Add security key',
+        explanation:
+            'Press the button below to add a security key to your eduID. Please follow the instructions given by your browser.',
+        submit: 'Start',
+        error: "The security key couldn't be added. Please try again.",
+    },
     useApp: {
         title: 'Check your {{productName}} app',
         description:

@@ -7,6 +7,7 @@ export type Config = {
     baseDomain: string;
     captchaEnabled: boolean;
     captchaSiteKey: string;
+    myconextWebAuthnRedirectUrl: string;
     [key: string]: unknown;
 };
 
