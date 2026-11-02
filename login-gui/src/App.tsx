@@ -3,7 +3,7 @@ import { NavLink } from 'react-router';
 import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig } from './api';
+import { configQueryOptions } from './api';
 import { useAppStore } from './store/store';
 
 function App() {
@@ -14,10 +14,7 @@ function App() {
         data: config,
         isLoading,
         isError,
-    } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    } = useQuery(configQueryOptions);
 
     if (isLoading) {
         return <div>Loading...</div>;

@@ -5,3 +5,4 @@ export * from './request';
 export * from './service';
 export * from './tiqr';
 export * from './webauthn';
+export * from './webauthn-registration';

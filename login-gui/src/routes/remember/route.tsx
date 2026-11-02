@@ -3,7 +3,7 @@ import { Navigate, useSearchParams } from 'react-router';
 import { Button } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, rememberMe } from '../../api';
+import { configQueryOptions, rememberMe } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import { getProceedUrl } from '../../utils/sso.ts';
@@ -12,10 +12,7 @@ import styles from './Remember.module.scss';
 export default function Remember() {
     const [searchParams] = useSearchParams();
 
-    const { data: config, isPending } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const { data: config, isPending } = useQuery(configQueryOptions);
 
     const {
         mutate: remember,
