@@ -484,7 +484,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
         if (samlAuthenticationRequest.isMfaProfileRequired() && !samlAuthenticationRequest.isTiqrFlow() && !StringUtils.hasText(force)) {
             response.sendRedirect(accountRedirectResolver.resolve(request) + "/app-required?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet));
+                    "&redirect=" + URLEncoder.encode(accountRedirectResolver.rebase(request, this.magicLinkUrl), charSet));
             return;
         }
 
@@ -555,7 +555,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             }
             //we don't redirect the user to the nudge app page anymore
             String url = accountRedirectResolver.resolve(request) + "/request-success?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
+                    "&redirect=" + URLEncoder.encode(accountRedirectResolver.rebase(request, this.magicLinkUrl), charSet);
             response.sendRedirect(url);
             return false;
         } else if (inStepUpFlow) {
@@ -567,7 +567,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             boolean externalNameValidation = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES_EXTERNAL);
             String path = externalNameValidation ? "confirm-external-stepup" : "confirm-stepup";
             response.sendRedirect(accountRedirectResolver.resolve(request) + "/" + path + "?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&redirect=" + URLEncoder.encode(accountRedirectResolver.rebase(request, this.magicLinkUrl), charSet) +
                     "&explanation=" + explanation +
                     "&ref=" + user.getId());
             return false;
@@ -579,7 +579,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
             //Nudge user to use the app
             String url = accountRedirectResolver.resolve(request) + "/confirm?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&redirect=" + URLEncoder.encode(accountRedirectResolver.rebase(request, this.magicLinkUrl), charSet) +
                     "&new=false";
             response.sendRedirect(url);
             return false;
@@ -591,7 +591,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             }
             addRememberMeQuestionAskedCookie(response);
             String url = accountRedirectResolver.resolve(request) + "/remember?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
+                    "&redirect=" + URLEncoder.encode(accountRedirectResolver.rebase(request, this.magicLinkUrl), charSet);
             response.sendRedirect(url);
             return false;
         }

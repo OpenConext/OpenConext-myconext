@@ -10,6 +10,7 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.security.AccountRedirectResolver;
 import myconext.security.GuiRedirectResolver;
 import myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter;
 import myconext.util.CreateFromInstitutionReturnUrlSupport;
@@ -57,6 +58,7 @@ public class LoginController {
     private final SecurityContextRepository securityContextRepository;
     private final List<String> createFromInstitutionAllowedReturnDomains;
     private final GuiRedirectResolver guiRedirectResolver;
+    private final AccountRedirectResolver accountRedirectResolver;
     private final String servicedeskRedirectUrl;
 
     public LoginController(UserRepository userRepository,
@@ -93,8 +95,10 @@ public class LoginController {
                            @Value("${email.support}") String supportEmail,
                            @Value("${email.from_code}") String emailFromCode,
                            CreateFromInstitutionProperties createFromInstitutionProperties,
-                           GuiRedirectResolver guiRedirectResolver
+                           GuiRedirectResolver guiRedirectResolver,
+                           AccountRedirectResolver accountRedirectResolver
     ) {
+        this.accountRedirectResolver = accountRedirectResolver;
         this.config.put("myconextBasePath", myconextBasePath);
         this.config.put("loginUrl", myconextBasePath + "/auth/login");
         this.config.put("loginUrlServiceDesk", servicedeskBasePath + "/auth/login");
@@ -138,8 +142,12 @@ public class LoginController {
     }
 
     @GetMapping("/config")
-    public Map<String, Object> config(Authentication authentication) {
+    public Map<String, Object> config(Authentication authentication, HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>(this.config);
+        result.put("accountBaseUrl", accountRedirectResolver.resolve(request));
+        result.put("accountWebAuthUrl", String.format("%s/webauthn", accountRedirectResolver.resolve(request)));
+        result.put("continueAfterLoginUrl", accountRedirectResolver.rebase(request, (String) this.config.get("continueAfterLoginUrl")));
+        result.put("magicLinkUrl", accountRedirectResolver.rebase(request, (String) this.config.get("magicLinkUrl")));
         result.put("isAuthenticated", authentication != null);
         String myconextBaseUrl = guiRedirectResolver.myconextRedirectUrl();
         result.put("myconextBaseUrl", myconextBaseUrl);

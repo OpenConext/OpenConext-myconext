@@ -45,4 +45,12 @@ class AccountRedirectResolverTest {
         AccountRedirectResolver old = new AccountRedirectResolver("http://localhost:3000", "");
         assertEquals("http://localhost:3000", old.resolve(request("http", "localhost", 3004)));
     }
+
+    @Test
+    void rebase() {
+        String magic = "https://login.test2.surfconext.nl/saml/guest-idp/magic";
+        assertEquals("https://login-nieuw.test2.surfconext.nl/saml/guest-idp/magic",
+                resolver.rebase(request("https", "login-nieuw.test2.surfconext.nl", 443), magic));
+        assertEquals(magic, resolver.rebase(request("https", "login.test2.surfconext.nl", 443), magic));
+    }
 }

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.net.URI;
 
 /**
@@ -34,6 +36,18 @@ public class AccountRedirectResolver {
             return accountRedirectUrl;
         }
         return loginGuiAuthority.equalsIgnoreCase(authority(request)) ? loginGuiRedirectUrl : accountRedirectUrl;
+    }
+
+    /**
+     * Moves a configured absolute URL (e.g. the magic link) to the host of the GUI that handles this request, keeping
+     * its path and query. For the legacy account-gui the URL is returned untouched.
+     */
+    public String rebase(HttpServletRequest request, String url) {
+        if (loginGuiAuthority == null || !StringUtils.hasText(url) || !loginGuiRedirectUrl.equals(resolve(request))) {
+            return url;
+        }
+        URI base = URI.create(loginGuiRedirectUrl);
+        return UriComponentsBuilder.fromUriString(url).scheme(base.getScheme()).host(base.getHost()).port(base.getPort()).build().toUriString();
     }
 
     private String authority(HttpServletRequest request) {
