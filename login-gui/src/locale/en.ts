@@ -17,6 +17,7 @@ const en: AppTranslation = {
             'We couldn’t find a {{productName}} account with this email address. Try another one.',
         descriptionWithService: 'to continue to {{serviceName}}',
         description: 'to continue',
+        useOtherAccount: 'Use another account',
         loading: 'Loading...',
         submit: 'Continue',
         noAccount: "Don't have a {{productName}} yet?",

@@ -17,6 +17,7 @@ const nl: AppTranslation = {
             'We konden geen {{productName}}-account vinden met dit e-mailadres. Probeer een ander adres.',
         descriptionWithService: 'om door te gaan naar {{serviceName}}',
         description: 'om door te gaan',
+        useOtherAccount: 'Gebruik een ander account',
         loading: 'Laden...',
         submit: 'Ga door',
         noAccount: 'Heb je nog geen {{productName}}?',
