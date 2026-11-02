@@ -156,6 +156,7 @@ export default function Login() {
                     <Input
                         id="email"
                         type="email"
+                        autoFocus
                         value={email}
                         onChange={(e) => {
                             setEmail(e.target.value);
