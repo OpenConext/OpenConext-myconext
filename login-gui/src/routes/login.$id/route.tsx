@@ -13,16 +13,11 @@ import {
     Field,
     FieldLabel,
     Input,
-    Item,
-    ItemContent,
-    ItemGroup,
-    ItemMedia,
-    ItemTitle,
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
-import { LoginContainer } from '../../components';
+import { ItemList, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import {
     forgetKnownUser,
@@ -113,48 +108,26 @@ export default function Login() {
     if (knownUser) {
         return (
             <Container serviceName={service?.name}>
-                <ItemGroup>
-                    <Item
-                        variant="outline"
-                        className={styles.item}
-                        render={
-                            <button
-                                type="button"
-                                onClick={() => submitEmail(knownUser)}
-                            />
-                        }
-                    >
-                        <ItemMedia>
-                            <UserCircleIcon aria-hidden />
-                        </ItemMedia>
-                        <ItemContent>
-                            <ItemTitle>{knownUser}</ItemTitle>
-                        </ItemContent>
-                    </Item>
-                    <Item
-                        variant="outline"
-                        className={styles.item}
-                        render={
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    forgetKnownUser();
-                                    setKnownUser(undefined);
-                                    setAccountNotFound(false);
-                                }}
-                            />
-                        }
-                    >
-                        <ItemMedia>
-                            <UserSwitchIcon aria-hidden />
-                        </ItemMedia>
-                        <ItemContent>
-                            <ItemTitle>
-                                {I18n.t('login.useOtherAccount')}
-                            </ItemTitle>
-                        </ItemContent>
-                    </Item>
-                </ItemGroup>
+                <ItemList
+                    items={[
+                        {
+                            key: 'known-user',
+                            icon: UserCircleIcon,
+                            label: knownUser,
+                            onClick: () => submitEmail(knownUser),
+                        },
+                        {
+                            key: 'other-account',
+                            icon: UserSwitchIcon,
+                            label: I18n.t('login.useOtherAccount'),
+                            onClick: () => {
+                                forgetKnownUser();
+                                setKnownUser(undefined);
+                                setAccountNotFound(false);
+                            },
+                        },
+                    ]}
+                />
                 {accountNotFound && (
                     <Alert variant="warning">
                         <WarningDiamondIcon />

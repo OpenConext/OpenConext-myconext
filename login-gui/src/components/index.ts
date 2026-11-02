@@ -4,4 +4,5 @@ export * from './AppFlow/UseAppFooter';
 export * from './Captcha/Captcha';
 export * from './Footer/Footer';
 export * from './Header/Header';
+export * from './ItemList/ItemList';
 export * from './LoginContainer/LoginContainer';
