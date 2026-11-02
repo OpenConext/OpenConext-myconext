@@ -1,7 +1,11 @@
 import { type FC, type ReactNode, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 
-import { WarningDiamondIcon } from '@phosphor-icons/react';
+import {
+    UserCircleIcon,
+    UserSwitchIcon,
+    WarningDiamondIcon,
+} from '@phosphor-icons/react';
 import {
     Alert,
     AlertDescription,
@@ -9,13 +13,24 @@ import {
     Field,
     FieldLabel,
     Input,
+    Item,
+    ItemContent,
+    ItemGroup,
+    ItemMedia,
+    ItemTitle,
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
-import { loginMethodPath, pickLoginMethod } from '../../utils/loginMethods';
+import {
+    forgetKnownUser,
+    getKnownUser,
+    loginMethodPath,
+    pickLoginMethod,
+    rememberKnownUser,
+} from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
 const Footer = () => {
@@ -51,6 +66,7 @@ export default function Login() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
+    const [knownUser, setKnownUser] = useState(getKnownUser);
     const [email, setEmail] = useState('');
     const [accountNotFound, setAccountNotFound] = useState(false);
 
@@ -62,7 +78,8 @@ export default function Login() {
 
     const { mutate: submitEmail, isPending } = useMutation({
         mutationFn: (email: string) => fetchLoginMethods(email),
-        onSuccess: (methods) => {
+        onSuccess: (methods, email) => {
+            rememberKnownUser(email);
             const method = pickLoginMethod(
                 methods,
                 searchParams.has('magicLink'),
@@ -73,8 +90,13 @@ export default function Login() {
                 navigate(loginMethodPath(method, id), { state: { email } });
             }
         },
-        onError: (error) => {
+        onError: (error, submittedEmail) => {
             if (error instanceof Response && error.status === 404) {
+                // A stale remembered account would otherwise dead-end the user.
+                if (submittedEmail === knownUser) {
+                    forgetKnownUser();
+                    setKnownUser(undefined);
+                }
                 setAccountNotFound(true);
             }
         },
@@ -84,6 +106,63 @@ export default function Login() {
         return (
             <Container serviceName={service?.name}>
                 {I18n.t('login.loading')}
+            </Container>
+        );
+    }
+
+    if (knownUser) {
+        return (
+            <Container serviceName={service?.name}>
+                <ItemGroup>
+                    <Item
+                        variant="outline"
+                        className={styles.item}
+                        render={
+                            <button
+                                type="button"
+                                onClick={() => submitEmail(knownUser)}
+                            />
+                        }
+                    >
+                        <ItemMedia>
+                            <UserCircleIcon aria-hidden />
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>{knownUser}</ItemTitle>
+                        </ItemContent>
+                    </Item>
+                    <Item
+                        variant="outline"
+                        className={styles.item}
+                        render={
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    forgetKnownUser();
+                                    setKnownUser(undefined);
+                                    setAccountNotFound(false);
+                                }}
+                            />
+                        }
+                    >
+                        <ItemMedia>
+                            <UserSwitchIcon aria-hidden />
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>
+                                {I18n.t('login.useOtherAccount')}
+                            </ItemTitle>
+                        </ItemContent>
+                    </Item>
+                </ItemGroup>
+                {accountNotFound && (
+                    <Alert variant="warning">
+                        <WarningDiamondIcon />
+                        <AlertDescription>
+                            {I18n.t('login.accountNotFound')}
+                        </AlertDescription>
+                    </Alert>
+                )}
             </Container>
         );
     }

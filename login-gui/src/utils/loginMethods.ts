@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 
 export const LOGIN_PREFERENCE_COOKIE = 'login_preference';
+export const USERNAME_COOKIE = 'username';
 
 export type LoginMethod = 'useApp' | 'useWebAuthn' | 'useCode' | 'usePassword';
 
@@ -56,4 +57,19 @@ export const pickLoginMethod = (
     }
 
     return available[0];
+};
+
+export const getKnownUser = (): string | undefined =>
+    Cookies.get(USERNAME_COOKIE) || undefined;
+
+export const rememberKnownUser = (email: string): void => {
+    Cookies.set(USERNAME_COOKIE, email, {
+        expires: 365,
+        secure: true,
+        sameSite: 'Lax',
+    });
+};
+
+export const forgetKnownUser = (): void => {
+    Cookies.remove(USERNAME_COOKIE);
 };
