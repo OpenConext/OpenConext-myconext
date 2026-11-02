@@ -46,6 +46,10 @@
 .header {
     padding-bottom: var(--card-spacing);
     text-align: center;
+
+    &[data-align='start'] {
+        text-align: start;
+    }
 }
 
 .title {

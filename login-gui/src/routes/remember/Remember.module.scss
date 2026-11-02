@@ -1,0 +1,18 @@
+@use '../../styles/spacing' as *;
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: spacing(4);
+    width: 100%;
+}
+
+.secondary {
+    flex: 0 0 auto;
+}
+
+.primary {
+    flex: 1 1 0;
+    min-width: 0;
+}

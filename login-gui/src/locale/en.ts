@@ -37,6 +37,13 @@ const en: AppTranslation = {
         info: 'We have also sent you a confirmation email.',
         next: 'Next',
     },
+    remember: {
+        title: 'Stay signed in?',
+        info: "You won't need to log in again next time. Only do this on a device you don't share with others.",
+        yes: 'Yes, stay signed in',
+        no: 'No, not needed',
+        error: 'Something went wrong. Please try again.',
+    },
     codeScreen: {
         title: 'Log in with {{productName}}',
         description: 'Enter the code sent to {{email}}',

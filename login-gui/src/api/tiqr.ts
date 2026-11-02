@@ -34,6 +34,12 @@ export const tiqrPollAuthentication = (
         `/tiqr/poll-authentication?sessionKey=${encodeURIComponent(sessionKey)}&id=${encodeURIComponent(authenticationRequestId)}`,
     );
 
+export const rememberMe = (hash: string) =>
+    apiFetch('/tiqr/remember-me', {
+        method: 'PUT',
+        body: { hash },
+    });
+
 export const tiqrManualResponse = (sessionKey: string, response: string) =>
     apiFetch('/tiqr/manual-response', {
         method: 'POST',

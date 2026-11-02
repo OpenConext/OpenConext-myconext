@@ -37,6 +37,13 @@ const nl: AppTranslation = {
         info: 'We hebben je ook een bevestigingsmail gestuurd.',
         next: 'Volgende',
     },
+    remember: {
+        title: 'Ingelogd blijven?',
+        info: 'Je hoeft de volgende keer niet opnieuw in te loggen. Doe dit alleen op een apparaat dat je niet met anderen deelt.',
+        yes: 'Ja, ingelogd blijven',
+        no: 'Nee, niet nodig',
+        error: 'Er is iets misgegaan. Probeer het opnieuw.',
+    },
     codeScreen: {
         title: 'Log in met {{productName}}',
         description: 'Vul de code in die je hebt ontvangen op {{email}}',

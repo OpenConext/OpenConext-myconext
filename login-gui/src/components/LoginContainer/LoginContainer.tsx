@@ -19,6 +19,7 @@ interface LoginContainerProps {
     footer?: ReactNode;
     onBack?: () => void;
     backLabel?: string;
+    headerAlign?: 'start' | 'center';
 }
 
 export const LoginContainer = ({
@@ -28,6 +29,7 @@ export const LoginContainer = ({
     footer,
     onBack,
     backLabel,
+    headerAlign = 'center',
 }: LoginContainerProps) => (
     <div className={styles.container}>
         <div className={styles.inner}>
@@ -44,7 +46,10 @@ export const LoginContainer = ({
                 </Button>
             </div>
             <Card className={styles.card}>
-                <CardHeader className={styles.header}>
+                <CardHeader
+                    className={styles.header}
+                    data-align={headerAlign}
+                >
                     <CardTitle className={styles.title}>
                         <h1>{title}</h1>
                     </CardTitle>
