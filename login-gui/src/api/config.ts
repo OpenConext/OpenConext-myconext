@@ -4,6 +4,7 @@ export type Config = {
     isAuthenticated: boolean;
     loginUrl: string;
     magicLinkUrl: string;
+    baseDomain: string;
     captchaEnabled: boolean;
     captchaSiteKey: string;
     [key: string]: unknown;

@@ -44,6 +44,11 @@ const en: AppTranslation = {
         no: 'No, not needed',
         error: 'Something went wrong. Please try again.',
     },
+    expired: {
+        title: 'Your code is invalid',
+        info: 'The code you used is either expired or has already been used.',
+        back: 'Go to eduid.nl',
+    },
     codeScreen: {
         title: 'Log in with {{productName}}',
         description: 'Enter the code sent to {{email}}',

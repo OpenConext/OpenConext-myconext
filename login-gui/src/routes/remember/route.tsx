@@ -41,11 +41,8 @@ export default function Remember() {
     };
 
     return (
-        <LoginContainer
-            title={I18n.t('remember.title')}
-            description={I18n.t('remember.info')}
-            headerAlign="start"
-        >
+        <LoginContainer title={I18n.t('remember.title')} headerAlign="center">
+            <p className={styles.info}>{I18n.t('remember.info')}</p>
             {isError && <p role="alert">{I18n.t('remember.error')}</p>}
             <div className={styles.actions}>
                 <Button

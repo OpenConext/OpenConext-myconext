@@ -1,5 +1,11 @@
 @use '../../styles/spacing' as *;
 
+.info {
+    color: var(--muted-foreground);
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+}
+
 .actions {
     display: flex;
     flex-direction: row;

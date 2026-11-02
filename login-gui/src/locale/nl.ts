@@ -44,6 +44,11 @@ const nl: AppTranslation = {
         no: 'Nee, niet nodig',
         error: 'Er is iets misgegaan. Probeer het opnieuw.',
     },
+    expired: {
+        title: 'Je code is niet geldig',
+        info: 'De code die je hebt gebruikt, is verlopen of al een keer gebruikt.',
+        back: 'Ga naar eduid.nl',
+    },
     codeScreen: {
         title: 'Log in met {{productName}}',
         description: 'Vul de code in die je hebt ontvangen op {{email}}',
