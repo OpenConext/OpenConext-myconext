@@ -105,6 +105,7 @@ const en: AppTranslation = {
         timeOutRetry: 'Try again',
         noAccess: "Can't access the app?",
         reRegister: 'Re-register the app',
+        reRegisterUrl: 'https://eduid.nl/help',
         or: 'or',
         otherMethod: 'use another login method',
     },

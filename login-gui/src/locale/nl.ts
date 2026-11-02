@@ -105,6 +105,7 @@ const nl: AppTranslation = {
         timeOutRetry: 'Probeer het opnieuw',
         noAccess: 'Geen toegang tot de app?',
         reRegister: 'Registreer de app opnieuw',
+        reRegisterUrl: 'https://eduid.nl/help',
         or: 'of',
         otherMethod: 'gebruik een andere inlogmethode',
     },
