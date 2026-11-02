@@ -93,6 +93,7 @@ export default function UseWebAuthn() {
                 <Button
                     type="button"
                     disabled={isPending || isSuccess}
+                    autoFocus
                     onClick={() => startAuthentication()}
                 >
                     {I18n.t('webAuthn.submit')}
