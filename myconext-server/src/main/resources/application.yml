@@ -89,6 +89,7 @@ my_gui_base_path: http://localhost:8081
 servicedesk_base_path: http://localhost:8081
 continue_after_login_url: http://localhost:8081/saml/guest-idp/continue
 account_redirect_url: http://localhost:3000
+login_gui_redirect_url: http://localhost:3004
 account_id: localhost
 account_origin: http://localhost:3000
 myconext_redirect_url: http://localhost:3001
