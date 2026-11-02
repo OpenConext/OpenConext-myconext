@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import Cookies from 'js-cookie';
-
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
@@ -10,7 +8,7 @@ import {
     tiqrPollAuthentication,
     tiqrStartAuthentication,
 } from '../api';
-import { LOGIN_PREFERENCE_COOKIE } from '../utils/loginMethods';
+import { rememberLoginMethod } from '../utils/loginMethods';
 
 export type TiqrFlow =
     | { phase: 'loading' }
@@ -24,8 +22,6 @@ export type TiqrFlow =
 
 const POLL_INTERVAL_MS = 1000;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const LOGIN_PREFERENCE_APP = 'useApp';
-
 // The server returns epoch milliseconds, or epoch seconds in some code paths
 // (TiqrController); the latter lands in the past and yields 0 ("try again").
 const toSuspendedMinutes = ({
@@ -51,11 +47,7 @@ const toPollResult = (poll: TiqrPollResponse): PollResult => ({
 });
 
 const completeLogin = (redirect: string, hash: string): void => {
-    Cookies.set(LOGIN_PREFERENCE_COOKIE, LOGIN_PREFERENCE_APP, {
-        expires: 365,
-        secure: true,
-        sameSite: 'Lax',
-    });
+    rememberLoginMethod('useApp');
     window.location.href = `${redirect}?h=${encodeURIComponent(hash)}`;
 };
 

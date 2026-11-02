@@ -12,6 +12,7 @@ import {
 } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
 export default function UseWebAuthn() {
@@ -44,7 +45,10 @@ export default function UseWebAuthn() {
                 id,
             );
         },
-        onSuccess: ({ url }) => (window.location.href = url),
+        onSuccess: ({ url }) => {
+            rememberLoginMethod('useWebAuthn');
+            window.location.href = url;
+        },
     });
 
     if (!email) {
