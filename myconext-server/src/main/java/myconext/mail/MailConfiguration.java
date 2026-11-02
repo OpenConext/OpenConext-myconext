@@ -76,7 +76,8 @@ public class MailConfiguration {
                 errorEmail,
                 supportEmail,
                 () -> guiRedirectResolver.select(mySURFconextURL, myGuiURL),
-                loginSURFconextURL,
+                // mobile links open the client/mobile page of account-gui; login-gui does not have it yet
+                () -> loginSURFconextURL,
                 objectMapper,
                 mailTemplatesDirectory,
                 emailsSendRepository,

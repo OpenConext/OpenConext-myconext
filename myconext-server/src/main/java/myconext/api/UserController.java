@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import myconext.security.AccountRedirectResolver;
 import myconext.security.GuiRedirectResolver;
 import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
@@ -93,6 +94,7 @@ public class UserController implements UserAuthentication {
     private final Manage manage;
     private final OpenIDConnect openIDConnect;
     private final String magicLinkUrl;
+    private final AccountRedirectResolver accountRedirectResolver;
     private final String schacHomeOrganization;
     private final String accountRedirectUrl;
     private final RelyingParty relyingParty;
@@ -147,7 +149,8 @@ public class UserController implements UserAuthentication {
                           @Value("${verify.issuers_path}") Resource issuersResource,
                           ServicesConfiguration servicesConfiguration,
                           ActivityRecorder activityRecorder,
-                          GuiRedirectResolver guiRedirectResolver) throws IOException {
+                          GuiRedirectResolver guiRedirectResolver,
+                          AccountRedirectResolver accountRedirectResolver) throws IOException {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
@@ -163,6 +166,7 @@ public class UserController implements UserAuthentication {
         this.objectMapper = objectMapper;
         this.captchaVerifier = captchaVerifier;
         this.magicLinkUrl = magicLinkUrl;
+        this.accountRedirectResolver = accountRedirectResolver;
         this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
         this.accountRedirectUrl = accountRedirectUrl;
         this.guiRedirectResolver = guiRedirectResolver;
@@ -395,10 +399,10 @@ public class UserController implements UserAuthentication {
                         (int) (Math.log(delay / 1000) / Math.log(2))));
                 String url;
                 if (samlAuthenticationRequest != null) {
-                    url = this.magicLinkUrl + "?h=" + hash;
+                    url = accountRedirectResolver.rebase(this.magicLinkUrl) + "?h=" + hash;
                 } else {
                     //Mobile app
-                    url = this.accountRedirectUrl + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
+                    url = accountRedirectResolver.rebase(this.accountRedirectUrl) + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
                 }
                 return ResponseEntity.status(201).body(Map.of("url", url, "email", user.getEmail()));
             }
@@ -483,7 +487,7 @@ public class UserController implements UserAuthentication {
         User user = doCreateEduIDAccount(createAccount);
 
         String inAppPath = inAppIndicator ? "/in-app" : "";
-        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", this.accountRedirectUrl, inAppPath);
+        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", accountRedirectResolver.rebase(this.accountRedirectUrl), inAppPath);
         mailBox.sendAccountVerificationMobileAPI(user, user.getCreateFromInstitutionKey(), linkUrl);
 
         logWithContext(user, "create", "user", LOG, "Create user in mobile API");
@@ -1096,7 +1100,7 @@ public class UserController implements UserAuthentication {
         String email = URLEncoder.encode(user.getEmail(), Charset.defaultCharset().name());
 
         String loginUrl = String.format("%s/webauthnTest/%s?name=Test-webAuthn&email=%s&testWebAuthn=true",
-                accountRedirectUrl, samlAuthenticationRequest.getId(), email);
+                accountRedirectResolver.rebase(accountRedirectUrl), samlAuthenticationRequest.getId(), email);
         return ResponseEntity.status(200).body(Collections.singletonMap("url", loginUrl));
     }
 
@@ -1526,7 +1530,7 @@ public class UserController implements UserAuthentication {
 
         if (passwordOrWebAuthnFlow) {
             LOG.debug(String.format("Returning login hash for passwordFlow for existing user %s", user.getUsername()));
-            String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+            String url = accountRedirectResolver.rebase(this.magicLinkUrl) + "?h=" + samlAuthenticationRequest.getHash();
             return ResponseEntity.status(201).body(Map.of("url", url));
         }
         OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();

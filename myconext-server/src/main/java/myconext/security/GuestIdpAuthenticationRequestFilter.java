@@ -263,6 +263,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
         // Use the returned instance for further operations as the save operation has added the _id
         samlAuthenticationRequest.setServiceName(serviceName);
+        //Remember the GUI for callbacks from external parties, that do not arrive on the host of the GUI
+        samlAuthenticationRequest.setGuiRedirectUrl(accountRedirectResolver.resolve(request));
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
         if (previousAuthenticatedUser != null && !authnRequest.isForceAuthn()) {

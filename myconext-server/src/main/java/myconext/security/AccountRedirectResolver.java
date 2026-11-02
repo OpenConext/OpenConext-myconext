@@ -1,10 +1,14 @@
 package myconext.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import myconext.model.SamlAuthenticationRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -46,8 +50,51 @@ public class AccountRedirectResolver {
         if (loginGuiAuthority == null || !StringUtils.hasText(url) || !loginGuiRedirectUrl.equals(resolve(request))) {
             return url;
         }
+        return moveToLoginGui(url);
+    }
+
+    /**
+     * The account GUI that started the given login flow, as remembered in {@link SamlAuthenticationRequest#getGuiRedirectUrl()}.
+     * For callbacks from external parties, that arrive on the host registered with them and not on the host of the GUI.
+     * Only one of the two configured URLs is returned, whatever is stored.
+     */
+    public String resolve(SamlAuthenticationRequest samlAuthenticationRequest) {
+        return isLoginGui(samlAuthenticationRequest) ? loginGuiRedirectUrl : accountRedirectUrl;
+    }
+
+    public String rebase(SamlAuthenticationRequest samlAuthenticationRequest, String url) {
+        return isLoginGui(samlAuthenticationRequest) && StringUtils.hasText(url) ? moveToLoginGui(url) : url;
+    }
+
+    /**
+     * A short marker of the GUI of this request to carry in the OIDC 'state' of flows, for callbacks that can not find
+     * the flow (expired) or are an error response from the other party.
+     */
+    public String marker(HttpServletRequest request) {
+        return loginGuiRedirectUrl != null && loginGuiRedirectUrl.equals(resolve(request)) ? "login" : "account";
+    }
+
+    public String resolveMarker(String marker) {
+        return loginGuiAuthority != null && "login".equals(marker) ? loginGuiRedirectUrl : accountRedirectUrl;
+    }
+
+    private boolean isLoginGui(SamlAuthenticationRequest samlAuthenticationRequest) {
+        return loginGuiAuthority != null && loginGuiRedirectUrl.equals(samlAuthenticationRequest.getGuiRedirectUrl());
+    }
+
+    private String moveToLoginGui(String url) {
         URI base = URI.create(loginGuiRedirectUrl);
         return UriComponentsBuilder.fromUriString(url).scheme(base.getScheme()).host(base.getHost()).port(base.getPort()).build().toUriString();
+    }
+
+    /**
+     * Same as {@link #rebase(HttpServletRequest, String)} for the request bound to the current thread. Outside a
+     * request (e.g. scheduled jobs) the URL is returned untouched.
+     */
+    public String rebase(String url) {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        return attributes instanceof ServletRequestAttributes servletRequestAttributes ?
+                rebase(servletRequestAttributes.getRequest(), url) : url;
     }
 
     private String authority(HttpServletRequest request) {

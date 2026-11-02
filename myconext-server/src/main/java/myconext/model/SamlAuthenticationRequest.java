@@ -74,7 +74,8 @@ public class SamlAuthenticationRequest implements Serializable {
 
     private boolean testInstance;
 
-    //The GUI base url that started the test passkey flow, as that flow finishes on the login host without our session
+    //The GUI base url that started the flow, as flows can finish on another host without our session: the test passkey
+    //flow (myconext GUI) or a login flow (account-gui or login-gui)
     @Setter
     private String guiRedirectUrl;
 

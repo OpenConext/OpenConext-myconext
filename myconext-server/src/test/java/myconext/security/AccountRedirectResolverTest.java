@@ -1,5 +1,6 @@
 package myconext.security;
 
+import myconext.model.SamlAuthenticationRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -52,5 +53,29 @@ class AccountRedirectResolverTest {
         assertEquals("https://login-nieuw.test2.surfconext.nl/saml/guest-idp/magic",
                 resolver.rebase(request("https", "login-nieuw.test2.surfconext.nl", 443), magic));
         assertEquals(magic, resolver.rebase(request("https", "login.test2.surfconext.nl", 443), magic));
+    }
+
+    @Test
+    void savedGuiOfFlow() {
+        SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest();
+        String magic = "https://login.test2.surfconext.nl/saml/guest-idp/magic";
+        assertEquals("https://login.test2.surfconext.nl", resolver.resolve(samlAuthenticationRequest));
+        assertEquals(magic, resolver.rebase(samlAuthenticationRequest, magic));
+
+        samlAuthenticationRequest.setGuiRedirectUrl("https://login-nieuw.test2.surfconext.nl");
+        assertEquals("https://login-nieuw.test2.surfconext.nl", resolver.resolve(samlAuthenticationRequest));
+        assertEquals("https://login-nieuw.test2.surfconext.nl/saml/guest-idp/magic", resolver.rebase(samlAuthenticationRequest, magic));
+
+        samlAuthenticationRequest.setGuiRedirectUrl("https://evil.example.com");
+        assertEquals("https://login.test2.surfconext.nl", resolver.resolve(samlAuthenticationRequest));
+    }
+
+    @Test
+    void marker() {
+        assertEquals("login", resolver.marker(request("https", "login-nieuw.test2.surfconext.nl", 443)));
+        assertEquals("account", resolver.marker(request("https", "login.test2.surfconext.nl", 443)));
+        assertEquals("https://login-nieuw.test2.surfconext.nl", resolver.resolveMarker("login"));
+        assertEquals("https://login.test2.surfconext.nl", resolver.resolveMarker("evil"));
+        assertEquals("https://login.test2.surfconext.nl", resolver.resolveMarker(null));
     }
 }

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import myconext.security.AccountRedirectResolver;
 import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
 import myconext.exceptions.ExpiredAuthenticationException;
@@ -70,6 +71,7 @@ public class TiqrController implements UserAuthentication {
     private final Manage serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
+    private final AccountRedirectResolver accountRedirectResolver;
     private final RegistrationRepository registrationRepository;
     private final RateLimitEnforcer rateLimitEnforcer;
     private final CookieValueEncoder cookieValueEncoder;
@@ -87,6 +89,7 @@ public class TiqrController implements UserAuthentication {
                           SMSService smsService,
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
+                          AccountRedirectResolver accountRedirectResolver,
                           @Value("${myconext_service_name}") String myconextServiceName,
                           CookieValueEncoder cookieValueEncoder,
                           ActivityRecorder activityRecorder) throws IOException {
@@ -120,6 +123,7 @@ public class TiqrController implements UserAuthentication {
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.magicLinkUrl = magicLinkUrl;
+        this.accountRedirectResolver = accountRedirectResolver;
         this.myconextServiceName = myconextServiceName;
         this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
     }
@@ -261,7 +265,7 @@ public class TiqrController implements UserAuthentication {
         if (!regenerateSpFlow) {
             tiqrService.finishRegistration(user.getId());
         }
-        return ResponseEntity.ok(new GeneratedBackupCode(this.magicLinkUrl, recoveryCode));
+        return ResponseEntity.ok(new GeneratedBackupCode(accountRedirectResolver.rebase(this.magicLinkUrl), recoveryCode));
     }
 
     @Operation(summary = "Send phone code", description = "Send a verification code to mobile phone for a finished authentication")
@@ -408,7 +412,7 @@ public class TiqrController implements UserAuthentication {
         } else {
             throw new ForbiddenException("Wrong phone code, wrong code: " + code);
         }
-        return ResponseEntity.ok(new VerifyPhoneCode(this.magicLinkUrl));
+        return ResponseEntity.ok(new VerifyPhoneCode(accountRedirectResolver.rebase(this.magicLinkUrl)));
     }
 
     @Operation(summary = "Start authentication", description = "Start Tiqr authentication for current user")
@@ -522,7 +526,7 @@ public class TiqrController implements UserAuthentication {
                 samlAuthenticationRequest.setUserId(userID);
                 authenticationRequestRepository.save(samlAuthenticationRequest);
 
-                pollAuthenticationResult.setRedirect(this.magicLinkUrl);
+                pollAuthenticationResult.setRedirect(accountRedirectResolver.rebase(this.magicLinkUrl));
                 pollAuthenticationResult.setHash(samlAuthenticationRequest.getHash());
             });
         } else if (status.equals(AuthenticationStatus.SUSPENDED)) {

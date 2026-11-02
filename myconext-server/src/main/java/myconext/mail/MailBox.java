@@ -36,7 +36,7 @@ public class MailBox {
 
     private final JavaMailSender mailSender;
     private final Supplier<String> mySURFconextURL;
-    private final String loginSURFconextURL;
+    private final Supplier<String> loginSURFconextURL;
     private final String emailFromDeprovisioning;
     private final String emailFromCode;
     private final String emailFromAppNudge;
@@ -63,7 +63,7 @@ public class MailBox {
                    String errorEmail,
                    String supportEmail,
                    Supplier<String> mySURFconextURL,
-                   String loginSURFconextURL,
+                   Supplier<String> loginSURFconextURL,
                    ObjectMapper objectMapper,
                    Resource mailTemplatesDirectory,
                    EmailsSendRepository emailsSendRepository,
@@ -161,7 +161,7 @@ public class MailBox {
     public void sendResetPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("reset_password", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL.get() : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
@@ -184,7 +184,7 @@ public class MailBox {
     public void sendAddPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("add_password", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL.get() : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("add_password", title, variables, preferredLanguage(user), user.getEmail(), false);
@@ -209,7 +209,7 @@ public class MailBox {
     public void sendUpdateEmail(User user, String newMail, String hash, boolean mobileRequest) {
         String title = this.getTitle("update_email", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL.get() : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("update_email", title, variables, preferredLanguage(user), newMail, false);
@@ -220,7 +220,7 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("oldEmail", oldEmail);
         variables.put("newEmail", newEmail);
-        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL());
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL.get() : mySURFconextURL());
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), oldEmail, false);
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail, false);
