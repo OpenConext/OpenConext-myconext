@@ -97,7 +97,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final PathPatternRequestMatcher magicSamlRequestMatcher;
     private final PathPatternRequestMatcher continueAfterLoginSamlRequestMatcher;
     private final PathPatternRequestMatcher metaDataSamlRequestMatcher;
-    private final String redirectUrl;
+    private final AccountRedirectResolver accountRedirectResolver;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final IdentityProviderMetaData identityProviderMetaData;
     private final SecurityContextRepository securityContextRepository;
@@ -131,7 +131,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final DefaultSAMLService samlService;
     private final CookieValueEncoder cookieValueEncoder;
 
-    public GuestIdpAuthenticationRequestFilter(String redirectUrl,
+    public GuestIdpAuthenticationRequestFilter(AccountRedirectResolver accountRedirectResolver,
                                                Manage manage,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
@@ -163,7 +163,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.magicSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/magic/**");
         this.continueAfterLoginSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/continue/**");
         this.metaDataSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/metadata/**");
-        this.redirectUrl = redirectUrl;
+        this.accountRedirectResolver = accountRedirectResolver;
         this.manage = manage;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
@@ -286,7 +286,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         redirect = "/" + loginOptions.getFirst().toLowerCase() + "/";
                     }
                 }
-                String location = this.redirectUrl + redirect + samlAuthenticationRequest.getId()
+                String location = accountRedirectResolver.resolve(request) + redirect + samlAuthenticationRequest.getId()
                         + "?explanation=" + explanation + mfa;
                 response.sendRedirect(location);
             } else {
@@ -303,7 +303,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             String preferMagicLink = this.nudgeMagicLink(authnRequest) ? "&magicLink=true" : "";
             String separator = (accountLinkingRequired || mfaProfileRequired || StringUtils.hasText(preferMagicLink)) ? "?n=1" : "";
             String path = optionalCookie.map(c -> "/request/").orElse("/login/");
-            String location = this.redirectUrl + path + samlAuthenticationRequest.getId() +
+            String location = accountRedirectResolver.resolve(request) + path + samlAuthenticationRequest.getId() +
                     separator + stepUp + mfa + preferMagicLink;
 
             //Remove register cookie, as it has served its purpose
@@ -455,12 +455,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     .collect(toMap(headerName -> headerName, request::getHeader));
             LOG.warn("Magic endpoint without 'h' parameter. Headers: " + headerMap);
 
-            response.sendRedirect(this.redirectUrl + "/expired");
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/expired");
             return;
         }
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByHash(hash);
         if (optionalSamlAuthenticationRequest.isEmpty()) {
-            response.sendRedirect(this.redirectUrl + "/expired");
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/expired");
             return;
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
@@ -478,12 +478,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
         String force = request.getParameter("force");
         if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp()) && !StringUtils.hasText(force)) {
-            response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId()
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/stepup/" + samlAuthenticationRequest.getId()
                     + "?explanation=" + explanation);
             return;
         }
         if (samlAuthenticationRequest.isMfaProfileRequired() && !samlAuthenticationRequest.isTiqrFlow() && !StringUtils.hasText(force)) {
-            response.sendRedirect(this.redirectUrl + "/app-required?h=" + hash +
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/app-required?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet));
             return;
         }
@@ -493,11 +493,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
             samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
             if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {
-                response.sendRedirect(this.redirectUrl + "/max-attempts");
+                response.sendRedirect(accountRedirectResolver.resolve(request) + "/max-attempts");
                 return;
             }
             mailBox.sendVerificationCode(user, samlAuthenticationRequest.getVerificationCode());
-            response.sendRedirect(this.redirectUrl + "/success");
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/success");
             return;
         }
 
@@ -554,7 +554,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 return true;
             }
             //we don't redirect the user to the nudge app page anymore
-            String url = this.redirectUrl + "/request-success?h=" + hash +
+            String url = accountRedirectResolver.resolve(request) + "/request-success?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
             response.sendRedirect(url);
             return false;
@@ -566,7 +566,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             }
             boolean externalNameValidation = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES_EXTERNAL);
             String path = externalNameValidation ? "confirm-external-stepup" : "confirm-stepup";
-            response.sendRedirect(this.redirectUrl + "/" + path + "?h=" + hash +
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/" + path + "?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&explanation=" + explanation +
                     "&ref=" + user.getId());
@@ -578,7 +578,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             userRepository.save(user);
 
             //Nudge user to use the app
-            String url = this.redirectUrl + "/confirm?h=" + hash +
+            String url = accountRedirectResolver.resolve(request) + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&new=false";
             response.sendRedirect(url);
@@ -590,7 +590,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 return true;
             }
             addRememberMeQuestionAskedCookie(response);
-            String url = this.redirectUrl + "/remember?h=" + hash +
+            String url = accountRedirectResolver.resolve(request) + "/remember?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
             response.sendRedirect(url);
             return false;
@@ -602,14 +602,14 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String id = request.getParameter("id");
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
         if (optionalSamlAuthenticationRequest.isEmpty()) {
-            response.sendRedirect(this.redirectUrl + "/expired");
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/expired");
             return;
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String verificationCode = request.getParameter("verificationCode");
         if (!StringUtils.hasText(verificationCode) || !verificationCode.equals(samlAuthenticationRequest.getVerificationCode())) {
             if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {
-                response.sendRedirect(this.redirectUrl + "/max-attempts");
+                response.sendRedirect(accountRedirectResolver.resolve(request) + "/max-attempts");
                 return;
             }
             String currentUrl = URLDecoder.decode(request.getParameter("currentUrl"), Charset.defaultCharset());
@@ -617,7 +617,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return;
         }
         if (samlAuthenticationRequest.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {
-            response.sendRedirect(this.redirectUrl + "/expired");
+            response.sendRedirect(accountRedirectResolver.resolve(request) + "/expired");
             return;
         }
         String userId = samlAuthenticationRequest.getUserId();

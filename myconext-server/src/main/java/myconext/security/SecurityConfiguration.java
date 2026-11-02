@@ -101,7 +101,7 @@ public class SecurityConfiguration {
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
                             @Value("${account_metadata_url}") String accountMetadataUrl,
-                            @Value("${account_redirect_url}") String accountRedirectUrl,
+                            AccountRedirectResolver accountRedirectResolver,
                             @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                             @Value("${tiqr_trust_for_pn_max_age_seconds}") int tiqrCookieMaxAge,
                             @Value("${nudge_eduid_app_login_days}") int nudgeAppDays,
@@ -171,7 +171,7 @@ public class SecurityConfiguration {
                     requiresSignedAuthnRequest
             );
             this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
-                    accountRedirectUrl,
+                    accountRedirectResolver,
                     serviceProviderResolver,
                     authenticationRequestRepository,
                     userRepository,
