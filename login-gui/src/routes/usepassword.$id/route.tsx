@@ -15,6 +15,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchServiceName, passwordLoginRequest } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
 const Container: FC<{
@@ -61,7 +62,10 @@ export default function UsePassword() {
     } = useMutation({
         mutationFn: (password: string) =>
             passwordLoginRequest(email, password, id),
-        onSuccess: ({ url }) => (window.location.href = url),
+        onSuccess: ({ url }) => {
+            rememberLoginMethod('usePassword');
+            window.location.href = url;
+        },
         onError: (error) => {
             if (error instanceof Response && error.status === 403) {
                 setIncorrect(true);

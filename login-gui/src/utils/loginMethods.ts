@@ -11,6 +11,14 @@ const METHOD_ROUTES: Record<LoginMethod, string> = {
     usePassword: 'usepassword',
 };
 
+export const rememberLoginMethod = (method: LoginMethod): void => {
+    Cookies.set(LOGIN_PREFERENCE_COOKIE, method, {
+        expires: 365,
+        secure: true,
+        sameSite: 'Lax',
+    });
+};
+
 export const isLoginMethod = (key: string): key is LoginMethod =>
     key in METHOD_ROUTES;
 

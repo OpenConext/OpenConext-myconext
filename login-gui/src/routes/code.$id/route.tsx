@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
 
 const Container: FC<{
@@ -65,7 +66,10 @@ export default function Code() {
         isError: verifyFailed,
     } = useMutation({
         mutationFn: (code: string) => verifyCodeRequest(code, id),
-        onSuccess: ({ url }) => (window.location.href = url),
+        onSuccess: ({ url }) => {
+            rememberLoginMethod('useCode');
+            window.location.href = url;
+        },
     });
 
     const footer = (
