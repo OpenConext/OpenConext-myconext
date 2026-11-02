@@ -5,7 +5,8 @@
     text-align: left;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:focus {
         background: var(--muted);
     }
 }
