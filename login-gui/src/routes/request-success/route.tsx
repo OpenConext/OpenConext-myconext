@@ -3,17 +3,14 @@ import { Navigate, useSearchParams } from 'react-router';
 import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig } from '../../api';
+import { configQueryOptions } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import { getProceedUrl } from '../../utils/sso.ts';
 
 export default function RequestSuccess() {
     const [searchParams] = useSearchParams();
-    const { data: config, isPending } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const { data: config, isPending } = useQuery(configQueryOptions);
 
     if (isPending) {
         return null;

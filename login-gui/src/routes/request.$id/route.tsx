@@ -11,7 +11,11 @@ import {
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, fetchServiceName, generateCodeNewUser } from '../../api';
+import {
+    configQueryOptions,
+    fetchServiceName,
+    generateCodeNewUser,
+} from '../../api';
 import { Captcha, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import styles from './route.module.scss';
@@ -46,10 +50,7 @@ export default function Request() {
     const [captchaKey, setCaptchaKey] = useState(0);
     const [captchaResponse, setCaptchaResponse] = useState<string | null>(null);
 
-    const { data: config, isPending } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
-    });
+    const { data: config, isPending } = useQuery(configQueryOptions);
     const captchaSiteKey = config?.captchaEnabled
         ? config.captchaSiteKey
         : undefined;

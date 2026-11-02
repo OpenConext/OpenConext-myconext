@@ -1,3 +1,5 @@
+import { queryOptions } from '@tanstack/react-query';
+
 import { apiFetch } from '../utils/apiFetch.ts';
 
 export type Config = {
@@ -13,3 +15,8 @@ export type Config = {
 
 export const fetchConfig = async (): Promise<Config> =>
     apiFetch<Config>('/config');
+
+export const configQueryOptions = queryOptions({
+    queryKey: ['config'],
+    queryFn: fetchConfig,
+});
