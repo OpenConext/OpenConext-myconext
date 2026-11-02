@@ -8,24 +8,16 @@ import {
     PasswordIcon,
 } from '@phosphor-icons/react';
 import type { IconProps } from '@phosphor-icons/react';
-import {
-    Item,
-    ItemContent,
-    ItemGroup,
-    ItemMedia,
-    ItemTitle,
-} from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods } from '../../api';
-import { LoginContainer } from '../../components';
+import { ItemList, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import {
     type LoginMethod,
     isLoginMethod,
     loginMethodPath,
 } from '../../utils/loginMethods';
-import styles from './route.module.scss';
 
 const OPTION_ICONS: Record<LoginMethod, ComponentType<IconProps>> = {
     useApp: DeviceMobileIcon,
@@ -70,34 +62,14 @@ export default function Options() {
             {isPending && I18n.t('options.loading')}
             {isError && I18n.t('options.error')}
             {methods && (
-                <ItemGroup>
-                    {options.map((option) => {
-                        const Icon = OPTION_ICONS[option];
-
-                        return (
-                            <Item
-                                key={option}
-                                variant="outline"
-                                className={styles.item}
-                                render={
-                                    <button
-                                        type="button"
-                                        onClick={() => selectOption(option)}
-                                    />
-                                }
-                            >
-                                <ItemMedia>
-                                    <Icon aria-hidden />
-                                </ItemMedia>
-                                <ItemContent>
-                                    <ItemTitle>
-                                        {I18n.t(`options.${option}`)}
-                                    </ItemTitle>
-                                </ItemContent>
-                            </Item>
-                        );
-                    })}
-                </ItemGroup>
+                <ItemList
+                    items={options.map((option) => ({
+                        key: option,
+                        icon: OPTION_ICONS[option],
+                        label: I18n.t(`options.${option}`),
+                        onClick: () => selectOption(option),
+                    }))}
+                />
             )}
         </LoginContainer>
     );
