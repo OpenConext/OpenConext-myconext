@@ -27,7 +27,6 @@ export default function AttributeMissing() {
     });
 
     if (!id || isError) {
-        console.log('id is not found or error');
         return <Navigate to="/expired" replace />;
     }
 
@@ -37,7 +36,6 @@ export default function AttributeMissing() {
 
     const proceedUrl = getProceedUrl(searchParams, config?.magicLinkUrl ?? '');
     if (!proceedUrl) {
-        console.log('proceedUrl is not found');
         return <Navigate to="/expired" replace />;
     }
 
