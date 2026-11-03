@@ -33,6 +33,7 @@ export const ActivityList = ({ activities, pageSize }: ActivityListProps) => {
                 {shown.map((activity) => (
                     <Item
                         key={`${activity.event}-${activity.dateTime}`}
+                        render={<li />}
                         className="activity-list__row"
                     >
                         <ItemContent>

@@ -30,6 +30,7 @@ Environment overrides: `E2E_BASE_URL`, `SERVER_URL`, `TIQR_MOCK_URL`, `MAILPIT_U
 - `sms.ts`: `expectSmsCode` reads the last SMS code from the e2e hook of the server.
 - `app.ts`: `enrollApp` activates the app with a backup code or an SMS code.
 - `fixtures.ts`: automatic `user` fixture, restores the seeded users through `/e2e/reset` before every test (the tests change and delete the user).
+- `a11y.ts`: `expectNoA11yViolations` runs axe-core (`@axe-core/playwright`, WCAG 2.x A/AA rules) on the current page and fails with the violated rules and elements. See `accessibility.spec.ts`.
 - `server.ts`: the server URL for the hooks that the dev server does not proxy.
 
 All tests share one user, so they run serially (`workers: 1`).
