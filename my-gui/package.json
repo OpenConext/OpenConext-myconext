@@ -19,7 +19,7 @@
     "dependencies": {
         "@myconext/shared-gui": "*",
         "@phosphor-icons/react": "^2.1.10",
-        "@surfnet/curve-react": "^0.9.0",
+        "@surfnet/curve-react": "^0.10.0",
         "@tanstack/react-query": "^5.105.0",
         "@tanstack/react-query-devtools": "^5.105.0",
         "i18n-js": "^4.5.4",
@@ -50,7 +50,8 @@
         "globals": "^17.12.0",
         "prettier": "^3.9.9",
         "sass-embedded": "^1.105.0",
-        "typescript": "~6.0.2",
+        "typescript": "npm:@typescript/typescript6@^6.0.0",
+        "typescript-7": "npm:typescript@^7.0.0",
         "typescript-eslint": "^8.69.0",
         "vite": "^8.3.3"
     }
