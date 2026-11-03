@@ -135,6 +135,23 @@ const en: AppTranslation = {
         submit: 'Continue',
         footer: "Without an institution account you can't access {{serviceName}}.",
     },
+    confirmStepup: {
+        title: 'Thanks!',
+        conditionMet: 'All conditions are met.',
+        submit: 'Go to {{serviceName}}',
+        explanation: {
+            linked_institution: 'Your eduID is connected to an official party.',
+            validate_names:
+                'Your first name and last name are verified by an official party.',
+            validate_names_external:
+                'Your identity is verified by a trusted party.',
+            affiliation_student:
+                'You have proven that you are following education by connecting your eduID account to an official party.',
+            profile_mfa:
+                'You have successfully logged in using the eduID app with multi-factor authentication.',
+            any_link: 'Your eduID account is linked to a trusted party.',
+        },
+    },
 };
 
 export default en;
