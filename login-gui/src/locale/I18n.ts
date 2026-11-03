@@ -15,7 +15,10 @@ export const tArray = <T>(
     options?: Record<string, string>,
 ): T[] => {
     // The translation lib types `t` as string, but array-valued scopes return string[] at runtime.
-    const items = I18n.t(scope) as unknown as readonly unknown[];
+    const items = I18n.t(scope) as string | string[];
+    if (!Array.isArray(items)) {
+        return [];
+    }
     return items.map((_, i) => mapFn(I18n.t(`${scope}.${i}`, options), i));
 };
 
