@@ -127,6 +127,14 @@ const en: AppTranslation = {
         useCode: 'Get a one-time code by email',
         usePassword: 'Use a password',
     },
+    stepup: {
+        title: 'Almost there',
+        description:
+            'To continue to {{serviceName}}, your eduID must be linked to an institution account.',
+        linkedInstitution: 'Connect your eduID to your institution',
+        submit: 'Continue',
+        footer: "Without an institution account you can't access {{serviceName}}.",
+    },
 };
 
 export default en;

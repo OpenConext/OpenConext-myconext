@@ -127,6 +127,14 @@ const nl: AppTranslation = {
         useCode: 'Ontvang een eenmalige code per e-mail',
         usePassword: 'Gebruik een wachtwoord',
     },
+    stepup: {
+        title: 'Je bent er bijna',
+        description:
+            'Om door te gaan naar {{serviceName}} moet je eduID gekoppeld zijn aan een instellingsaccount.',
+        linkedInstitution: 'Koppel je eduID aan een instelling',
+        submit: 'Ga door',
+        footer: 'Zonder instellingsaccount heb je geen toegang tot {{serviceName}}.',
+    },
 };
 
 export default nl;
