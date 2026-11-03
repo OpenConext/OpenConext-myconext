@@ -10,6 +10,14 @@ const nl: AppTranslation = {
         en: 'Engels',
         nl: 'Nederlands',
     },
+    landing: {
+        title: 'Waar is eduID voor?',
+        description: 'Jouw ID voor een leven lang leren',
+        services: 'Log in bij een groeiend aantal diensten voor onderwijs en onderzoek, als student, medewerker of professional.',
+        career: 'Je eduID blijft met je meegaan tijdens je hele loopbaan, van je studie tot werk en cursussen later in je leven.',
+        control: 'Je hebt altijd volledig inzicht in en controle over je persoonlijke gegevens.',
+        imageAlt: 'Telefoon',
+    },
     login: {
         title: 'Inloggen met {{productName}}',
         email: 'E-mailadres',

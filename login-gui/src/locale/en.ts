@@ -10,6 +10,14 @@ const en: AppTranslation = {
         en: 'English',
         nl: 'Dutch',
     },
+    landing: {
+        title: 'What is eduID for?',
+        description: 'Your ID for lifelong learning',
+        services: "Log in to a growing number of education and research services, whether you're a student, staff member, or professional.",
+        career: 'Your eduID stays with you throughout your entire career, from your studies to work and courses later in life.',
+        control: 'You always have full insight into and control over your personal data.',
+        imageAlt: 'Phone',
+    },
     login: {
         title: 'Log in with {{productName}}',
         email: 'Email address',
