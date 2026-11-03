@@ -4,3 +4,14 @@
     max-height: 200px;
     object-fit: contain;
 }
+
+.more {
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+
+    a {
+        color: var(--primary-strong);
+        font-weight: var(--font-weight-medium);
+        text-decoration: underline;
+    }
+}

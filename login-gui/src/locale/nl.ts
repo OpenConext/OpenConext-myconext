@@ -17,6 +17,7 @@ const nl: AppTranslation = {
         career: 'Je eduID blijft met je meegaan tijdens je hele loopbaan, van je studie tot werk en cursussen later in je leven.',
         control: 'Je hebt altijd volledig inzicht in en controle over je persoonlijke gegevens.',
         imageAlt: 'Telefoon',
+        more: 'Meer over eduID',
     },
     login: {
         title: 'Inloggen met {{productName}}',

@@ -17,6 +17,7 @@ const en: AppTranslation = {
         career: 'Your eduID stays with you throughout your entire career, from your studies to work and courses later in life.',
         control: 'You always have full insight into and control over your personal data.',
         imageAlt: 'Phone',
+        more: 'Learn more about eduID',
     },
     login: {
         title: 'Log in with {{productName}}',
