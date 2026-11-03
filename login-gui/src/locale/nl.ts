@@ -144,6 +144,15 @@ const nl: AppTranslation = {
         submit: 'Ga door',
         footer: 'Zonder instellingsaccount heb je geen toegang tot {{serviceName}}.',
     },
+    attributeMissing: {
+        title: 'Account niet gekoppeld!',
+        info: [
+            'Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.',
+            'Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{serviceName}}.',
+        ],
+        retry: 'Opnieuw proberen',
+        proceed: 'Doorgaan',
+    },
     confirmStepup: {
         title: 'Gelukt!',
         conditionMet: 'Je hebt aan alle voorwaarden voldaan.',

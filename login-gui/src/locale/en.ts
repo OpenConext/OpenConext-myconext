@@ -144,6 +144,15 @@ const en: AppTranslation = {
         submit: 'Continue',
         footer: "Without an institution account you can't access {{serviceName}}.",
     },
+    attributeMissing: {
+        title: 'Account not linked!',
+        info: [
+            'Your eduID could not be linked. The trusted account with which you just logged in did not provide an EPPN.',
+            'You can try to link to another institution or proceed to {{serviceName}}.',
+        ],
+        retry: 'Retry',
+        proceed: 'Proceed',
+    },
     confirmStepup: {
         title: 'Thanks!',
         conditionMet: 'All conditions are met.',
