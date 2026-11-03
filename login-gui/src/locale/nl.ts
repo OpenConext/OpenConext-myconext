@@ -144,6 +144,25 @@ const nl: AppTranslation = {
         submit: 'Ga door',
         footer: 'Zonder instellingsaccount heb je geen toegang tot {{serviceName}}.',
     },
+    confirmStepup: {
+        title: 'Gelukt!',
+        conditionMet: 'Je hebt aan alle voorwaarden voldaan.',
+        submit: 'Ga naar {{serviceName}}',
+        explanation: {
+            linked_institution:
+                'Je eduID is gekoppeld aan een officiële instelling.',
+            validate_names:
+                'Je voornaam en achternaam zijn bevestigd door een officiële instelling.',
+            validate_names_external:
+                'Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.',
+            affiliation_student:
+                'Je hebt aangetoond dat je student bent, doordat je eduID is gekoppeld aan een officiële instelling.',
+            profile_mfa:
+                'Je bent succesvol ingelogd met de eduID app met multi-factor authenticatie.',
+            any_link:
+                'Je eduID-account is gekoppeld aan een vertrouwde partij.',
+        },
+    },
 };
 
 export default nl;
