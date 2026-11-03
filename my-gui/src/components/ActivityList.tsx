@@ -30,9 +30,9 @@ export const ActivityList = ({ activities, pageSize }: ActivityListProps) => {
     return (
         <Card className="activity-list">
             <ItemGroup className="activity-list__group">
-                {shown.map((activity) => (
+                {shown.map((activity, index) => (
                     <Item
-                        key={`${activity.event}-${activity.dateTime}`}
+                        key={`${index}`}
                         render={<li />}
                         className="activity-list__row"
                     >
