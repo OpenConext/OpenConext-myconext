@@ -138,11 +138,19 @@ const nl: AppTranslation = {
     },
     stepup: {
         title: 'Je bent er bijna',
-        description:
-            'Om door te gaan naar {{serviceName}} moet je eduID gekoppeld zijn aan een instellingsaccount.',
-        linkedInstitution: 'Koppel je eduID aan een instelling',
         submit: 'Ga door',
-        footer: 'Zonder instellingsaccount heb je geen toegang tot {{serviceName}}.',
+        linked_institution: {
+            description:
+                'Om door te gaan naar {{serviceName}} moet je eduID gekoppeld zijn aan een instellingsaccount.',
+            alert: 'Koppel je eduID aan een instelling',
+            footer: 'Zonder instellingsaccount heb je geen toegang tot {{serviceName}}.',
+        },
+        affiliation_student: {
+            description:
+                'Om door te gaan naar {{serviceName}} moet je aantonen dat je onderwijs volgt.',
+            alert: 'Je moet aantonen dat je student bent. Dit doe je door je eduID te koppelen aan een officiële instelling.',
+            footer: 'Zonder bewijs dat je onderwijs volgt heb je geen toegang tot {{serviceName}}.',
+        },
     },
     attributeMissing: {
         title: 'Account niet gekoppeld!',

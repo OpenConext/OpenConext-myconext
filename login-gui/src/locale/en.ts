@@ -138,11 +138,19 @@ const en: AppTranslation = {
     },
     stepup: {
         title: 'Almost there',
-        description:
-            'To continue to {{serviceName}}, your eduID must be linked to an institution account.',
-        linkedInstitution: 'Connect your eduID to your institution',
         submit: 'Continue',
-        footer: "Without an institution account you can't access {{serviceName}}.",
+        linked_institution: {
+            description:
+                'To continue to {{serviceName}}, your eduID must be linked to an institution account.',
+            alert: 'Connect your eduID to your institution',
+            footer: "Without an institution account you can't access {{serviceName}}.",
+        },
+        affiliation_student: {
+            description:
+                'To continue to {{serviceName}}, you must prove that you are following education.',
+            alert: 'You must prove that you are following education by connecting your eduID account to an official institution.',
+            footer: "Without proof of enrolment in education you can't access {{serviceName}}.",
+        },
     },
     attributeMissing: {
         title: 'Account not linked!',

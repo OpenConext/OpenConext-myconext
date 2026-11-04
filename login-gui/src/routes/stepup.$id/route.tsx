@@ -9,12 +9,29 @@ import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 
 const LINKED_INSTITUTION = 'linked_institution';
+const AFFILIATION_STUDENT = 'affiliation_student';
+
+// Unused for now
+const VALIDATE_NAMES = 'validate_names';
+const VALIDATE_NAMES_EXTERNAL = 'validate_names_external';
+const PROFILE_MFA = 'profile_mfa';
+const ANY_LINK = 'any_link';
+
+const SUPPORTED_EXPLANATIONS = [LINKED_INSTITUTION, AFFILIATION_STUDENT] as const;
+
+type SupportedExplanation = (typeof SUPPORTED_EXPLANATIONS)[number];
+
+const isSupportedExplanation = (
+    value: string | null,
+): value is SupportedExplanation =>
+    SUPPORTED_EXPLANATIONS.some((explanation) => explanation === value);
 
 export default function Stepup() {
     const { id = '' } = useParams();
     const [searchParams] = useSearchParams();
-    
-    const isSupported = searchParams.get('explanation') === LINKED_INSTITUTION;
+
+    const explanationParam = searchParams.get('explanation');
+    const isSupported = isSupportedExplanation(explanationParam);
 
     const {
         data: service,
@@ -26,7 +43,7 @@ export default function Stepup() {
         enabled: !!id && isSupported,
     });
 
-    if (!isSupported) {
+    if (!isSupportedExplanation(explanationParam)) {
         return null;
     }
 
@@ -43,14 +60,22 @@ export default function Stepup() {
     return (
         <LoginContainer
             title={I18n.t('stepup.title')}
-            description={I18n.t('stepup.description', { serviceName })}
+            description={I18n.t(`stepup.${explanationParam}.description`, {
+                serviceName,
+            })}
             headerAlign="start"
-            footer={<p>{I18n.t('stepup.footer', { serviceName })}</p>}
+            footer={
+                <p>
+                    {I18n.t(`stepup.${explanationParam}.footer`, {
+                        serviceName,
+                    })}
+                </p>
+            }
         >
             <Alert>
                 <BuildingOfficeIcon aria-hidden />
                 <AlertDescription>
-                    {I18n.t('stepup.linkedInstitution')}
+                    {I18n.t(`stepup.${explanationParam}.alert`)}
                 </AlertDescription>
             </Alert>
             <Button
