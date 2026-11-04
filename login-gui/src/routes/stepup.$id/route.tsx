@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Navigate, useParams, useSearchParams } from 'react-router';
 
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
@@ -7,17 +8,22 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
+import { ValidateNamesView } from './ValidateNamesView';
 
 const LINKED_INSTITUTION = 'linked_institution';
+const VALIDATE_NAMES = 'validate_names';
 const AFFILIATION_STUDENT = 'affiliation_student';
 
 // Unused for now
-const VALIDATE_NAMES = 'validate_names';
 const VALIDATE_NAMES_EXTERNAL = 'validate_names_external';
 const PROFILE_MFA = 'profile_mfa';
 const ANY_LINK = 'any_link';
 
-const SUPPORTED_EXPLANATIONS = [LINKED_INSTITUTION, AFFILIATION_STUDENT] as const;
+const SUPPORTED_EXPLANATIONS = [
+    VALIDATE_NAMES,
+    LINKED_INSTITUTION,
+    AFFILIATION_STUDENT,
+] as const;
 
 type SupportedExplanation = (typeof SUPPORTED_EXPLANATIONS)[number];
 
@@ -29,6 +35,9 @@ const isSupportedExplanation = (
 export default function Stepup() {
     const { id = '' } = useParams();
     const [searchParams] = useSearchParams();
+
+    // Temporary switch until the validate_names flow is wired up.
+    const [showValidateNames, setShowValidateNames] = useState(false);
 
     const explanationParam = searchParams.get('explanation');
     const isSupported = isSupportedExplanation(explanationParam);
@@ -57,6 +66,16 @@ export default function Stepup() {
 
     const serviceName = service.name;
 
+    if (showValidateNames) {
+        return (
+            <ValidateNamesView
+                onUseInstitution={() => {
+                    window.location.href = `/myconext/api/idp/oidc/account/${encodeURIComponent(id)}`;
+                }}
+            />
+        );
+    }
+
     return (
         <LoginContainer
             title={I18n.t('stepup.title')}
@@ -80,9 +99,7 @@ export default function Stepup() {
             </Alert>
             <Button
                 type="button"
-                onClick={() => {
-                    window.location.href = `/myconext/api/idp/oidc/account/${encodeURIComponent(id)}`;
-                }}
+                onClick={() => setShowValidateNames(true)}
                 autoFocus
             >
                 {I18n.t('stepup.submit')}

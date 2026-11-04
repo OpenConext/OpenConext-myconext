@@ -1,0 +1,45 @@
+@use '../../styles/border' as *;
+@use '../../styles/spacing' as *;
+
+.alternatives {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(2);
+}
+
+.hint {
+    color: var(--muted-foreground);
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+}
+
+.list {
+    gap: 0;
+    border: $border-width-1 solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.item {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary-strong);
+    font-weight: var(--font-weight-medium);
+    text-align: left;
+    cursor: pointer;
+
+    &:not(:last-child) {
+        border-bottom: $border-width-1 solid var(--border);
+    }
+
+    &:hover,
+    &:focus {
+        background: var(--muted);
+    }
+}
+
+.footerLink {
+    color: var(--primary-strong);
+    font-weight: var(--font-weight-medium);
+}
