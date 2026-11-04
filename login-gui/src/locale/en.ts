@@ -13,9 +13,11 @@ const en: AppTranslation = {
     landing: {
         title: 'What is eduID for?',
         description: 'Your ID for lifelong learning',
-        services: "Log in to a growing number of education and research services, whether you're a student, staff member, or professional.",
+        services:
+            "Log in to a growing number of education and research services, whether you're a student, staff member, or professional.",
         career: 'Your eduID stays with you throughout your entire career, from your studies to work and courses later in life.',
-        control: 'You always have full insight into and control over your personal data.',
+        control:
+            'You always have full insight into and control over your personal data.',
         imageAlt: 'Phone',
         more: 'Learn more about eduID',
     },
@@ -139,6 +141,25 @@ const en: AppTranslation = {
     stepup: {
         title: 'Almost there',
         submit: 'Continue',
+        proveIdentity: {
+            title: 'Prove who you are',
+            description:
+                'Do you have an account at an educational or research institution?',
+            institution: 'Use your institution account',
+            alternatives:
+                'No institution account? Choose one of the following methods:',
+            bank: 'Use your bank',
+            european: 'Use a European ID',
+            footerQuestion:
+                "Don't have a European ID or a bank that supports iDIN?",
+            serviceDesk: 'Confirm at a service desk',
+        },
+        validate_names: {
+            description:
+                'To continue to {{serviceName}}, your first name and last name must be verified by a trusted party.',
+            alert: 'Your first name and last name must be verified by a trusted party.',
+            footer: "Without verified names you can't access {{serviceName}}.",
+        },
         linked_institution: {
             description:
                 'To continue to {{serviceName}}, your eduID must be linked to an institution account.',

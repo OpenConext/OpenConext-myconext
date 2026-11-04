@@ -13,9 +13,11 @@ const nl: AppTranslation = {
     landing: {
         title: 'Waar is eduID voor?',
         description: 'Jouw ID voor een leven lang leren',
-        services: 'Log in bij een groeiend aantal diensten voor onderwijs en onderzoek, als student, medewerker of professional.',
+        services:
+            'Log in bij een groeiend aantal diensten voor onderwijs en onderzoek, als student, medewerker of professional.',
         career: 'Je eduID blijft met je meegaan tijdens je hele loopbaan, van je studie tot werk en cursussen later in je leven.',
-        control: 'Je hebt altijd volledig inzicht in en controle over je persoonlijke gegevens.',
+        control:
+            'Je hebt altijd volledig inzicht in en controle over je persoonlijke gegevens.',
         imageAlt: 'Telefoon',
         more: 'Meer over eduID',
     },
@@ -139,6 +141,25 @@ const nl: AppTranslation = {
     stepup: {
         title: 'Je bent er bijna',
         submit: 'Ga door',
+        proveIdentity: {
+            title: 'Bewijs wie je bent',
+            description:
+                'Heb je een account bij een onderwijs- of onderzoeksinstelling?',
+            institution: 'Gebruik je instellingsaccount',
+            alternatives:
+                'Geen instellingsaccount? Kies dan een van de volgende methoden:',
+            bank: 'Gebruik je bank',
+            european: 'Gebruik een Europees ID',
+            footerQuestion:
+                'Heb je geen Europees ID of bank die iDIN ondersteunt?',
+            serviceDesk: 'Bevestig bij een servicedesk',
+        },
+        validate_names: {
+            description:
+                'Om door te gaan naar {{serviceName}} moeten je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.',
+            alert: 'Je voornaam en achternaam moeten worden geverifieerd door een vertrouwde instelling.',
+            footer: 'Zonder geverifieerde naam heb je geen toegang tot {{serviceName}}.',
+        },
         linked_institution: {
             description:
                 'Om door te gaan naar {{serviceName}} moet je eduID gekoppeld zijn aan een instellingsaccount.',
