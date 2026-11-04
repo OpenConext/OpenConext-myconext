@@ -6,6 +6,8 @@ import { reactRouter } from '@react-router/dev/vite';
 // watchers keep the process alive, which stalls mvn install
 const exitAfterBuild = (): Plugin => ({
     name: 'exit-after-build',
+    // after the prerender of React Router, that is enforce: 'post' as well
+    enforce: 'post',
     apply: 'build',
     buildApp: {
         order: 'post',
