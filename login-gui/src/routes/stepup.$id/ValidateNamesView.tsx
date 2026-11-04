@@ -20,7 +20,8 @@ interface ValidateNamesViewProps {
     mode?: ValidateNamesMode;
 }
 
-// The other handlers are wired up once the flow logic is added.
+// TODO: wire up the bank (iDIN: /myconext/api/idp/verify/link/{id}?idpScoping=idin&bankId=..),
+// European ID (idpScoping=eherkenning) and service desk handlers.
 export const ValidateNamesView = ({
     onUseInstitution,
     mode = ValidateNamesMode.All,
