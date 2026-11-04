@@ -8,29 +8,11 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
+import {
+    MODE_BY_EXPLANATION,
+    isSupportedExplanation,
+} from './ValidateNamesMode';
 import { ValidateNamesView } from './ValidateNamesView';
-
-const LINKED_INSTITUTION = 'linked_institution';
-const VALIDATE_NAMES = 'validate_names';
-const AFFILIATION_STUDENT = 'affiliation_student';
-
-// Unused for now
-const VALIDATE_NAMES_EXTERNAL = 'validate_names_external';
-const PROFILE_MFA = 'profile_mfa';
-const ANY_LINK = 'any_link';
-
-const SUPPORTED_EXPLANATIONS = [
-    VALIDATE_NAMES,
-    LINKED_INSTITUTION,
-    AFFILIATION_STUDENT,
-] as const;
-
-type SupportedExplanation = (typeof SUPPORTED_EXPLANATIONS)[number];
-
-const isSupportedExplanation = (
-    value: string | null,
-): value is SupportedExplanation =>
-    SUPPORTED_EXPLANATIONS.some((explanation) => explanation === value);
 
 export default function Stepup() {
     const { id = '' } = useParams();
@@ -69,6 +51,7 @@ export default function Stepup() {
     if (showValidateNames) {
         return (
             <ValidateNamesView
+                mode={MODE_BY_EXPLANATION[explanationParam]}
                 onUseInstitution={() => {
                     window.location.href = `/myconext/api/idp/oidc/account/${encodeURIComponent(id)}`;
                 }}
