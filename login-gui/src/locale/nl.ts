@@ -172,6 +172,18 @@ const nl: AppTranslation = {
             alert: 'Je moet aantonen dat je student bent. Dit doe je door je eduID te koppelen aan een officiële instelling.',
             footer: 'Zonder bewijs dat je onderwijs volgt heb je geen toegang tot {{serviceName}}.',
         },
+        validate_names_external: {
+            description:
+                'Om door te gaan naar {{serviceName}} moet je identiteit zijn geverifieerd door een vertrouwde partij.',
+            alert: 'Je identiteit moet worden geverifieerd door een externe vertrouwde instelling.',
+            footer: 'Zonder geverifieerde identiteit heb je geen toegang tot {{serviceName}}.',
+        },
+        any_link: {
+            description:
+                'Om door te gaan naar {{serviceName}} moet je eduID gekoppeld zijn aan een vertrouwde partij.',
+            alert: 'Je eduID-account moet gekoppeld zijn aan een vertrouwde partij.',
+            footer: 'Zonder gekoppeld account heb je geen toegang tot {{serviceName}}.',
+        },
     },
     attributeMissing: {
         title: 'Account niet gekoppeld!',

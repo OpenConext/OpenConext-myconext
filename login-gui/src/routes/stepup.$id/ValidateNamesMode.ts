@@ -11,16 +11,18 @@ export type ValidateNamesMode =
 export const LINKED_INSTITUTION = 'linked_institution';
 export const VALIDATE_NAMES = 'validate_names';
 export const AFFILIATION_STUDENT = 'affiliation_student';
-
-// Unused for now
 export const VALIDATE_NAMES_EXTERNAL = 'validate_names_external';
-export const PROFILE_MFA = 'profile_mfa';
 export const ANY_LINK = 'any_link';
+
+// Todo: Unused for now
+// export const PROFILE_MFA = 'profile_mfa';
 
 export const SUPPORTED_EXPLANATIONS = [
     VALIDATE_NAMES,
     LINKED_INSTITUTION,
     AFFILIATION_STUDENT,
+    VALIDATE_NAMES_EXTERNAL,
+    ANY_LINK,
 ] as const;
 
 export type SupportedExplanation = (typeof SUPPORTED_EXPLANATIONS)[number];
@@ -32,6 +34,8 @@ export const MODE_BY_EXPLANATION: Record<
     [VALIDATE_NAMES]: ValidateNamesMode.All,
     [LINKED_INSTITUTION]: ValidateNamesMode.InstitutionOnly,
     [AFFILIATION_STUDENT]: ValidateNamesMode.InstitutionOnly,
+    [VALIDATE_NAMES_EXTERNAL]: ValidateNamesMode.AlternativesOnly,
+    [ANY_LINK]: ValidateNamesMode.All,
 };
 
 export const isSupportedExplanation = (

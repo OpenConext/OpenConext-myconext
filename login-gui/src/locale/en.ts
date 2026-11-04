@@ -172,6 +172,18 @@ const en: AppTranslation = {
             alert: 'You must prove that you are following education by connecting your eduID account to an official institution.',
             footer: "Without proof of enrolment in education you can't access {{serviceName}}.",
         },
+        validate_names_external: {
+            description:
+                'To continue to {{serviceName}}, your identity must be verified by a trusted party.',
+            alert: 'Your identity must be verified by a trusted party.',
+            footer: "Without a verified identity you can't access {{serviceName}}.",
+        },
+        any_link: {
+            description:
+                'To continue to {{serviceName}}, your eduID must be linked to a trusted party.',
+            alert: 'Your eduID account must be linked to a trusted party.',
+            footer: "Without a linked account you can't access {{serviceName}}.",
+        },
     },
     attributeMissing: {
         title: 'Account not linked!',
