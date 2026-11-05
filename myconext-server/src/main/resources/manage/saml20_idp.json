@@ -86,5 +86,63 @@
         "coin:institution_guid": "409542a0-0d11-e511-80d0-005056956c1a"
       }
     }
+  },
+  {
+    "_id": "9e6a6a03-5755-4e84-a6c8-ed082925d9cb",
+    "version": 38,
+    "type": "saml20_idp",
+    "data": {
+      "allowedEntities": [],
+      "allowedall": true,
+      "disableConsent": [],
+      "entityid": "http://mock-idp",
+      "metaDataFields": {
+        "DiscoveryName:0:en": "Dummy IdP SMURF",
+        "DiscoveryName:0:nl": "Dummy IdP SMURF",
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "OrganizationDisplayName:en": "leuke instelling - test",
+        "OrganizationDisplayName:nl": "leuke instelling - test",
+        "OrganizationName:en": "Dummy IdP Big SMURF",
+        "OrganizationName:nl": "Dummy IdP Grote SMURF",
+        "OrganizationURL:en": "https://mujina-idp/en",
+        "OrganizationURL:nl": "https://mujina-idp/nl",
+        "SingleSignOnService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        "SingleSignOnService:0:Location": "https://mujina-idp.test2.surfconext.nl/SingleSignOnService",
+        "coin:additional_logging": true,
+        "coin:contractual_base": "IX",
+        "coin:entity_categories:1": "http://refeds.org/category/research-and-scholarship",
+        "coin:entity_categories:5": "http://refeds.org/category/research-and-scholarship",
+        "coin:guest_qualifier": "None",
+        "coin:institution_brin": "QW12",
+        "coin:institution_brin_schac_home": "example.com",
+        "coin:institution_guid": "ad93daef-0911-e511-80d0-005056956c1a",
+        "coin:institution_id": "SURFNET",
+        "coin:institution_type": "Overig hoger onderwijs",
+        "contacts:0:contactType": "support",
+        "contacts:0:emailAddress": "ok@mocky.org",
+        "contacts:1:contactType": "technical",
+        "contacts:1:emailAddress": "technical@ok.org",
+        "contacts:2:contactType": "administrative",
+        "contacts:2:emailAddress": "admin@ok.org",
+        "contacts:3:contactType": "technical",
+        "contacts:3:emailAddress": "weirdo@mocky.org",
+        "description:en": "OpenConext Mujina Test Identity Provider dit eraf",
+        "description:nl": "OpenConext Mujina Test Identity Provider",
+        "displayName:en": "Dummy IdP SMURF",
+        "displayName:nl": "Dummy IdP SMURF",
+        "keywords:0:en": "dummy mockdummydummy mujinadummy mockdummy",
+        "keywords:0:nl": "dummy mockdummydummy mujinadummy mockdummy",
+        "logo:0:height": 96,
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "logo:0:width": 96,
+        "name:en": "Dummy IdP",
+        "name:nl": "Dummy IdP"
+      },
+      "mfaEntities": [],
+      "state": "prodaccepted",
+      "stepupEntities": [],
+      "supported_authncontext": [],
+      "type": "saml20-idp"
+    }
   }
 ]
