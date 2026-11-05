@@ -269,6 +269,7 @@ const pt: AppTranslation = {
             serviceDesk: 'Confirm at a service desk',
             otherMethod: 'Use another method',
             bankLoading: 'Loading banks...',
+            bankBack: 'Voltar',
         },
         serviceDesk: {
             formTitle: 'Confirm who you are',
