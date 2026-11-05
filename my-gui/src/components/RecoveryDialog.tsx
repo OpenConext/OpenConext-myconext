@@ -1,8 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 
 import { toast } from 'sonner';
 
+import {
+    formatRecoveryCode,
+    useCopyToClipboard,
+    useWarnBeforeUnload,
+} from '@myconext/shared-gui';
 import { ArrowLeftIcon, DeviceMobileSpeakerIcon } from '@phosphor-icons/react';
 import {
     Button,
@@ -48,14 +53,9 @@ const FOCUS_DELAY = 50;
 type Step = 'choose' | 'phone' | 'sms' | 'backup' | 'congrats';
 
 const CODE_LENGTH = 6;
-const COPIED_TIMEOUT = 1150;
 const PHONE_NUMBER = /^\+?(?:[0-9] ?){6,14}[0-9]$/;
 
 const sanitizePhoneNumber = (value: string) => value.replace(/[ -]/g, '');
-
-// the server shows the recovery code in two parts
-const formatRecoveryCode = (code: string) =>
-    `${code.substring(0, 4)} ${code.substring(4)}`;
 
 type RecoveryDialogProps = {
     // change the recovery method of an active app instead of enrolling
@@ -78,7 +78,6 @@ export const RecoveryDialog = ({
     const [wrongCode, setWrongCode] = useState(false);
     const [maxAttempts, setMaxAttempts] = useState(false);
     const [recoveryCode, setRecoveryCode] = useState('');
-    const [copied, setCopied] = useState(false);
 
     const config = useConfigStore((state) => state.config);
 
@@ -149,26 +148,13 @@ export const RecoveryDialog = ({
         }
     };
 
-    const copy = async () => {
-        await navigator.clipboard.writeText(recoveryCode);
-        setCopied(true);
-        setTimeout(() => setCopied(false), COPIED_TIMEOUT);
-    };
-
     // enrolling is only completed by finishing every step, and the recovery
     // code is only shown once, so the dialog can not be dismissed (also not
     // with esc) until then
     const locked = !change || step === 'backup' || step === 'congrats';
 
-    // leaving the page would lose the code that is shown once
-    useEffect(() => {
-        if (step !== 'backup') {
-            return;
-        }
-        const warn = (event: BeforeUnloadEvent) => event.preventDefault();
-        window.addEventListener('beforeunload', warn);
-        return () => window.removeEventListener('beforeunload', warn);
-    }, [step]);
+    const { copied, copy } = useCopyToClipboard(recoveryCode);
+    useWarnBeforeUnload(step === 'backup');
 
     return (
         <Dialog open onOpenChange={(open) => !open && !locked && onClose()}>

@@ -6,3 +6,6 @@ export const isIos = (): boolean =>
 export const isAndroid = (): boolean => /android/i.test(navigator.userAgent);
 
 export const isMobile = (): boolean => isIos() || isAndroid();
+
+export const isTouchDevice = (): boolean =>
+    'ontouchstart' in document.documentElement;

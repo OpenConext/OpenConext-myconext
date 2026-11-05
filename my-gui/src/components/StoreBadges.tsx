@@ -1,27 +1,12 @@
-import badges from '../assets/app/store-badges.png';
-import I18n from '../locale/I18n';
-import './StoreBadges.scss';
+import { StoreBadges as SharedStoreBadges } from '@myconext/shared-gui';
 
-// the Figma design has both store badges in one image, shown cropped
+import I18n from '../locale/I18n';
+
 export const StoreBadges = () => (
-    <div className="store-badges">
-        <a
-            className="store-badges__badge store-badges__badge--google"
-            href={I18n.t('app.get.google')}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={I18n.t('app.get.googleLabel')}
-        >
-            <img src={badges} alt="" />
-        </a>
-        <a
-            className="store-badges__badge store-badges__badge--apple"
-            href={I18n.t('app.get.apple')}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={I18n.t('app.get.appleLabel')}
-        >
-            <img src={badges} alt="" />
-        </a>
-    </div>
+    <SharedStoreBadges
+        googleUrl={I18n.t('app.get.google')}
+        appleUrl={I18n.t('app.get.apple')}
+        googleLabel={I18n.t('app.get.googleLabel')}
+        appleLabel={I18n.t('app.get.appleLabel')}
+    />
 );
