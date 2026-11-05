@@ -1,0 +1,13 @@
+@use '../../styles/spacing' as *;
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: spacing(50);
+
+    .spinner {
+        width: spacing(8);
+        height: spacing(8);
+    }
+}
