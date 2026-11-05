@@ -2,6 +2,7 @@ package myconext.tiqr;
 
 import myconext.exceptions.TooManyRequestsException;
 import myconext.model.User;
+import myconext.repository.SurfSecureIdRepository;
 import myconext.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,13 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RateLimitEnforcerTest {
 
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
+    private final SurfSecureIdRepository surfSecureIdRepository = Mockito.mock(SurfSecureIdRepository.class);
     private TiqrConfiguration tiqrConfiguration;
     private RateLimitEnforcer rateLimitEnforcer;
 
     @Before
     public void before() {
         this.tiqrConfiguration = new TiqrConfiguration();
-        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
+        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, surfSecureIdRepository, tiqrConfiguration);
 
     }
 
@@ -80,6 +82,13 @@ public class RateLimitEnforcerTest {
         User user = new User();
 
         initializeSmsRateLimiterWithShortSMSDelay();
+        Mockito.when(surfSecureIdRepository.incrementSmsRateLimitIfAllowed(Mockito.any(), Mockito.anyInt(), Mockito.anyLong()))
+                .thenAnswer(invocation -> {
+                    Map<String, Object> surfSecureId = user.getSurfSecureId();
+                    int rateLimit = (int) surfSecureId.merge(SMS_RATE_LIMIT, 1, (i, j) -> Integer.sum((int) i, (int) j));
+                    return rateLimit;
+                });
+
         rateLimitEnforcer.checkSendSMSRateLimit(user);
 
         assertEquals(1, user.getSurfSecureId().get(SMS_RATE_LIMIT));
@@ -94,8 +103,8 @@ public class RateLimitEnforcerTest {
         this.initializeSmsRateLimiterWithShortSMSDelay();
 
         User user = new User();
-        user.getSurfSecureId().put(SMS_RATE_LIMIT, 5);
-        user.getSurfSecureId().put(SMS_RATE_LIMIT_UPDATED, System.currentTimeMillis());
+        Mockito.when(surfSecureIdRepository.incrementSmsRateLimitIfAllowed(Mockito.any(), Mockito.anyInt(), Mockito.anyLong()))
+                .thenReturn(null);
         rateLimitEnforcer.checkSendSMSRateLimit(user);
     }
 
@@ -105,8 +114,8 @@ public class RateLimitEnforcerTest {
 
         this.initializeSmsRateLimiterWithShortSMSDelay();
 
-        user.getSurfSecureId().put(SMS_RATE_LIMIT, 5);
-        user.getSurfSecureId().put(SMS_RATE_LIMIT_UPDATED, System.currentTimeMillis() - 1000 * 60 * 60 * 25);
+        Mockito.when(surfSecureIdRepository.incrementSmsRateLimitIfAllowed(Mockito.any(), Mockito.anyInt(), Mockito.anyLong()))
+                .thenReturn(0);
         rateLimitEnforcer.checkSendSMSRateLimit(user);
         assertEquals(0, user.getSurfSecureId().get(SMS_RATE_LIMIT));
     }
@@ -115,7 +124,7 @@ public class RateLimitEnforcerTest {
         this.tiqrConfiguration = new TiqrConfiguration();
         tiqrConfiguration.setSmsSendingDelayInMillis(0);
 
-        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
+        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, surfSecureIdRepository, tiqrConfiguration);
     }
 
 
