@@ -4,12 +4,12 @@ import { Navigate, useParams, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchServiceName } from '../../api';
-import { ValidateNamesExplanation } from './ValidateNamesExplanation';
+import { ValidateNamesExplanation } from '../../components/Stepup/ValidateNamesExplanation';
 import {
     MODE_BY_EXPLANATION,
     isSupportedExplanation,
-} from './ValidateNamesMode';
-import { ValidateNamesView } from './ValidateNamesView';
+} from '../../components/Stepup/ValidateNamesMode';
+import { ValidateNamesView } from '../../components/Stepup/ValidateNamesView';
 
 export default function Stepup() {
     const { id = '' } = useParams();
