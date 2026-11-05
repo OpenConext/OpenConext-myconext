@@ -10,6 +10,7 @@ export type Config = {
     captchaEnabled: boolean;
     captchaSiteKey: string;
     myconextWebAuthnRedirectUrl: string;
+    featureIdVerify: boolean;
     [key: string]: unknown;
 };
 

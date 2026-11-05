@@ -153,6 +153,14 @@ const en: AppTranslation = {
             footerQuestion:
                 "Don't have a European ID or a bank that supports iDIN?",
             serviceDesk: 'Confirm at a service desk',
+            back: 'Back',
+            bankTitle: 'Use your bank',
+            bankDescription:
+                'With iDIN we verify who you are through your bank. You do not transfer any money.',
+            bankMoreUrl: 'https://www.idin.nl/en/',
+            bankMore: 'More about iDIN',
+            bankMissing: 'Is your bank not listed?',
+            otherMethod: 'Choose another method',
         },
         validate_names: {
             description:
