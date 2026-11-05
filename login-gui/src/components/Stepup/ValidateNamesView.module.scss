@@ -1,6 +1,12 @@
 @use '../../styles/border' as *;
 @use '../../styles/spacing' as *;
 
+.tiles {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}
+
 .alternatives {
     display: flex;
     flex-direction: column;
@@ -36,6 +42,15 @@
     &:hover,
     &:focus {
         background: var(--muted);
+    }
+
+    // .list clips overflow, so Curve's outer focus ring (border-ring + ring-[3px] ring-ring/50) is
+    // cut off; replicate it inset with the same tokens.
+    &:focus-visible {
+        outline: none;
+        box-shadow:
+            inset 0 0 0 1px var(--ring),
+            inset 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
     }
 }
 

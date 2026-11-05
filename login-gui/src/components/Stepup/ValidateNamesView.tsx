@@ -14,6 +14,7 @@ import { verifyLinkUrl } from '../../api';
 import eidasLogo from '../../assets/eidas.svg';
 import idinLogo from '../../assets/idin.svg';
 import I18n from '../../locale/I18n.ts';
+import { handleArrowKeyNavigation } from '../ItemList/ItemList';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import { BankSelectView } from './BankSelectView';
 import { ValidateNamesMode } from './ValidateNamesMode';
@@ -74,75 +75,90 @@ export const ValidateNamesView = ({
                 </>
             }
         >
-            {showInstitution && (
-                <Button
-                    type="button"
-                    disabled={redirecting}
-                    onClick={() => {
-                        setRedirecting(true);
-                        onUseInstitution();
-                    }}
-                    autoFocus
-                >
-                    <BuildingOfficeIcon aria-hidden data-icon="inline-start" />
-                    {I18n.t('stepup.proveIdentity.institution')}
-                </Button>
-            )}
-            {showAlternatives && (
-                <div className={styles.alternatives}>
-                    {showInstitution && (
-                        <p className={styles.hint}>
-                            {I18n.t('stepup.proveIdentity.alternatives')}
-                        </p>
-                    )}
-                    <ItemGroup className={styles.list}>
-                        <Item
-                            className={styles.item}
-                            render={
-                                <button type="button" disabled={redirecting} />
-                            }
-                            onClick={() => setShowBanks(true)}
-                        >
-                            <ItemMedia>
-                                <img
-                                    src={idinLogo}
-                                    alt=""
-                                    width={24}
-                                    height={24}
-                                />
-                            </ItemMedia>
-                            <ItemContent>
-                                <ItemTitle>
-                                    {I18n.t('stepup.proveIdentity.bank')}
-                                </ItemTitle>
-                            </ItemContent>
-                        </Item>
-                        <Item
-                            className={styles.item}
-                            render={
-                                <button type="button" disabled={redirecting} />
-                            }
-                            onClick={() =>
-                                redirect(verifyLinkUrl(id, 'eherkenning'))
-                            }
-                        >
-                            <ItemMedia>
-                                <img
-                                    src={eidasLogo}
-                                    alt=""
-                                    width={24}
-                                    height={24}
-                                />
-                            </ItemMedia>
-                            <ItemContent>
-                                <ItemTitle>
-                                    {I18n.t('stepup.proveIdentity.european')}
-                                </ItemTitle>
-                            </ItemContent>
-                        </Item>
-                    </ItemGroup>
-                </div>
-            )}
+            <div className={styles.tiles} onKeyDown={handleArrowKeyNavigation}>
+                {showInstitution && (
+                    <Button
+                        type="button"
+                        disabled={redirecting}
+                        onClick={() => {
+                            setRedirecting(true);
+                            onUseInstitution();
+                        }}
+                        autoFocus
+                    >
+                        <BuildingOfficeIcon
+                            aria-hidden
+                            data-icon="inline-start"
+                        />
+                        {I18n.t('stepup.proveIdentity.institution')}
+                    </Button>
+                )}
+                {showAlternatives && (
+                    <div className={styles.alternatives}>
+                        {showInstitution && (
+                            <p className={styles.hint}>
+                                {I18n.t('stepup.proveIdentity.alternatives')}
+                            </p>
+                        )}
+                        <ItemGroup className={styles.list}>
+                            <Item
+                                className={styles.item}
+                                render={
+                                    <button
+                                        type="button"
+                                        disabled={redirecting}
+                                        // The institution button holds the initial focus when shown.
+                                        autoFocus={!showInstitution}
+                                    />
+                                }
+                                onClick={() => setShowBanks(true)}
+                            >
+                                <ItemMedia>
+                                    <img
+                                        src={idinLogo}
+                                        alt=""
+                                        width={24}
+                                        height={24}
+                                    />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>
+                                        {I18n.t('stepup.proveIdentity.bank')}
+                                    </ItemTitle>
+                                </ItemContent>
+                            </Item>
+                            <Item
+                                className={styles.item}
+                                render={
+                                    <button
+                                        type="button"
+                                        disabled={redirecting}
+                                    />
+                                }
+                                onClick={() =>
+                                    redirect(verifyLinkUrl(id, 'eherkenning'))
+                                }
+                            >
+                                <ItemMedia>
+                                    <img
+                                        src={eidasLogo}
+                                        alt=""
+                                        width={24}
+                                        height={24}
+                                    />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>
+                                        {I18n.t(
+                                            'stepup.proveIdentity.european',
+                                        )}
+                                    </ItemTitle>
+                                </ItemContent>
+                            </Item>
+                        </ItemGroup>
+                    </div>
+                )}
+            </div>
         </LoginContainer>
     );
 };

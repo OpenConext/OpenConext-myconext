@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { idinIssuersQueryOptions } from '../../api';
 import I18n from '../../locale/I18n.ts';
+import { handleArrowKeyNavigation } from '../ItemList/ItemList';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './ValidateNamesView.module.scss';
 
@@ -55,13 +56,21 @@ export const BankSelectView = ({
                     aria-label={I18n.t('stepup.proveIdentity.bankTitle')}
                 />
             ) : (
-                <ItemGroup className={styles.list}>
-                    {(issuers ?? []).map((issuer) => (
+                <ItemGroup
+                    className={styles.list}
+                    onKeyDown={handleArrowKeyNavigation}
+                >
+                    {(issuers ?? []).map((issuer, index) => (
                         <Item
                             key={issuer.id}
                             className={styles.item}
                             render={
-                                <button type="button" disabled={disabled} />
+                                <button
+                                    type="button"
+                                    disabled={disabled}
+                                    // Buttons mount after the issuers load, so this focuses once they appear.
+                                    autoFocus={index === 0}
+                                />
                             }
                             onClick={() => onSelectBank(issuer.id)}
                         >

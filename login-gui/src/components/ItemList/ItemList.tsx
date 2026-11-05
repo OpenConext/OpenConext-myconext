@@ -29,7 +29,7 @@ const KEY_STEP: Partial<Record<string, 1 | -1>> = {
     ArrowLeft: -1,
 };
 
-const handleKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
+export const handleArrowKeyNavigation = (event: KeyboardEvent<HTMLElement>) => {
     const step = KEY_STEP[event.key];
     if (step === undefined) {
         return;
@@ -38,7 +38,9 @@ const handleKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     const buttons = Array.from(
         event.currentTarget.querySelectorAll<HTMLButtonElement>('button'),
     );
-    const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    const current = buttons.indexOf(
+        document.activeElement as HTMLButtonElement,
+    );
     if (current === -1) {
         return;
     }
@@ -49,7 +51,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
 };
 
 export const ItemList = ({ items }: ItemListProps) => (
-    <ItemGroup onKeyDown={handleKeyDown}>
+    <ItemGroup onKeyDown={handleArrowKeyNavigation}>
         {items.map(({ key, icon: Icon, label, onClick }, index) => (
             <Item
                 key={key}
