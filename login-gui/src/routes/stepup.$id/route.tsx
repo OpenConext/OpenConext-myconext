@@ -58,7 +58,6 @@ export default function Stepup() {
                 explanation={explanationParam}
                 serviceName={service.name}
                 onContinue={() => {
-                    // Without id-verify only the institution flow exists, so skip the chooser.
                     if (!config?.featureIdVerify) {
                         goToInstitution();
                         return;
