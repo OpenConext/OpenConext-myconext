@@ -1,7 +1,7 @@
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
 
-import { LoginContainer } from '../../components';
+import { LoginContainer } from '../LoginContainer/LoginContainer';
 import I18n from '../../locale/I18n.ts';
 import type { SupportedExplanation } from './ValidateNamesMode.ts';
 

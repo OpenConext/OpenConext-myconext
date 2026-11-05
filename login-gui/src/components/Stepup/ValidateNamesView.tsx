@@ -10,7 +10,7 @@ import {
 
 import eidasLogo from '../../assets/eidas.svg';
 import idinLogo from '../../assets/idin.svg';
-import { LoginContainer } from '../../components';
+import { LoginContainer } from '../LoginContainer/LoginContainer';
 import I18n from '../../locale/I18n.ts';
 import { ValidateNamesMode } from './ValidateNamesMode';
 import styles from './ValidateNamesView.module.scss';
