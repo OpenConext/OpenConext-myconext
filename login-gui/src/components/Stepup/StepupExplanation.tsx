@@ -5,17 +5,17 @@ import { LoginContainer } from '../LoginContainer/LoginContainer';
 import I18n from '../../locale/I18n.ts';
 import type { SupportedExplanation } from './ValidateNamesMode.ts';
 
-interface ValidateNamesExplanationProps {
+interface StepupExplanationProps {
     explanation: SupportedExplanation;
     serviceName: string;
     onContinue: () => void;
 }
 
-export const ValidateNamesExplanation = ({
+export const StepupExplanation = ({
     explanation,
     serviceName,
     onContinue,
-}: ValidateNamesExplanationProps) => (
+}: StepupExplanationProps) => (
     <LoginContainer
         title={I18n.t('stepup.title')}
         description={I18n.t(`stepup.${explanation}.description`, {

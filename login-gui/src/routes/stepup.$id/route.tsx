@@ -4,7 +4,9 @@ import { Navigate, useParams, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchServiceName } from '../../api';
-import { ValidateNamesExplanation } from '../../components/Stepup/ValidateNamesExplanation';
+import { Loading } from '../../components/Loading/Loading';
+import I18n from '../../locale/I18n.ts';
+import { StepupExplanation } from '../../components/Stepup/StepupExplanation';
 import {
     MODE_BY_EXPLANATION,
     isSupportedExplanation,
@@ -36,12 +38,12 @@ export default function Stepup() {
     }
 
     if (isPending) {
-        return null;
+        return <Loading title={I18n.t('stepup.title')} />;
     }
 
     if (showValidateExplanation) {
         return (
-            <ValidateNamesExplanation
+            <StepupExplanation
                 explanation={explanationParam}
                 serviceName={service.name}
                 onContinue={() => setShowValidateExplanation(false)}

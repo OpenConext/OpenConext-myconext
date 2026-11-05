@@ -5,4 +5,5 @@ export * from './Captcha/Captcha';
 export * from './Footer/Footer';
 export * from './Header/Header';
 export * from './ItemList/ItemList';
+export * from './Loading/Loading';
 export * from './LoginContainer/LoginContainer';

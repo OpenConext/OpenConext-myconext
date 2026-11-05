@@ -10,8 +10,8 @@ import {
 
 import eidasLogo from '../../assets/eidas.svg';
 import idinLogo from '../../assets/idin.svg';
-import { LoginContainer } from '../LoginContainer/LoginContainer';
 import I18n from '../../locale/I18n.ts';
+import { LoginContainer } from '../LoginContainer/LoginContainer';
 import { ValidateNamesMode } from './ValidateNamesMode';
 import styles from './ValidateNamesView.module.scss';
 
@@ -49,7 +49,7 @@ export const ValidateNamesView = ({
             }
         >
             {showInstitution && (
-                <Button type="button" onClick={onUseInstitution}>
+                <Button type="button" onClick={onUseInstitution} autoFocus>
                     <BuildingOfficeIcon aria-hidden data-icon="inline-start" />
                     {I18n.t('stepup.proveIdentity.institution')}
                 </Button>
