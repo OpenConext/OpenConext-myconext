@@ -18,7 +18,8 @@ export const startCreateFromInstitutionFlow = (
     returnTo?: string,
     loginHint?: string,
 ) => {
-    const params = new URLSearchParams({ forceAuth: `${forceAuth}` });
+    // tells the server which GUI started the flow, so it ends up in login-gui
+    const params = new URLSearchParams({ forceAuth: `${forceAuth}`, app: 'my_gui' });
     if (returnTo) {
         params.set('return_to', returnTo);
     }

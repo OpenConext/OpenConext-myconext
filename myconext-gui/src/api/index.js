@@ -234,7 +234,8 @@ export function sendDeactivationPhoneCode() {
 
 // Create from Institution
 export function startCreateFromInstitutionFlow(forceAuth = false, returnTo = null, loginHint = null) {
-    const params = new URLSearchParams({forceAuth: `${forceAuth}`});
+    // tells the server which GUI started the flow, so it ends up in account-gui
+    const params = new URLSearchParams({forceAuth: `${forceAuth}`, app: "myconext"});
     if (returnTo) {
         params.set("return_to", returnTo);
     }

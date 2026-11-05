@@ -252,12 +252,15 @@ public class AccountLinkerController implements UserAuthentication {
     public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request,
                                                                      @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth,
                                                                      @RequestParam(value = "return_to", required = false) String returnTo,
-                                                                     @RequestParam(value = "login_hint", required = false) String loginHint) {
+                                                                     @RequestParam(value = "login_hint", required = false) String loginHint,
+                                                                     @RequestParam(value = "app", required = false) String app) {
         LOG.info("Start create from institution");
         HttpSession session = request.getSession(true);
         String state = session.getId();
         String validatedReturnUrl = validateReturnUrl(returnTo);
         session.setAttribute("create_from_institution_return_url", validatedReturnUrl);
+        //The my-gui flow ends in login-gui, the myconext-gui flow in the legacy account-gui
+        session.setAttribute("create_from_institution_gui", GuiRedirectResolver.APP_MY_GUI.equals(app) ? "login" : "account");
         String validatedLoginHint = validateLoginHint(loginHint);
         LOG.info(String.format("Create-from-institution start state=%s, raw return_to=%s, validated return_to=%s, raw login_hint=%s, validated login_hint=%s",
                 state, returnTo, validatedReturnUrl, loginHint, validatedLoginHint));
@@ -297,6 +300,7 @@ public class AccountLinkerController implements UserAuthentication {
         }
         RequestInstitutionEduID requestInstitutionEduID = new RequestInstitutionEduID(hash(), userInfo);
         requestInstitutionEduID.setReturnUrl((String) session.getAttribute("create_from_institution_return_url"));
+        requestInstitutionEduID.setGui((String) session.getAttribute("create_from_institution_gui"));
         LOG.info(String.format("Create-from-institution oidc redirect state=%s, request hash=%s, stored return_to=%s",
                 storedState, requestInstitutionEduID.getHash(), requestInstitutionEduID.getReturnUrl()));
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
@@ -420,7 +424,7 @@ public class AccountLinkerController implements UserAuthentication {
                 email, user.isNewUser(), user.getId(), user.getCreateFromInstitutionKey(), user.getCreateFromInstitutionReturnUrl()));
         ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
                 user,
-                this.accountRedirectUrl + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
+                accountRedirectResolver.resolveMarker(requestInstitutionEduID.getGui()) + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
                 false,
                 false,
                 false,

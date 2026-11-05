@@ -31,6 +31,10 @@ public class RequestInstitutionEduID implements Serializable {
     @Setter
     private String returnUrl;
 
+    //The account GUI (marker of AccountRedirectResolver) that started the flow
+    @Setter
+    private String gui;
+
     @Setter
     private CreateInstitutionEduID createInstitutionEduID;
 

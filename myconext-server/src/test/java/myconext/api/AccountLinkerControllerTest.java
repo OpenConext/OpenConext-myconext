@@ -719,6 +719,37 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @SneakyThrows
     @Test
+    public void spCreateFromInstitutionLinkFromInstitutionFinishLoginGui() throws JsonProcessingException {
+        Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
+        String hash = getHashFromCreateInstitutionFlow(userInfo);
+        CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash, "new@example.com", true);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(createInstitutionEduID)
+                .post("/myconext/api/sp/create-from-institution/email")
+                .then()
+                .statusCode(200);
+
+        //The flow was started by my-gui, see the 'app' parameter
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
+        requestInstitutionEduID.setGui("login");
+        requestInstitutionEduIDRepository.save(requestInstitutionEduID);
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(requestInstitutionEduID.getOneTimeLoginCode().getCode(), null, requestInstitutionEduID.getHash());
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+        String location = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .body(verifyOneTimeLoginCode)
+                .put("/myconext/api/sp/create-from-institution/verify")
+                .getHeader("Location");
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("new@example.com").get();
+        assertEquals("http://localhost:3004/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
+    }
+
+    @SneakyThrows
+    @Test
     public void spCreateFromInstitutionLinkFromInstitutionFinishExistingUser() throws JsonProcessingException {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
         String hash = getHashFromCreateInstitutionFlow(userInfo);
