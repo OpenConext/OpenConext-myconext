@@ -1,13 +1,10 @@
+import { isTouchDevice } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 
 import type { TiqrStartResponse } from '../../api';
 import I18n from '../../locale/I18n';
 import styles from './AppFlow.module.scss';
 import { type ManualCode, ManualCodeEntry } from './ManualCodeEntry';
-
-const isTouchDevice = () =>
-    typeof document !== 'undefined' &&
-    'ontouchstart' in document.documentElement;
 
 type QrScanProps = {
     start: TiqrStartResponse;

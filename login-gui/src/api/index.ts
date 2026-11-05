@@ -1,5 +1,6 @@
 export * from './code';
 export * from './config';
+export * from './enrollment';
 export * from './idin';
 export * from './password';
 export * from './request';

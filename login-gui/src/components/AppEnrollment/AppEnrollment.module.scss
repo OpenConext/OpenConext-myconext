@@ -1,0 +1,43 @@
+@use '../../styles/spacing' as *;
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: spacing(6);
+}
+
+.qr {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.after {
+    color: var(--muted-foreground);
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+}
+
+.actions {
+    display: flex;
+    gap: spacing(3);
+}
+
+.primary {
+    flex: 1;
+}
+
+.recoveryCode {
+    text-align: center;
+    font-family: var(--font-mono, monospace);
+    font-size: var(--text-xl-font-size);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+}

@@ -1,6 +1,10 @@
 export type { ManualCode } from './AppFlow/ManualCodeEntry';
 export * from './AppFlow/useAppFlowScreen';
 export * from './AppFlow/UseAppFooter';
+export * from './AppEnrollment/EnrollAppView';
+export * from './AppEnrollment/GetAppView';
+export * from './AppEnrollment/RecoveryCodeView';
+export * from './AppEnrollment/RecoveryView';
 export * from './AppRequired/AppRequiredView';
 export * from './Captcha/Captcha';
 export * from './Footer/Footer';
