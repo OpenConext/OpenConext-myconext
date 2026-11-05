@@ -1,9 +1,10 @@
 import { QRCodeSVG } from 'qrcode.react';
 
+import { isAndroid, isIos } from '@myconext/shared-gui';
+
 import { GuestLayout } from '../../components/GuestLayout';
 import { StoreBadges } from '../../components/StoreBadges';
 import I18n from '../../locale/I18n';
-import { isAndroid, isIos } from '../../utils/device';
 import './route.scss';
 
 // opened from the QR code in the activate app dialog, sends the phone to its app store

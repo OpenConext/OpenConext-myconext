@@ -3,6 +3,11 @@ import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 import {
+    isMobile,
+    isTouchDevice,
+    useEnrollmentPolling,
+} from '@myconext/shared-gui';
+import {
     Button,
     Dialog,
     DialogContent,
@@ -12,13 +17,12 @@ import {
     DialogTitle,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { pollEnrollment, startEnrollment } from '../api';
 import type { StartEnrollment } from '../api';
 import I18n from '../locale/I18n';
 import { refreshUser } from '../store/me';
-import { isMobile } from '../utils/device';
 import './ActivateAppDialog.scss';
 import { RecoveryDialog } from './RecoveryDialog';
 import { StoreBadges } from './StoreBadges';
@@ -27,15 +31,8 @@ type ActivateAppDialogProps = {
     onClose: () => void;
 };
 
-const POLL_INTERVAL = 1000;
-// the server keeps an enrollment open for 15 minutes
-const ENROLLMENT_TIMEOUT = 15 * 60 * 1000;
-
-const isTouchDevice = () => 'ontouchstart' in document.documentElement;
-
 // mounted only while open, so every flow starts at the download step
 export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
-    const [timedOut, setTimedOut] = useState(false);
     const [resume, setResume] = useState(false);
 
     const {
@@ -46,18 +43,12 @@ export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
         error,
     } = useMutation({
         mutationFn: startEnrollment,
-        onSuccess: () => {
-            setTimeout(() => setTimedOut(true), ENROLLMENT_TIMEOUT);
-        },
     });
 
-    const { data: status } = useQuery({
-        queryKey: ['enrollment', enrollment?.enrollmentKey],
-        queryFn: () => pollEnrollment(enrollment!.enrollmentKey),
-        enabled: Boolean(enrollment) && !timedOut,
-        refetchInterval: (query) =>
-            query.state.data === 'PROCESSED' ? false : POLL_INTERVAL,
-        gcTime: 0,
+    const { status, timedOut } = useEnrollmentPolling({
+        enrollmentKey: enrollment?.enrollmentKey,
+        poll: pollEnrollment,
+        doneStatus: 'PROCESSED',
     });
 
     const processed = status === 'PROCESSED';
