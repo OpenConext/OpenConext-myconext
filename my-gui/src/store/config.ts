@@ -20,6 +20,8 @@ export const useConfigStore = create<ConfigStoreState>()((set) => ({
                 set({ config: await fetchConfig(), isError: false });
             } catch {
                 set({ isError: true });
+                // a failed load is not cached: the next call, e.g. after a page refresh, retries
+                pending = undefined;
             }
         })();
         return pending;

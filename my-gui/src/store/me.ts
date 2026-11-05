@@ -27,6 +27,8 @@ export const refreshUser = async () => {
         useUserStore.setState({ user: await fetchMe(), isError: false });
     } catch {
         useUserStore.setState({ isError: true });
+        // a failed load is not cached: the next call, e.g. after a page refresh, retries
+        pending = undefined;
     }
 };
 

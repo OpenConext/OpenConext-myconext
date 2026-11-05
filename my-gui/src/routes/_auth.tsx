@@ -1,6 +1,7 @@
-import { Spinner } from '@surfnet/curve-react';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router';
+
+import { Button, Spinner } from '@surfnet/curve-react';
 
 import { redirectToLogin } from '../api';
 import '../components/AuthLayout.scss';
@@ -36,7 +37,14 @@ export default function ProtectedLayout() {
     }, [config, isAuthenticated]);
 
     if (configError || meError) {
-        return <div>{I18n.t('common.error')}</div>;
+        return (
+            <div className="auth-layout__loading">
+                <p>{I18n.t('common.error')}</p>
+                <Button onClick={() => window.location.reload()}>
+                    {I18n.t('errorBoundary.reload')}
+                </Button>
+            </div>
+        );
     }
 
     if (!isAuthenticated || !me) {
