@@ -270,6 +270,7 @@ const nl: AppTranslation = {
             serviceDesk: 'Bevestig bij een servicedesk',
             otherMethod: 'Gebruik een andere manier',
             bankLoading: 'Banken laden...',
+            bankBack: 'Terug',
         },
         serviceDesk: {
             formTitle: 'Bevestig wie je bent',
