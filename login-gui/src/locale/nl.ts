@@ -153,6 +153,14 @@ const nl: AppTranslation = {
             footerQuestion:
                 'Heb je geen Europees ID of bank die iDIN ondersteunt?',
             serviceDesk: 'Bevestig bij een servicedesk',
+            back: 'Terug',
+            bankTitle: 'Gebruik je bank',
+            bankDescription:
+                'Met iDIN controleren we via de bank wie je bent. Je maakt geen geld over.',
+            bankMoreUrl: 'https://www.idin.nl/',
+            bankMore: 'Meer over iDIN',
+            bankMissing: 'Staat je bank er niet tussen?',
+            otherMethod: 'Kies een andere methode',
         },
         validate_names: {
             description:

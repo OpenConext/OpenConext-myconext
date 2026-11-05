@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import {
     Button,
@@ -8,26 +10,50 @@ import {
     ItemTitle,
 } from '@surfnet/curve-react';
 
+import { verifyLinkUrl } from '../../api';
 import eidasLogo from '../../assets/eidas.svg';
 import idinLogo from '../../assets/idin.svg';
 import I18n from '../../locale/I18n.ts';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
+import { BankSelectView } from './BankSelectView';
 import { ValidateNamesMode } from './ValidateNamesMode';
 import styles from './ValidateNamesView.module.scss';
 
 interface ValidateNamesViewProps {
+    id: string;
     onUseInstitution: () => void;
     mode?: ValidateNamesMode;
 }
 
-// TODO: wire up the bank (iDIN: /myconext/api/idp/verify/link/{id}?idpScoping=idin&bankId=..),
-// European ID (idpScoping=eherkenning) and service desk handlers.
+// TODO: wire up the service desk handler.
 export const ValidateNamesView = ({
+    id,
     onUseInstitution,
     mode = ValidateNamesMode.All,
 }: ValidateNamesViewProps) => {
+    const [showBanks, setShowBanks] = useState(false);
+    // The browser leaves the page on redirect; keep the buttons disabled meanwhile.
+    const [redirecting, setRedirecting] = useState(false);
+
     const showInstitution = mode !== ValidateNamesMode.AlternativesOnly;
     const showAlternatives = mode !== ValidateNamesMode.InstitutionOnly;
+
+    const redirect = (url: string) => {
+        setRedirecting(true);
+        window.location.href = url;
+    };
+
+    if (showBanks) {
+        return (
+            <BankSelectView
+                onSelectBank={(bankId) =>
+                    redirect(verifyLinkUrl(id, 'idin', bankId))
+                }
+                onBack={() => setShowBanks(false)}
+                disabled={redirecting}
+            />
+        );
+    }
 
     return (
         <LoginContainer
@@ -49,7 +75,15 @@ export const ValidateNamesView = ({
             }
         >
             {showInstitution && (
-                <Button type="button" onClick={onUseInstitution} autoFocus>
+                <Button
+                    type="button"
+                    disabled={redirecting}
+                    onClick={() => {
+                        setRedirecting(true);
+                        onUseInstitution();
+                    }}
+                    autoFocus
+                >
                     <BuildingOfficeIcon aria-hidden data-icon="inline-start" />
                     {I18n.t('stepup.proveIdentity.institution')}
                 </Button>
@@ -64,7 +98,10 @@ export const ValidateNamesView = ({
                     <ItemGroup className={styles.list}>
                         <Item
                             className={styles.item}
-                            render={<button type="button" />}
+                            render={
+                                <button type="button" disabled={redirecting} />
+                            }
+                            onClick={() => setShowBanks(true)}
                         >
                             <ItemMedia>
                                 <img
@@ -82,7 +119,12 @@ export const ValidateNamesView = ({
                         </Item>
                         <Item
                             className={styles.item}
-                            render={<button type="button" />}
+                            render={
+                                <button type="button" disabled={redirecting} />
+                            }
+                            onClick={() =>
+                                redirect(verifyLinkUrl(id, 'eherkenning'))
+                            }
                         >
                             <ItemMedia>
                                 <img

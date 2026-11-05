@@ -40,6 +40,11 @@
 }
 
 .footerLink {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font: inherit;
     color: var(--primary-strong);
     font-weight: var(--font-weight-medium);
 }
