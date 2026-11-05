@@ -221,6 +221,20 @@ const nl: AppTranslation = {
                 'Je eduID-account is gekoppeld aan een vertrouwde partij.',
         },
     },
+    appRequired: {
+        title: 'Je bent er bijna',
+        description:
+            'Om door te gaan naar {{serviceName}} moet je de eduID-app gebruiken.',
+        alertTitle: 'Veilig inloggen met een extra stap',
+        alertDescription:
+            'Met de eduID-app log je extra veilig in, zonder wachtwoord. Het installeren is zo gebeurd.',
+        refuse: 'Ik weiger',
+        download: 'Download de eduID-app',
+        warningTitle: 'Download eduID-app',
+        warning:
+            'Doorgaan zonder de eduID-app is niet toegestaan. Je kunt dan niet inloggen op {{serviceName}}.',
+        confirmRefuse: 'Ik weiger echt',
+    },
 };
 
 export default nl;

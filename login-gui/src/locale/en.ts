@@ -219,6 +219,20 @@ const en: AppTranslation = {
             any_link: 'Your eduID account is linked to a trusted party.',
         },
     },
+    appRequired: {
+        title: 'Almost there',
+        description:
+            'To continue to {{serviceName}} you must use the eduID app.',
+        alertTitle: 'Secure login with an extra step',
+        alertDescription:
+            'With the eduID app, you log in extra securely and without a password. Installation is quick and easy.',
+        refuse: 'I refuse',
+        download: 'Download the eduID app',
+        warningTitle: 'Get the eduID app',
+        warning:
+            'Login without the eduID app is not allowed. You will not be able to log in to {{serviceName}}.',
+        confirmRefuse: 'I still refuse',
+    },
 };
 
 export default en;
