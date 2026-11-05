@@ -235,6 +235,49 @@ const nl: AppTranslation = {
             'Doorgaan zonder de eduID-app is niet toegestaan. Je kunt dan niet inloggen op {{serviceName}}.',
         confirmRefuse: 'Ik weiger echt',
     },
+    getApp: {
+        title: 'Activeer je eduID-app',
+        description:
+            'Download de eduID-app (van SURF) in een van de app-stores:',
+        google: 'https://play.google.com/store/apps/details?id=nl.eduid',
+        googleLabel: 'Google Play',
+        apple: 'https://apps.apple.com/us/app/eduid/id1600756434',
+        appleLabel: 'App Store',
+        after: 'Heb je de app al geïnstalleerd? Ga dan door.',
+        back: 'Terug',
+        next: 'Ga door',
+    },
+    enrollApp: {
+        scanTitle: 'Voltooi de installatie in de eduID-app',
+        scanDescription: 'Scan deze QR-code met je eduID-app.',
+        qrAlt: 'QR-code om de eduID-app te koppelen',
+        openApp: 'Open de app op dit apparaat',
+        finishTitle: 'Voltooi de installatie in de eduID-app',
+        finishDescription:
+            'Volg de instructies in de app om de installatie te voltooien.',
+        timeOutTitle: 'Sessie verlopen',
+        timeOutDescription: 'Je sessie is verlopen.',
+        existingTitle: 'Installatie niet afgerond',
+        existingDescription:
+            'Je bent al begonnen met het koppelen van de eduID-app, maar de app is nog niet actief. Ga door om een herstelmethode in te stellen en af te ronden.',
+        existingResume: 'Installatie afronden',
+        error: 'Er is iets misgegaan. Probeer het opnieuw.',
+        retry: 'Probeer opnieuw',
+    },
+    recovery: {
+        title: 'Bijna klaar',
+        description:
+            'Voeg een herstelmethode toe. Als je de eduID-app niet meer kunt gebruiken, bijvoorbeeld bij verlies van je mobiele telefoon, kun je met een herstelmethode de eduID-app opnieuw registreren.',
+        backupOption: 'Herstelcode aanvragen',
+        backupTitle: 'Bewaar de code op een veilige plek',
+        backupDescription:
+            'Deze code is nu actief, maar je kunt op elk moment een nieuwe genereren.',
+        copy: 'Kopieer de code',
+        copied: 'Gekopieerd',
+        next: 'Ik heb de code bewaard. Doorgaan',
+        error: 'Er is iets misgegaan. Probeer het opnieuw.',
+        retry: 'Probeer opnieuw',
+    },
 };
 
 export default nl;

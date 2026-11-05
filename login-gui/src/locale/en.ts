@@ -233,6 +233,49 @@ const en: AppTranslation = {
             'Login without the eduID app is not allowed. You will not be able to log in to {{serviceName}}.',
         confirmRefuse: 'I still refuse',
     },
+    getApp: {
+        title: 'Activate your eduID app',
+        description:
+            'Download the eduID app (from SURF) in one of the app stores:',
+        google: 'https://play.google.com/store/apps/details?id=nl.eduid',
+        googleLabel: 'Google Play',
+        apple: 'https://apps.apple.com/us/app/eduid/id1600756434',
+        appleLabel: 'App Store',
+        after: 'Did you already install the app? Please continue.',
+        back: 'Back',
+        next: 'Continue',
+    },
+    enrollApp: {
+        scanTitle: 'Finish setup in the eduID app',
+        scanDescription: 'Scan this QR code with your eduID app.',
+        qrAlt: 'QR code to link the eduID app',
+        openApp: 'Open the app on this device',
+        finishTitle: 'Finish setup in the eduID app',
+        finishDescription:
+            'Follow the instructions in the app to finish the setup.',
+        timeOutTitle: 'Session timeout',
+        timeOutDescription: 'Your session timed out.',
+        existingTitle: 'Setup not finished',
+        existingDescription:
+            'You already started linking the eduID app, but it is not active yet. Continue to set up a recovery method and finish.',
+        existingResume: 'Continue setup',
+        error: 'Something went wrong. Please try again.',
+        retry: 'Try again',
+    },
+    recovery: {
+        title: 'Almost ready',
+        description:
+            'Add a recovery method. If you can no longer use the eduID app, for example if you lose your mobile phone, you can use a recovery method to register the eduID app again.',
+        backupOption: 'Request a recovery code',
+        backupTitle: 'Keep the code in a safe place',
+        backupDescription:
+            'This code is currently active, but you can generate a new one at any time.',
+        copy: 'Copy the code',
+        copied: 'Copied',
+        next: 'I saved the code. Continue',
+        error: 'Something went wrong. Please try again.',
+        retry: 'Try again',
+    },
 };
 
 export default en;
