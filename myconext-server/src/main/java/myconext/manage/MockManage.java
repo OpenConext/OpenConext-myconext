@@ -18,6 +18,7 @@ public class MockManage implements Manage {
 
     private final Map<String, ServiceProvider> serviceProviders;
     private final Map<String, IdentityProvider> identityProviders;
+    private final Map<String, RemoteProvider> identityProvidersByEntityId;
     private final List<RemoteProvider> resourceServers;
 
     @SneakyThrows
@@ -29,6 +30,9 @@ public class MockManage implements Manage {
         serviceProviders = manageServices.stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
         List<Map<String, Object>> manageIdentityProviders = convertMaps(objectMapper, "/manage/saml20_idp.json");
         identityProviders = mergeByDomainNames(manageIdentityProviders);
+        identityProvidersByEntityId = manageIdentityProviders.stream()
+                .map(this::remoteProvider)
+                .collect(Collectors.toMap(RemoteProvider::getEntityId, p -> p, (a, b) -> a));
         resourceServers = convertMaps(objectMapper, "/manage/oauth20_rs.json")
                 .stream()
                 .map(m -> remoteProvider(m)).toList();
@@ -72,6 +76,11 @@ public class MockManage implements Manage {
         return this.identityProviders.values().stream()
                 .filter(identityProvider -> institutionGUID.equals(identityProvider.getInstitutionGuid()))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<RemoteProvider> findIdentityProviderByEntityId(String entityId) {
+        return Optional.ofNullable(identityProvidersByEntityId.get(entityId));
     }
 
     @Override

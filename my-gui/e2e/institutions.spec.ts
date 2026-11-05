@@ -62,6 +62,28 @@ test.describe('link an institution', () => {
 });
 
 test.describe('create an eduID from an institution', () => {
+    test('a known login_hint is forwarded to the gateway', async ({ page }) => {
+        await page.goto(
+            '/create-from-institution?login_hint=urn%3Athki%3Asid%3Aidp2',
+        );
+        await page.getByTestId('create-from-institution-start').click();
+        await page.waitForURL(`${TIQR_MOCK_URL}/oidc/authorize**`);
+
+        expect(page.url()).toContain('login_hint=urn%3Athki%3Asid%3Aidp2');
+    });
+
+    test('an unknown login_hint is dropped and the WAYF is shown', async ({
+        page,
+    }) => {
+        await page.goto(
+            '/create-from-institution?login_hint=https%3A%2F%2Funknown-idp.example.org%2Fsaml',
+        );
+        await page.getByTestId('create-from-institution-start').click();
+        await page.waitForURL(`${TIQR_MOCK_URL}/oidc/authorize**`);
+
+        expect(page.url()).not.toContain('login_hint');
+    });
+
     test('the email is verified with a code from the mail', async ({
         page,
         request,

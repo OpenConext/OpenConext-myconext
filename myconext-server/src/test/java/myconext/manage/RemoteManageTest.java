@@ -3,6 +3,7 @@ package myconext.manage;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import lombok.SneakyThrows;
 import myconext.model.IdentityProvider;
+import myconext.model.RemoteProvider;
 import myconext.model.ServiceProvider;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -76,6 +77,24 @@ public class RemoteManageTest {
         IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").getFirst();
 
         assertEquals("Hartingcollege ADFS IDP EN", identityProvider.getName());
+    }
+
+    @Test
+    @SneakyThrows
+    public void findIdentityProviderByEntityId() {
+        stubForTokens("saml20_idp");
+
+        RemoteProvider identityProvider = manage.findIdentityProviderByEntityId("http://adfs3host.proxy.rocmn.nl/adfs/services/trust").get();
+
+        assertEquals("ROC Midden Nederland", identityProvider.getName());
+    }
+
+    @Test
+    @SneakyThrows
+    public void findIdentityProviderByUnknownEntityId() {
+        stubForTokens("saml20_idp");
+
+        assertTrue(manage.findIdentityProviderByEntityId("https://unknown-idp.example.org/saml").isEmpty());
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -159,6 +160,26 @@ public class RemoteManage implements Manage {
     public Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID) {
         return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID)
                 .stream().findFirst();
+    }
+
+    @Override
+    public Optional<RemoteProvider> findIdentityProviderByEntityId(String entityId) {
+        if (!StringUtils.hasText(entityId)) {
+            return Optional.empty();
+        }
+        Map<String, Object> requestBody = Map.of("entityid", entityId,
+                "REQUESTED_ATTRIBUTES", Arrays.asList(
+                        "metaDataFields.name:en",
+                        "metaDataFields.name:nl"
+                ));
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
+        return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/saml20_idp",
+                        HttpMethod.POST, requestEntity, typeReference)
+                .getBody()
+                .stream()
+                .map(this::remoteProvider)
+                .filter(provider -> entityId.equals(provider.getEntityId()))
+                .findFirst();
     }
 
     @Override

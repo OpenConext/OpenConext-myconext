@@ -11,14 +11,19 @@ export type InstitutionVerification = {
     location?: string;
 };
 
-// `forceAuth` makes the institution ask the user to log in again
+// `forceAuth` makes the institution ask the user to log in again,
+// `loginHint` (an IdP entityID) makes the gateway skip the WAYF
 export const startCreateFromInstitutionFlow = (
     forceAuth = false,
     returnTo?: string,
+    loginHint?: string,
 ) => {
     const params = new URLSearchParams({ forceAuth: `${forceAuth}` });
     if (returnTo) {
         params.set('return_to', returnTo);
+    }
+    if (loginHint) {
+        params.set('login_hint', loginHint);
     }
     return request<AuthorizationUrl>(
         `/myconext/api/sp/create-from-institution?${params.toString()}`,

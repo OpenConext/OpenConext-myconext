@@ -87,6 +87,8 @@ public class AccountLinkerController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(AccountLinkerController.class);
 
+    private static final int MAX_LOGIN_HINT_LENGTH = 256;
+
     private final String oidcBaseUrl;
     private final String clientId;
     private final String clientSecret;
@@ -241,7 +243,7 @@ public class AccountLinkerController implements UserAuthentication {
         LOG.info(String.format("Start IdP link account flow for user %s", user.getEmail()));
 
         String state = String.format("id=%s&user_uid=%s&gui=%s", id, passwordEncoder.encode(user.getUid()), accountRedirectResolver.marker(request));
-        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, samlAuthenticationRequest.getRequesterEntityId());
+        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, samlAuthenticationRequest.getRequesterEntityId(), null);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
 
@@ -249,15 +251,17 @@ public class AccountLinkerController implements UserAuthentication {
     @Hidden
     public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request,
                                                                      @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth,
-                                                                     @RequestParam(value = "return_to", required = false) String returnTo) throws UnsupportedEncodingException {
+                                                                     @RequestParam(value = "return_to", required = false) String returnTo,
+                                                                     @RequestParam(value = "login_hint", required = false) String loginHint) {
         LOG.info("Start create from institution");
         HttpSession session = request.getSession(true);
         String state = session.getId();
         String validatedReturnUrl = validateReturnUrl(returnTo);
         session.setAttribute("create_from_institution_return_url", validatedReturnUrl);
-        LOG.info(String.format("Create-from-institution start state=%s, raw return_to=%s, validated return_to=%s",
-                state, returnTo, validatedReturnUrl));
-        UriComponents uriComponents = doStartLinkAccountFlow(state, guiRedirectResolver.select(spCreateFromInstitutionRedirectUri, myGuiSpCreateFromInstitutionRedirectUri), forceAuth, myConextSpEntityId);
+        String validatedLoginHint = validateLoginHint(loginHint);
+        LOG.info(String.format("Create-from-institution start state=%s, raw return_to=%s, validated return_to=%s, raw login_hint=%s, validated login_hint=%s",
+                state, returnTo, validatedReturnUrl, loginHint, validatedLoginHint));
+        UriComponents uriComponents = doStartLinkAccountFlow(state, guiRedirectResolver.select(spCreateFromInstitutionRedirectUri, myGuiSpCreateFromInstitutionRedirectUri), forceAuth, myConextSpEntityId, validatedLoginHint);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
@@ -473,7 +477,7 @@ public class AccountLinkerController implements UserAuthentication {
             state = passwordEncoder.encode(user.getUid());
             redirectUri = guiRedirectResolver.select(spFlowRedirectUri, myGuiSpFlowRedirectUri);
         }
-        UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, myConextSpEntityId);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, myConextSpEntityId, null);
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
     }
 
@@ -789,7 +793,7 @@ public class AccountLinkerController implements UserAuthentication {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(location)).build();
     }
 
-    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, String requesterEntityId) {
+    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, String requesterEntityId, String loginHint) {
         Map<String, String> params = new HashMap<>();
 
         params.put("client_id", clientId);
@@ -800,9 +804,38 @@ public class AccountLinkerController implements UserAuthentication {
         if (forceAuth) {
             params.put("prompt", "login");
         }
+        if (StringUtils.hasText(loginHint)) {
+            params.put("login_hint", URLEncoder.encode(loginHint, StandardCharsets.UTF_8));
+        }
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(oidcBaseUrl + "/oidc/authorize");
         params.forEach(builder::queryParam);
         return builder.build();
+    }
+
+    /**
+     * Returns the login_hint when it is a known OpenConext IdP entityID, so that oidc-ng can
+     * bypass the WAYF and go straight to that IdP. Otherwise returns null and the user is
+     * shown the WAYF as usual. A failing or unavailable Manage never breaks the flow.
+     */
+    private String validateLoginHint(String loginHint) {
+        if (!StringUtils.hasText(loginHint)) {
+            return null;
+        }
+        String trimmed = loginHint.trim();
+        if (trimmed.length() > MAX_LOGIN_HINT_LENGTH || trimmed.chars().anyMatch(Character::isWhitespace)) {
+            LOG.warn("Invalid login_hint format. Ignoring: " + loginHint);
+            return null;
+        }
+        try {
+            if (this.manage.findIdentityProviderByEntityId(trimmed).isEmpty()) {
+                LOG.warn("Unknown login_hint entityID. Ignoring: " + trimmed);
+                return null;
+            }
+        } catch (Exception e) {
+            LOG.warn("Unable to validate login_hint with Manage. Ignoring: " + trimmed, e);
+            return null;
+        }
+        return trimmed;
     }
 
     private HttpHeaders getHttpHeaders() {

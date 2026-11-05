@@ -27,6 +27,8 @@ public interface Manage {
 
     Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID);
 
+    Optional<RemoteProvider> findIdentityProviderByEntityId(String entityId);
+
     Optional<RemoteProvider> findResourceServerByEntityId(String entityId);
 
     default String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {

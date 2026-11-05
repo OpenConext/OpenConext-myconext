@@ -32,6 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -364,6 +365,71 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 "scope=openid&" +
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect&state="));
+    }
+
+    @Test
+    public void createFromInstitutionForwardsValidLoginHint() {
+        Map<String, String> results = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("login_hint", "urn:thki:sid:idp2")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+
+        assertTrue(results.get("url").contains("login_hint=urn%3Athki%3Asid%3Aidp2"));
+    }
+
+    @Test
+    public void createFromInstitutionEncodesLoginHint() {
+        Map<String, String> results = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("login_hint", "http://adfs3host.proxy.rocmn.nl/adfs/services/trust")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+
+        assertTrue(results.get("url").contains("login_hint=http%3A%2F%2Fadfs3host.proxy.rocmn.nl%2Fadfs%2Fservices%2Ftrust"));
+    }
+
+    @Test
+    public void createFromInstitutionIgnoresUnknownLoginHint() {
+        Map<String, String> results = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("login_hint", "https://unknown-idp.example.org/saml")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+
+        assertFalse(results.get("url").contains("login_hint"));
+    }
+
+    @Test
+    public void createFromInstitutionIgnoresEmptyLoginHint() {
+        Map<String, String> results = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("login_hint", "")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+
+        assertFalse(results.get("url").contains("login_hint"));
+    }
+
+    @Test
+    public void createFromInstitutionIgnoresMalformedLoginHint() {
+        Map<String, String> results = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("login_hint", "not a valid entityID")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+
+        assertFalse(results.get("url").contains("login_hint"));
     }
 
     @Test

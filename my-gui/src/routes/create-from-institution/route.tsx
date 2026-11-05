@@ -24,14 +24,16 @@ import './route.scss';
 export default function CreateFromInstitution() {
     const [searchParams] = useSearchParams();
     const returnTo = searchParams.get('return_to') ?? undefined;
+    const loginHint = searchParams.get('login_hint') ?? undefined;
     const config = useConfigStore((state) => state.config);
     const enabled = config?.createEduIDInstitutionEnabled !== false;
     const landing = Boolean(config?.createEduIDInstitutionLanding);
 
     // without a landing page the flow starts at once, otherwise on the button
     const flow = useQuery({
-        queryKey: ['createFromInstitution', returnTo],
-        queryFn: () => startCreateFromInstitutionFlow(false, returnTo),
+        queryKey: ['createFromInstitution', returnTo, loginHint],
+        queryFn: () =>
+            startCreateFromInstitutionFlow(false, returnTo, loginHint),
         enabled: Boolean(config) && enabled,
         staleTime: Infinity,
         gcTime: 0,

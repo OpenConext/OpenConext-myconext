@@ -233,10 +233,13 @@ export function sendDeactivationPhoneCode() {
 }
 
 // Create from Institution
-export function startCreateFromInstitutionFlow(forceAuth = false, returnTo = null) {
+export function startCreateFromInstitutionFlow(forceAuth = false, returnTo = null, loginHint = null) {
     const params = new URLSearchParams({forceAuth: `${forceAuth}`});
     if (returnTo) {
         params.set("return_to", returnTo);
+    }
+    if (loginHint) {
+        params.set("login_hint", loginHint);
     }
     return fetchJson(`/myconext/api/sp/create-from-institution?${params.toString()}`);
 }

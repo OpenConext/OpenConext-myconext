@@ -4,7 +4,8 @@
 
 All notable changes to this project will be documented in this file.
 
-## [8.5.0] unreleased
+## [8.5.2] unreleased
+- Support an optional `login_hint` on the create-from-institution flow to bypass the WAYF when the institution already knows the IdP ([#1318](https://github.com/OpenConext/OpenConext-myconext/issues/1318))
 - Upgraded to Spring Boot 4 ([#1263](https://github.com/OpenConext/OpenConext-myconext/issues/1263))
 - Revert Localicious and restore translation method to pre-localicious state ([#984](https://github.com/OpenConext/OpenConext-myconext/issues/984)) & ([#1299](https://github.com/OpenConext/OpenConext-myconext/issues/1299))
 - Add support for refeds IAP ACR values ([#1032](https://github.com/OpenConext/OpenConext-myconext/issues/1032))
