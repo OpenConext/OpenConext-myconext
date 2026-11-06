@@ -68,6 +68,7 @@ public class TiqrController implements UserAuthentication {
 
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
+    private final SurfSecureIdRepository surfSecureIdRepository;
     private final Manage serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
@@ -85,6 +86,7 @@ public class TiqrController implements UserAuthentication {
                           AuthenticationRepository authenticationRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           UserRepository userRepository,
+                          SurfSecureIdRepository surfSecureIdRepository,
                           Manage serviceProviderResolver,
                           SMSService smsService,
                           Environment environment,
@@ -120,12 +122,13 @@ public class TiqrController implements UserAuthentication {
         this.registrationRepository = registrationRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.surfSecureIdRepository = surfSecureIdRepository;
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.magicLinkUrl = magicLinkUrl;
         this.accountRedirectResolver = accountRedirectResolver;
         this.myconextServiceName = myconextServiceName;
-        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
+        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, surfSecureIdRepository, tiqrConfiguration);
     }
 
     private String getEduIDServerBaseUrl() {
@@ -325,19 +328,7 @@ public class TiqrController implements UserAuthentication {
 
         smsService.send(phoneNumber, phoneVerification, request.getLocale());
 
-        Map<String, Object> surfSecureId = user.getSurfSecureId();
-        surfSecureId.put(PHONE_VERIFICATION_CODE, phoneVerification);
-        surfSecureId.remove(RATE_LIMIT);
-        //Can't have both
-        surfSecureId.remove(RECOVERY_CODE);
-
-        if (regenerateSpFlow) {
-            surfSecureId.put(NEW_UNVERIFIED_PHONE_NUMBER, phoneNumber);
-        } else {
-            surfSecureId.put(PHONE_NUMBER, phoneNumber);
-        }
-
-        userRepository.save(user);
+        surfSecureIdRepository.updatePhoneVerification(user.getId(), phoneVerification, phoneNumber, regenerateSpFlow);
 
         return ResponseEntity.ok(new FinishEnrollment("ok"));
     }
