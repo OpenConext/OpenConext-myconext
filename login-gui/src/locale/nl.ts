@@ -268,6 +268,7 @@ const nl: AppTranslation = {
         title: 'Bijna klaar',
         description:
             'Voeg een herstelmethode toe. Als je de eduID-app niet meer kunt gebruiken, bijvoorbeeld bij verlies van je mobiele telefoon, kun je met een herstelmethode de eduID-app opnieuw registreren.',
+        phoneOption: 'Hersteltelefoonnummer toevoegen',
         backupOption: 'Herstelcode aanvragen',
         backupTitle: 'Bewaar de code op een veilige plek',
         backupDescription:
@@ -277,6 +278,39 @@ const nl: AppTranslation = {
         next: 'Ik heb de code bewaard. Doorgaan',
         error: 'Er is iets misgegaan. Probeer het opnieuw.',
         retry: 'Probeer opnieuw',
+    },
+    phoneVerification: {
+        title: 'Voeg een hersteltelefoonnummer toe',
+        description:
+            'Je telefoonnummer wordt alleen gebruikt voor beveiliging, bijvoorbeeld om weer toegang te krijgen tot je account als je de app kwijtraakt.',
+        back: 'Terug',
+        label: 'Telefoonnummer',
+        hint: 'We sturen je een code om je nummer te verifiëren.',
+        placeholder: '+31 612345678',
+        submit: 'Verifieer dit telefoonnummer',
+        incorrect: 'Telefoonnummer is onjuist',
+        rateLimited:
+            'Te veel verzoeken om een sms te versturen. Je bent beperkt, probeer het later opnieuw.',
+        error: 'Er is iets misgegaan. Probeer het opnieuw.',
+        finalizedTitle: 'Bestaande herstelmethode',
+        finalizedDescription:
+            'Je kunt geen telefoonnummer registreren, omdat je al een herstelcode als herstelmethode hebt.',
+        finalizedNext: 'Doorgaan',
+    },
+    phoneConfirmation: {
+        title: 'Controleer je telefoon',
+        description:
+            'Voer de zescijferige code in die we naar {{phoneNumber}} hebben gestuurd.',
+        inputLabel: 'Verificatiecode',
+        submit: 'Doorgaan',
+        incorrect: 'De code is onjuist',
+        error: 'Er is iets misgegaan. Probeer het opnieuw.',
+        maxAttempts:
+            'Maximaal aantal pogingen bereikt. Verstuur de code opnieuw of',
+        changeNumber: 'gebruik een ander telefoonnummer',
+        noCode: 'Geen code ontvangen?',
+        resend: 'Code opnieuw versturen',
+        resent: 'We hebben je een nieuwe code gestuurd.',
     },
 };
 

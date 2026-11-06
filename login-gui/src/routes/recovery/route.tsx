@@ -11,11 +11,12 @@ export default function Recovery() {
         return <Navigate to="/expired" replace />;
     }
 
+    const query = `?h=${encodeURIComponent(hash)}`;
+
     return (
         <RecoveryView
-            onBackupCode={() =>
-                navigate(`/recovery-code?h=${encodeURIComponent(hash)}`)
-            }
+            onPhone={() => navigate(`/phone-verification${query}`)}
+            onBackupCode={() => navigate(`/recovery-code${query}`)}
         />
     );
 }

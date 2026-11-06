@@ -1,0 +1,22 @@
+@use '../../styles/spacing' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}
+
+.status {
+    color: var(--muted-foreground);
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+}
+
+.link {
+    height: auto;
+    padding: 0;
+    color: var(--primary-strong);
+    font-size: inherit;
+    font-weight: var(--font-weight-medium);
+    line-height: inherit;
+}

@@ -266,6 +266,7 @@ const en: AppTranslation = {
         title: 'Almost ready',
         description:
             'Add a recovery method. If you can no longer use the eduID app, for example if you lose your mobile phone, you can use a recovery method to register the eduID app again.',
+        phoneOption: 'Add a recovery phone number',
         backupOption: 'Request a recovery code',
         backupTitle: 'Keep the code in a safe place',
         backupDescription:
@@ -275,6 +276,38 @@ const en: AppTranslation = {
         next: 'I saved the code. Continue',
         error: 'Something went wrong. Please try again.',
         retry: 'Try again',
+    },
+    phoneVerification: {
+        title: 'Add a recovery phone number',
+        description:
+            'Your phone number is only used for security, for example to help you back into your account if you lose your app.',
+        back: 'Back',
+        label: 'Phone number',
+        hint: 'We will text you a code to verify your number.',
+        placeholder: '+31 612345678',
+        submit: 'Verify this phone number',
+        incorrect: 'Phone number is incorrect',
+        rateLimited:
+            'Too many requests to send an SMS. You are rate limited, please try again later.',
+        error: 'Something went wrong. Please try again.',
+        finalizedTitle: 'Existing recovery method',
+        finalizedDescription:
+            'You can not register a phone number, because you already have a recovery code as recovery method.',
+        finalizedNext: 'Continue',
+    },
+    phoneConfirmation: {
+        title: 'Check your phone',
+        description:
+            'Enter the six-digit code we sent to {{phoneNumber}} to continue.',
+        inputLabel: 'Verification code',
+        submit: 'Continue',
+        incorrect: 'The code is incorrect',
+        error: 'Something went wrong. Please try again.',
+        maxAttempts: 'Maximum attempts reached. Resend the code or',
+        changeNumber: 'use a different phone number',
+        noCode: 'Did not receive a code?',
+        resend: 'Resend code',
+        resent: 'We sent you a new code.',
     },
 };
 

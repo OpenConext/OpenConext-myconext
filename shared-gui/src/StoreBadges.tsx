@@ -8,7 +8,6 @@ export type StoreBadgesProps = {
     appleLabel: string;
 };
 
-// the Figma design has both store badges in one image, shown cropped
 export const StoreBadges = ({
     googleUrl,
     appleUrl,

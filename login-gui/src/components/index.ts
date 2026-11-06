@@ -12,3 +12,6 @@ export * from './Header/Header';
 export * from './ItemList/ItemList';
 export * from './Loading/Loading';
 export * from './LoginContainer/LoginContainer';
+export * from './PhoneRecovery/PhoneConfirmationView';
+export * from './PhoneRecovery/PhoneFinalizedView';
+export * from './PhoneRecovery/PhoneVerificationView';
