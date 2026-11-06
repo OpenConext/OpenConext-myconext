@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 const POLL_INTERVAL = 1000;
-// the server keeps an enrollment open for 15 minutes
 const ENROLLMENT_TIMEOUT = 15 * 60 * 1000;
 
 export type UseEnrollmentPollingOptions<Status extends string> = {
     // undefined until the enrollment has been started
     enrollmentKey: string | undefined;
     poll: (enrollmentKey: string) => Promise<Status>;
-    // polling stops once the app has processed the enrollment
     doneStatus: Status;
 };
 
@@ -20,7 +18,6 @@ export const useEnrollmentPolling = <Status extends string>({
     poll,
     doneStatus,
 }: UseEnrollmentPollingOptions<Status>) => {
-    // keyed so a new enrollment is never considered timed out
     const [timedOutKey, setTimedOutKey] = useState<string>();
     const timedOut =
         enrollmentKey !== undefined && timedOutKey === enrollmentKey;
