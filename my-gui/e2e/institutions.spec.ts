@@ -99,15 +99,15 @@ test.describe('create an eduID from an institution', () => {
         await page.getByTestId('link-from-institution-submit').click();
 
         const code = await waitForCode(request, email);
-        // the new account continues on the login domain (account-gui), that is
-        // not part of this stack
-        const loginDomain = page.waitForRequest(/localhost:3000/);
-        await page.route(/localhost:3000/, (route) =>
+        // the new account continues on the login domain (login-gui, as the flow
+        // was started from my-gui), that is not part of this stack
+        const loginDomain = page.waitForRequest(/localhost:3004/);
+        await page.route(/localhost:3004/, (route) =>
             route.fulfill({ status: 200, body: 'login domain' }),
         );
         await page.getByTestId('verify-from-institution-code').fill(code);
 
-        expect((await loginDomain).url()).toContain('localhost:3000');
+        expect((await loginDomain).url()).toContain('localhost:3004');
     });
 
     test('an institution without attributes is refused', async ({ page }) => {
