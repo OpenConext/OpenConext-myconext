@@ -2,9 +2,8 @@ name: Auto-merge Dependabot PRs
 
 on:
   schedule:
-    # Daily at 00:00 UTC; the job sleeps a random delay afterwards so the
-    # effective run time differs from day to day.
-    - cron: "0 0 * * *"
+    # Nightly at 03:00 UTC
+    - cron: "0 3 * * *"
 
 permissions:
   contents: write
@@ -16,19 +15,12 @@ concurrency:
 
 env:
   COOLDOWN_DAYS: "5"
-  RANDOM_DELAY_SECONDS: "14400"
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - name: Randomize daily run time
-        run: |
-          delay=$((RANDOM % RANDOM_DELAY_SECONDS))
-          echo "Sleeping ${delay}s to randomize today's run time"
-          sleep "$delay"
-
       - name: Collect open Dependabot PRs
         id: prs
         env:
