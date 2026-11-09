@@ -24,6 +24,21 @@ export type {
     HttpMethod,
 } from './utils/apiFetch';
 export {
+    createEnrollmentApi,
+    SESSION_SCOPE,
+    toSendError,
+} from './api/enrollment';
+export type {
+    BackupCodeResponse,
+    EnrollmentApi,
+    EnrollmentScope,
+    EnrollmentStatus,
+    SendError,
+    SendPhoneCodeResponse,
+    StartEnrollmentResponse,
+    VerifyPhoneCodeResponse,
+} from './api/enrollment';
+export {
     formatRecoveryCode,
     useCopyToClipboard,
     useWarnBeforeUnload,

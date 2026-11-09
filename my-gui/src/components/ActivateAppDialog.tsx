@@ -20,7 +20,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 
 import { pollEnrollment, startEnrollment } from '../api';
-import type { StartEnrollment } from '../api';
+import type { StartEnrollmentResponse } from '../api';
 import I18n from '../locale/I18n';
 import { refreshUser } from '../store/me';
 import './ActivateAppDialog.scss';
@@ -155,7 +155,7 @@ export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
 };
 
 type EnrollmentStepProps = {
-    enrollment: StartEnrollment;
+    enrollment: StartEnrollmentResponse;
     status?: string;
     timedOut: boolean;
     onClose: () => void;
