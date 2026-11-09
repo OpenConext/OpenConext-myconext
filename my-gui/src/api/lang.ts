@@ -1,4 +1,7 @@
-import { putJson } from './request';
+import { apiFetch } from './apiFetch';
 
 export const updateLanguage = (language: string) =>
-    putJson<null>('/myconext/api/sp/lang', { language });
+    apiFetch<null>('/myconext/api/sp/lang', {
+        method: 'PUT',
+        body: { language },
+    });

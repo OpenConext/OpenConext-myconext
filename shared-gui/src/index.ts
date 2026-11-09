@@ -16,6 +16,13 @@ export { StoreBadges } from './StoreBadges';
 export type { StoreBadgesProps } from './StoreBadges';
 export { useEnrollmentPolling } from './useEnrollmentPolling';
 export type { UseEnrollmentPollingOptions } from './useEnrollmentPolling';
+export { createApiFetch } from './utils/apiFetch';
+export type {
+    ApiFetch,
+    ApiFetchConfig,
+    ApiFetchOptions,
+    HttpMethod,
+} from './utils/apiFetch';
 export {
     formatRecoveryCode,
     useCopyToClipboard,

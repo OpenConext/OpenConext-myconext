@@ -1,9 +1,9 @@
-import { request } from './request';
+import { apiFetch } from './apiFetch';
 
 export const PERSONAL_DATA_URL = '/myconext/api/sp/personal';
 
 export const deleteAccount = () =>
-    request<{ status: number }>('/myconext/api/sp/delete', {
+    apiFetch<{ status: number }>('/myconext/api/sp/delete', {
         method: 'DELETE',
     });
 

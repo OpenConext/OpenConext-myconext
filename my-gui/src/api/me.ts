@@ -1,6 +1,6 @@
 import type { Activity } from './activities';
+import { apiFetch } from './apiFetch';
 import type { ControlCode } from './identity';
-import { request } from './request';
 
 export type LinkedAccount = {
     // institution accounts
@@ -91,4 +91,4 @@ export type User = {
     [key: string]: unknown;
 };
 
-export const fetchMe = () => request<User>('/myconext/api/sp/me');
+export const fetchMe = () => apiFetch<User>('/myconext/api/sp/me');

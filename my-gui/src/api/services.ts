@@ -1,5 +1,5 @@
+import { apiFetch } from './apiFetch';
 import type { User } from './me';
-import { putJson, request } from './request';
 
 export type TokenScope = {
     name: string;
@@ -17,17 +17,20 @@ export type OidcToken = {
 };
 
 export const fetchTokens = () =>
-    request<OidcToken[]>('/myconext/api/sp/tokens');
+    apiFetch<OidcToken[]>('/myconext/api/sp/tokens');
 
 // removes the eduID for the service and revokes its tokens
 export const deleteServiceAndTokens = (
     serviceProviderEntityId: string,
     tokens: OidcToken[],
 ) =>
-    putJson<User>('/myconext/api/sp/service', {
-        serviceProviderEntityId,
-        tokens,
+    apiFetch<User>('/myconext/api/sp/service', {
+        method: 'PUT',
+        body: { serviceProviderEntityId, tokens },
     });
 
 export const deleteTokens = (tokens: OidcToken[]) =>
-    putJson<User>('/myconext/api/sp/tokens', { tokens });
+    apiFetch<User>('/myconext/api/sp/tokens', {
+        method: 'PUT',
+        body: { tokens },
+    });
