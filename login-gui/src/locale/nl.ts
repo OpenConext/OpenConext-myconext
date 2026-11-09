@@ -243,6 +243,7 @@ const nl: AppTranslation = {
         googleLabel: 'Google Play',
         apple: 'https://apps.apple.com/us/app/eduid/id1600756434',
         appleLabel: 'App Store',
+        qr: 'QR-code om de eduID-app te installeren',
         after: 'Heb je de app al geïnstalleerd? Ga dan door.',
         back: 'Terug',
         next: 'Ga door',

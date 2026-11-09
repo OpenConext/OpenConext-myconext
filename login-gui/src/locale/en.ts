@@ -241,6 +241,7 @@ const en: AppTranslation = {
         googleLabel: 'Google Play',
         apple: 'https://apps.apple.com/us/app/eduid/id1600756434',
         appleLabel: 'App Store',
+        qr: 'QR code to install the eduID app',
         after: 'Did you already install the app? Please continue.',
         back: 'Back',
         next: 'Continue',

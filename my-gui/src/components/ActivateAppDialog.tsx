@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { QRCodeSVG } from 'qrcode.react';
-
 import {
+    InstallAppQr,
     isMobile,
     isTouchDevice,
     useEnrollmentPolling,
@@ -84,9 +83,7 @@ export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
                         <div className="activate-app__stores">
                             {!isMobile() && (
                                 <div className="activate-app__qr">
-                                    <QRCodeSVG
-                                        value={`${window.location.origin}/install-app`}
-                                        size={120}
+                                    <InstallAppQr
                                         title={I18n.t('app.get.qr')}
                                     />
                                 </div>
