@@ -1,26 +1,24 @@
+import { SESSION_SCOPE, createEnrollmentApi } from '@myconext/shared-gui';
+import type {
+    BackupCodeResponse,
+    SendPhoneCodeResponse,
+    VerifyPhoneCodeResponse,
+} from '@myconext/shared-gui';
+
 import { apiFetch } from './apiFetch';
 import type { User } from './me';
 
-// the server's enrollment states, polled until the app has processed it
-export type EnrollmentStatus =
-    'INITIALIZED' | 'RETRIEVED' | 'PROCESSED' | 'FINALIZED' | 'VALIDATED';
+export type {
+    BackupCodeResponse,
+    EnrollmentStatus,
+    StartEnrollmentResponse,
+} from '@myconext/shared-gui';
 
-export type StartEnrollment = {
-    enrollmentKey: string;
-    // deep link that opens the eduID app
-    url: string;
-    // data URI of the QR code for `url`
-    qrcode: string;
-};
+const enrollment = createEnrollmentApi(apiFetch);
 
-// fails with a 403 when the user already has an app registration
-export const startEnrollment = () =>
-    apiFetch<StartEnrollment>('/tiqr/sp/start-enrollment');
+export const startEnrollment = () => enrollment.startEnrollment(SESSION_SCOPE);
 
-export const pollEnrollment = (enrollmentKey: string) =>
-    apiFetch<EnrollmentStatus>(
-        `/tiqr/poll-enrollment?enrollmentKey=${encodeURIComponent(enrollmentKey)}`,
-    );
+export const { pollEnrollment } = enrollment;
 
 export const sendDeactivationCode = () =>
     apiFetch<void>('/tiqr/sp/send-deactivation-phone-code');
@@ -32,39 +30,29 @@ export const deactivateApp = (verificationCode: string) =>
         body: { verificationCode },
     });
 
-export type BackupCode = { recoveryCode: string };
-
 export type EnrollmentVerificationKey = { enrollmentVerificationKey: string };
 
-// the server answers 406 when a recovery method already exists
 export const sendPhoneCode = (phoneNumber: string) =>
-    apiFetch<unknown>('/tiqr/sp/send-phone-code', {
-        method: 'POST',
-        body: { phoneNumber },
-    });
+    enrollment.sendPhoneCode(SESSION_SCOPE, phoneNumber);
 
-// 429 when the maximum number of attempts is used
 export const verifyPhoneCode = (phoneVerification: string) =>
-    apiFetch<unknown>('/tiqr/sp/verify-phone-code', {
-        method: 'POST',
-        body: { phoneVerification },
-    });
+    enrollment.verifyPhoneCode(SESSION_SCOPE, phoneVerification);
 
 export const generateBackupCode = () =>
-    apiFetch<BackupCode>('/tiqr/sp/generate-backup-code');
+    enrollment.generateBackupCode(SESSION_SCOPE);
 
 // changing the recovery method of an active app, only after the app confirmed
 export const regenerateBackupCode = () =>
-    apiFetch<BackupCode>('/tiqr/sp/re-generate-backup-code');
+    apiFetch<BackupCodeResponse>('/tiqr/sp/re-generate-backup-code');
 
 export const resendPhoneCode = (phoneNumber: string) =>
-    apiFetch<unknown>('/tiqr/sp/re-send-phone-code', {
+    apiFetch<SendPhoneCodeResponse>('/tiqr/sp/re-send-phone-code', {
         method: 'POST',
         body: { phoneNumber },
     });
 
 export const reverifyPhoneCode = (phoneVerification: string) =>
-    apiFetch<unknown>('/tiqr/sp/re-verify-phone-code', {
+    apiFetch<VerifyPhoneCodeResponse>('/tiqr/sp/re-verify-phone-code', {
         method: 'POST',
         body: { phoneVerification },
     });
