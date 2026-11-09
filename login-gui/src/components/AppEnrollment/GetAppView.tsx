@@ -1,9 +1,9 @@
-import { StoreBadges } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './AppEnrollment.module.scss';
+import { AppStores } from './AppStores';
 
 interface GetAppViewProps {
     onBack: () => void;
@@ -16,12 +16,7 @@ export const GetAppView = ({ onBack, onNext }: GetAppViewProps) => (
         description={I18n.t('getApp.description')}
         headerAlign="start"
     >
-        <StoreBadges
-            googleUrl={I18n.t('getApp.google')}
-            appleUrl={I18n.t('getApp.apple')}
-            googleLabel={I18n.t('getApp.googleLabel')}
-            appleLabel={I18n.t('getApp.appleLabel')}
-        />
+        <AppStores />
         <p className={styles.after}>{I18n.t('getApp.after')}</p>
         <div className={styles.actions}>
             <Button type="button" variant="outline" onClick={onBack}>

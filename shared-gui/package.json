@@ -17,6 +17,7 @@
     "dependencies": {
         "dompurify": "^3.4.17",
         "html2canvas-pro": "^2.5.2",
+        "qrcode.react": "^4.2.0",
         "sonner": "^2.0.8"
     },
     "peerDependencies": {
