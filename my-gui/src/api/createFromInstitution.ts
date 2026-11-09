@@ -1,5 +1,5 @@
+import { apiFetch } from './apiFetch';
 import type { AuthorizationUrl } from './identity';
-import { putJson, request } from './request';
 
 export type InstitutionInfo = {
     given_name?: string;
@@ -19,20 +19,23 @@ export const startCreateFromInstitutionFlow = (
     loginHint?: string,
 ) => {
     // tells the server which GUI started the flow, so it ends up in login-gui
-    const params = new URLSearchParams({ forceAuth: `${forceAuth}`, app: 'my_gui' });
+    const params = new URLSearchParams({
+        forceAuth: `${forceAuth}`,
+        app: 'my_gui',
+    });
     if (returnTo) {
         params.set('return_to', returnTo);
     }
     if (loginHint) {
         params.set('login_hint', loginHint);
     }
-    return request<AuthorizationUrl>(
+    return apiFetch<AuthorizationUrl>(
         `/myconext/api/sp/create-from-institution?${params.toString()}`,
     );
 };
 
 export const fetchInstitutionInfo = (hash: string) =>
-    request<InstitutionInfo>(
+    apiFetch<InstitutionInfo>(
         `/myconext/api/sp/create-from-institution/info?hash=${encodeURIComponent(hash)}`,
     );
 
@@ -42,30 +45,29 @@ export const createInstitutionEduId = (
     hash: string,
     newUser: boolean,
 ) =>
-    request<unknown>('/myconext/api/sp/create-from-institution/email', {
+    apiFetch<unknown>('/myconext/api/sp/create-from-institution/email', {
         method: 'POST',
-        body: JSON.stringify({ email, hash, newUser }),
+        body: { email, hash, newUser },
     });
 
 export const institutionalEmailDomains = () =>
-    request<string[]>(
+    apiFetch<string[]>(
         '/myconext/api/sp/create-from-institution/domain/institutional',
     );
 
 export const allowedEmailDomains = () =>
-    request<string[]>(
+    apiFetch<string[]>(
         '/myconext/api/sp/create-from-institution/domain/allowed',
     );
 
 export const resendInstitutionMail = (hash: string) =>
-    request<unknown>(
+    apiFetch<unknown>(
         `/myconext/api/sp/create-from-institution/resendMail?hash=${encodeURIComponent(hash)}`,
     );
 
 // 401 for a wrong code, 403 or 400 when the user has used all attempts
 export const verifyInstitutionEduId = (hash: string, code: string) =>
-    putJson<InstitutionVerification>(
+    apiFetch<InstitutionVerification>(
         '/myconext/api/sp/create-from-institution/verify',
-        { code, hash },
-        { keepOnUnauthorized: true },
+        { method: 'PUT', body: { code, hash }, keepOnUnauthorized: true },
     );

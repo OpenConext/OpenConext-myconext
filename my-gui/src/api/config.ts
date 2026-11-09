@@ -1,4 +1,4 @@
-import { request } from './request';
+import { apiFetch } from './apiFetch';
 
 export type Config = {
     isAuthenticated: boolean;
@@ -26,4 +26,4 @@ export type Config = {
     [key: string]: unknown;
 };
 
-export const fetchConfig = () => request<Config>('/config');
+export const fetchConfig = () => apiFetch<Config>('/config');

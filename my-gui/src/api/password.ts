@@ -1,25 +1,27 @@
+import { apiFetch } from './apiFetch';
 import type { User } from './me';
-import { putJson, request } from './request';
 
 export type PasswordCodeVerification = { hash: string };
 
 export type LoginPreferenceResponse = { token: string };
 
 export const fetchOutstandingEmailLinks = () =>
-    request<boolean>('/myconext/api/sp/outstanding-email-links');
+    apiFetch<boolean>('/myconext/api/sp/outstanding-email-links');
 
 export const generatePasswordCode = () =>
-    putJson<void>('/myconext/api/sp/generate-password-code', {});
+    apiFetch<void>('/myconext/api/sp/generate-password-code', {
+        method: 'PUT',
+        body: {},
+    });
 
 export const resendPasswordCode = () =>
-    request<void>('/myconext/api/sp/resend-password-code');
+    apiFetch<void>('/myconext/api/sp/resend-password-code');
 
 // 401 for a wrong code
 export const verifyPasswordCode = (code: string) =>
-    putJson<PasswordCodeVerification>(
+    apiFetch<PasswordCodeVerification>(
         '/myconext/api/sp/verify-password-code',
-        { code },
-        { keepOnUnauthorized: true },
+        { method: 'PUT', body: { code }, keepOnUnauthorized: true },
     );
 
 // a null password deletes the current password
@@ -28,19 +30,19 @@ export const updatePassword = (
     newPassword: string | null,
     hash: string,
 ) =>
-    putJson<User>('/myconext/api/sp/update-password', {
-        userId,
-        newPassword,
-        hash,
+    apiFetch<User>('/myconext/api/sp/update-password', {
+        method: 'PUT',
+        body: { userId, newPassword, hash },
     });
 
 export const setLoginPreference = (loginPreference: string) =>
-    putJson<LoginPreferenceResponse>('/myconext/api/sp/login-preference', {
-        loginPreference,
+    apiFetch<LoginPreferenceResponse>('/myconext/api/sp/login-preference', {
+        method: 'PUT',
+        body: { loginPreference },
     });
 
 // false when the hash of a mailed link is unknown or expired
 export const isPasswordHashValid = (hash: string) =>
-    request<boolean>(
+    apiFetch<boolean>(
         `/myconext/api/sp/password-reset-hash-valid?hash=${encodeURIComponent(hash)}`,
     );

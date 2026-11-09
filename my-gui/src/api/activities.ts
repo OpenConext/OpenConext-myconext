@@ -1,4 +1,4 @@
-import { request } from './request';
+import { apiFetch } from './apiFetch';
 
 export type ActivityEvent =
     | 'ACCOUNT_CREATED'
@@ -37,4 +37,4 @@ export type Activity = {
 };
 
 export const fetchActivities = () =>
-    request<Activity[]>('/myconext/api/sp/activities');
+    apiFetch<Activity[]>('/myconext/api/sp/activities');

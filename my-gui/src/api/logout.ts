@@ -1,7 +1,7 @@
-import { request } from './request';
+import { apiFetch } from './apiFetch';
 
 export type LogoutResponse = {
     status: number;
 };
 
-export const logout = () => request<LogoutResponse>('/myconext/api/sp/logout');
+export const logout = () => apiFetch<LogoutResponse>('/myconext/api/sp/logout');

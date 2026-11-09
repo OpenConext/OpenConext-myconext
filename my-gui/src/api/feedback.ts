@@ -1,4 +1,4 @@
-import { request } from './request';
+import { apiFetch } from './apiFetch';
 
 export type FeedbackPayload = {
     message: string;
@@ -9,7 +9,7 @@ export type FeedbackPayload = {
 };
 
 export const sendFeedback = (payload: FeedbackPayload) =>
-    request<{ status: number }>('/myconext/api/sp/feedback', {
+    apiFetch<{ status: number }>('/myconext/api/sp/feedback', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: payload,
     });
