@@ -22,29 +22,16 @@
 .stores {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: spacing(6);
 
-    // only stacked next to the QR code, without it the badges keep their row
-    .installQr + :global(.store-badges) {
+    :global(.store-badges):has(+ .installQr) {
         flex-direction: column;
-        flex: 0 0 8.7rem;
+        flex: 0 0 #{spacing(35)};
 
-        // in a column the badges size by their width, not by flex
         :global(.store-badges__badge) {
-            flex: none;
             width: 100%;
-        }
-
-        // the QR code is hidden here, but still a sibling in the DOM
-        @media (max-width: 480px) {
-            flex-direction: row;
-            flex: 1;
-
-            :global(.store-badges__badge) {
-                flex: 1;
-                width: auto;
-            }
         }
     }
 }
@@ -55,10 +42,6 @@
     svg {
         width: 7.5rem;
         height: 7.5rem;
-    }
-
-    @media (max-width: 480px) {
-        display: none;
     }
 }
 
