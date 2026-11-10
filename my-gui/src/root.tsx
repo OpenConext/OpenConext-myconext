@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
+import { EnvironmentRibbon } from '@myconext/shared-gui';
 import { Button, Toaster } from '@surfnet/curve-react';
 import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -21,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     content="width=device-width, initial-scale=1"
                 />
                 <link rel="icon" type="image/png" href="/favicon.ico" />
-                <link rel="stylesheet" href="/myconext/api/disclaimer" />
+                <EnvironmentRibbon />
                 <title>{I18n.t('globalVariables.productName')}</title>
                 <Meta />
                 <Links />
