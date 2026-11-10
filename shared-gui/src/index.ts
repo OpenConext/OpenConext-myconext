@@ -1,16 +1,17 @@
 export { ENVIRONMENT_RIBBON_URL, EnvironmentRibbon } from './components/EnvironmentRibbon';
-export { OtpInput } from './OtpInput';
-export type { OtpInputProps } from './OtpInput';
-export { UserFeedbackWidget } from './UserFeedbackWidget';
-export type {
-    FeedbackConfig,
-    FeedbackPayload,
-    FeedbackUser,
-    UserFeedbackWidgetProps,
-} from './UserFeedbackWidget';
-export { createI18n } from './createI18n';
+export { OtpInput, type OtpInputProps } from './components/OtpInput';
+export {
+    UserFeedbackWidget,
+    type FeedbackConfig,
+    type FeedbackPayload,
+    type FeedbackUser,
+    type UserFeedbackWidgetProps,
+} from './components/UserFeedbackWidget';
+export { InstallAppQr, type InstallAppQrProps } from './components/InstallAppQr';
+export { StoreBadges, type StoreBadgesProps } from './components/StoreBadges';
+
+export { createI18n, type CreateI18nOptions } from './createI18n';
 export { sanitizeHtml } from './sanitizeHtml';
-export type { CreateI18nOptions } from './createI18n';
 export { getParameterByName, replaceQueryParameter } from './queryParameters';
 export {
     isAndroid,
@@ -18,35 +19,31 @@ export {
     isMobile,
     isTouchDevice,
     redirectToAppStore,
+    type AppStoreUrls,
 } from './device';
-export type { AppStoreUrls } from './device';
-export { InstallAppQr } from './InstallAppQr';
-export type { InstallAppQrProps } from './InstallAppQr';
-export { StoreBadges } from './StoreBadges';
-export type { StoreBadgesProps } from './StoreBadges';
-export { useEnrollmentPolling } from './useEnrollmentPolling';
-export type { UseEnrollmentPollingOptions } from './useEnrollmentPolling';
-export { createApiFetch } from './utils/apiFetch';
-export type {
-    ApiFetch,
-    ApiFetchConfig,
-    ApiFetchOptions,
-    HttpMethod,
+export {
+    useEnrollmentPolling,
+    type UseEnrollmentPollingOptions,
+} from './useEnrollmentPolling';
+export {
+    createApiFetch,
+    type ApiFetch,
+    type ApiFetchConfig,
+    type ApiFetchOptions,
+    type HttpMethod,
 } from './utils/apiFetch';
 export {
     createEnrollmentApi,
     SESSION_SCOPE,
     toSendError,
-} from './api/enrollment';
-export type {
-    BackupCodeResponse,
-    EnrollmentApi,
-    EnrollmentScope,
-    EnrollmentStatus,
-    SendError,
-    SendPhoneCodeResponse,
-    StartEnrollmentResponse,
-    VerifyPhoneCodeResponse,
+    type BackupCodeResponse,
+    type EnrollmentApi,
+    type EnrollmentScope,
+    type EnrollmentStatus,
+    type SendError,
+    type SendPhoneCodeResponse,
+    type StartEnrollmentResponse,
+    type VerifyPhoneCodeResponse,
 } from './api/enrollment';
 export {
     formatRecoveryCode,
