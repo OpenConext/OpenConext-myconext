@@ -47,6 +47,11 @@ export default defineConfig({
                 changeOrigin: false,
                 secure: false,
             },
+            '/register': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false,
+            },
             '/saml/guest-idp': {
                 target: 'http://localhost:8081',
                 changeOrigin: false,
