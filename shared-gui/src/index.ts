@@ -1,3 +1,4 @@
+export { ENVIRONMENT_RIBBON_URL, EnvironmentRibbon } from './components/EnvironmentRibbon';
 export { OtpInput } from './OtpInput';
 export type { OtpInputProps } from './OtpInput';
 export { UserFeedbackWidget } from './UserFeedbackWidget';

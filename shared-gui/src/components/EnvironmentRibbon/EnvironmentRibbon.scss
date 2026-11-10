@@ -1,0 +1,35 @@
+body::after {
+    position: fixed;
+    top: 15px;
+    right: -25px;
+    z-index: 1000;
+    width: 109px;
+    height: 28px;
+    color: white;
+    font-family: var(--font-sans, sans-serif);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    transform: rotate(45deg);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+    // the ribbon sits on top of the header actions, do not block them
+    pointer-events: none;
+}
+
+// On mobile the corner would cover the hamburger button, so the ribbon
+// becomes a label centred in the top bar instead. Apps with another top bar
+// height set `--environment-ribbon-bar-height`.
+// 768px matches the curve-react mobile breakpoint (useIsMobile in the sidebar).
+@media (max-width: 767px) {
+    body::after {
+        top: calc((var(--environment-ribbon-bar-height, 4rem) - 28px) / 2);
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        border-radius: var(--radius-md);
+        line-height: 28px;
+        transform: none;
+    }
+}

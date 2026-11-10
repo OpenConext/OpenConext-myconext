@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
+import { EnvironmentRibbon } from '@myconext/shared-gui';
 import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -21,6 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     content="width=device-width, initial-scale=1"
                 />
                 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+                <EnvironmentRibbon />
                 <title>login-gui!</title>
                 <Meta />
                 <Links />
