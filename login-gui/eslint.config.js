@@ -41,4 +41,28 @@ export default defineConfig([
             ],
         },
     },
+    {
+        // React Router's Vite plugin handles HMR for these route module exports
+        files: ['src/routes/**/route.tsx'],
+        rules: {
+            'react-refresh/only-export-components': [
+                'error',
+                {
+                    allowExportNames: [
+                        'clientLoader',
+                        'clientAction',
+                        'loader',
+                        'action',
+                        'meta',
+                        'links',
+                        'handle',
+                        'headers',
+                        'shouldRevalidate',
+                        'ErrorBoundary',
+                        'HydrateFallback',
+                    ],
+                },
+            ],
+        },
+    },
 ]);
