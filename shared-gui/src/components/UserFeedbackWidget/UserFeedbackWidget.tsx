@@ -17,7 +17,7 @@ import {
 } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
-import { sanitizeHtml } from '../../sanitizeHtml';
+import { sanitizeHtml } from '../../utils/sanitizeHtml';
 import './UserFeedbackWidget.scss';
 
 export type FeedbackPayload = {

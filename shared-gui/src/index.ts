@@ -10,9 +10,9 @@ export {
 export { InstallAppQr, type InstallAppQrProps } from './components/InstallAppQr';
 export { StoreBadges, type StoreBadgesProps } from './components/StoreBadges';
 
-export { createI18n, type CreateI18nOptions } from './createI18n';
-export { sanitizeHtml } from './sanitizeHtml';
-export { getParameterByName, replaceQueryParameter } from './queryParameters';
+export { createI18n, type CreateI18nOptions } from './utils/createI18n';
+export { sanitizeHtml } from './utils/sanitizeHtml';
+export { getParameterByName, replaceQueryParameter } from './utils/queryParameters';
 export {
     isAndroid,
     isIos,
@@ -20,11 +20,11 @@ export {
     isTouchDevice,
     redirectToAppStore,
     type AppStoreUrls,
-} from './device';
+} from './utils/device';
 export {
     useEnrollmentPolling,
     type UseEnrollmentPollingOptions,
-} from './useEnrollmentPolling';
+} from './hooks/useEnrollmentPolling';
 export {
     createApiFetch,
     type ApiFetch,
@@ -45,8 +45,6 @@ export {
     type StartEnrollmentResponse,
     type VerifyPhoneCodeResponse,
 } from './api/enrollment';
-export {
-    formatRecoveryCode,
-    useCopyToClipboard,
-    useWarnBeforeUnload,
-} from './recoveryCode';
+export { formatRecoveryCode } from './utils/formatRecoveryCode';
+export { useCopyToClipboard } from './hooks/useCopyToClipboard';
+export { useWarnBeforeUnload } from './hooks/useWarnBeforeUnload';
