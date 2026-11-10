@@ -6,7 +6,6 @@ import I18n from '../../locale/I18n';
 import './route.scss';
 
 // opened from the QR code in the activate app dialog, sends the phone to its app store
-// eslint-disable-next-line react-refresh/only-export-components
 export function clientLoader() {
     redirectToAppStore({
         appleUrl: I18n.t('app.get.apple'),
