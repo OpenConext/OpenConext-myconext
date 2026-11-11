@@ -49,6 +49,13 @@ const en: AppTranslation = {
         info: 'We have also sent you a confirmation email.',
         next: 'Next',
     },
+    success: {
+        title: 'Login almost done!',
+        info: [
+            'Please go back to the screen where you requested the link and follow the instructions there.',
+            'You can close this tab / window.',
+        ],
+    },
     remember: {
         title: 'Stay signed in?',
         info: "You won't need to log in again next time. Only do this on a device you don't share with others.",
