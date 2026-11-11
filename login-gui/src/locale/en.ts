@@ -199,8 +199,47 @@ const en: AppTranslation = {
             'Your eduID could not be linked. The trusted account with which you just logged in did not provide an EPPN.',
             'You can try to link to another institution or proceed to {{serviceName}}.',
         ],
+    },
+    linkOutcome: {
         retry: 'Retry',
         proceed: 'Proceed',
+    },
+    affiliationMissing: {
+        title: 'Account linked, but…',
+        info: [
+            'Your eduID is successfully linked, however the institution you choose did not provide an affiliation.',
+            'You can try to link to another institution or proceed to {{serviceName}}.',
+        ],
+    },
+    validNameMissing: {
+        title: 'Account linked, but…',
+        info: [
+            'Your eduID is successfully linked, however the institution you choose did not provide a valid name.',
+            'You can try to link to another institution or proceed to {{serviceName}}.',
+        ],
+    },
+    eppnAlreadyLinked: {
+        title: 'Account not linked!',
+        info: [
+            'Your eduID could not be linked. The trusted account with which you just logged in, is already linked to a different eduID account: {{email}}.',
+            'You can try to link to another institution or proceed to {{serviceName}}.',
+        ],
+    },
+    subjectAlreadyLinked: {
+        title: 'Account not verified!',
+        info: [
+            'Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account: {{email}}.',
+            'You can try to verify your account again or proceed to {{serviceName}}.',
+        ],
+    },
+    iapAssuranceMissing: {
+        title: 'Account linked, but…',
+        levelHigh: 'High',
+        levelMedium: 'Medium',
+        info: [
+            'Your eduID is successfully linked, however the institution you choose did not provide the required {{level}} level of assurance.',
+            'You can try to verify your identity via another trusted party or proceed to {{serviceName}}.',
+        ],
     },
     confirmStepup: {
         title: 'Thanks!',

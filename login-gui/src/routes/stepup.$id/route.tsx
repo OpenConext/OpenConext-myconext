@@ -32,7 +32,11 @@ export default function Stepup() {
     };
 
     const explanationParam = searchParams.get('explanation');
-    const isSupported = isSupportedExplanation(explanationParam);
+    const explanation = isSupportedExplanation(explanationParam)
+        ? explanationParam
+        : null;
+    // A retry skips the explanation, so (e.g. from the *-already-linked pages) it needs no explanation param.
+    const canRender = isRetry || explanation !== null;
 
     const {
         data: service,
@@ -41,10 +45,10 @@ export default function Stepup() {
     } = useQuery({
         queryKey: ['serviceName', id],
         queryFn: () => fetchServiceName(id),
-        enabled: !!id && isSupported,
+        enabled: !!id && canRender,
     });
 
-    if (isError || !isSupportedExplanation(explanationParam)) {
+    if (isError || !canRender) {
         return <Navigate to="/expired" replace />;
     }
 
@@ -52,10 +56,10 @@ export default function Stepup() {
         return <Loading title={I18n.t('stepup.title')} />;
     }
 
-    if (showValidateExplanation) {
+    if (showValidateExplanation && explanation) {
         return (
             <StepupExplanation
-                explanation={explanationParam}
+                explanation={explanation}
                 serviceName={service.name}
                 onContinue={() => {
                     if (!config?.featureIdVerify) {
@@ -72,9 +76,9 @@ export default function Stepup() {
         <ValidateNamesView
             id={id}
             mode={
-                isRetry
+                isRetry || !explanation
                     ? ValidateNamesMode.AlternativesOnly
-                    : MODE_BY_EXPLANATION[explanationParam]
+                    : MODE_BY_EXPLANATION[explanation]
             }
             onUseInstitution={goToInstitution}
         />

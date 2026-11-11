@@ -199,8 +199,47 @@ const nl: AppTranslation = {
             'Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.',
             'Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{serviceName}}.',
         ],
+    },
+    linkOutcome: {
         retry: 'Opnieuw proberen',
         proceed: 'Doorgaan',
+    },
+    affiliationMissing: {
+        title: 'Account is gekoppeld, maar…',
+        info: [
+            'Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de vereiste persoonsgegevens teruggegeven.',
+            'Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{serviceName}}.',
+        ],
+    },
+    validNameMissing: {
+        title: 'Account is gekoppeld, maar…',
+        info: [
+            'Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de vereiste persoonsgegevens teruggegeven.',
+            'Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{serviceName}}.',
+        ],
+    },
+    eppnAlreadyLinked: {
+        title: 'Account niet gekoppeld!',
+        info: [
+            'Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.',
+            'Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{serviceName}}.',
+        ],
+    },
+    subjectAlreadyLinked: {
+        title: 'Account niet geverifieerd!',
+        info: [
+            'Je eduID kon niet worden geverifieerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.',
+            'Je kan nogmaals proberen je account te verifiëren of doorgaan naar {{serviceName}}.',
+        ],
+    },
+    iapAssuranceMissing: {
+        title: 'Account is gekoppeld, maar…',
+        levelHigh: 'Hoog',
+        levelMedium: 'Midden',
+        info: [
+            'Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet het vereiste betrouwbaarheidsniveau {{level}} teruggegeven.',
+            'Je kan proberen je identiteit via een andere vertrouwde partij te verifiëren of doorgaan naar {{serviceName}}.',
+        ],
     },
     confirmStepup: {
         title: 'Gelukt!',
