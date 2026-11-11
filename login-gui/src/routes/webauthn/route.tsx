@@ -1,9 +1,9 @@
 import { Navigate, useSearchParams } from 'react-router';
 
 import { WarningDiamondIcon } from '@phosphor-icons/react';
-import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
+import { Alert, AlertDescription } from '@surfnet/curve-react';
 
-import { LoginContainer } from '../../components';
+import { LoadingButton, LoginContainer } from '../../components';
 import { useSecurityKeyRegistration } from '../../hooks';
 import I18n from '../../locale/I18n';
 import styles from './route.module.scss';
@@ -36,14 +36,15 @@ export default function WebAuthn() {
                         </AlertDescription>
                     </Alert>
                 )}
-                <Button
+                <LoadingButton
                     type="button"
-                    disabled={isPending || isSuccess}
+                    loading={isPending}
+                    disabled={isSuccess}
                     autoFocus
                     onClick={() => startRegistration()}
                 >
                     {I18n.t('addWebAuthn.submit')}
-                </Button>
+                </LoadingButton>
             </div>
         </LoginContainer>
     );

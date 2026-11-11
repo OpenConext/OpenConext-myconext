@@ -10,7 +10,7 @@ import {
     webAuthnFinishAuthentication,
     webAuthnStartAuthentication,
 } from '../../api';
-import { LoginContainer } from '../../components';
+import { LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
@@ -90,14 +90,15 @@ export default function UseWebAuthn() {
                         </AlertDescription>
                     </Alert>
                 )}
-                <Button
+                <LoadingButton
                     type="button"
-                    disabled={isPending || isSuccess}
+                    loading={isPending}
+                    disabled={isSuccess}
                     autoFocus
                     onClick={() => startAuthentication()}
                 >
                     {I18n.t('webAuthn.submit')}
-                </Button>
+                </LoadingButton>
             </div>
         </LoginContainer>
     );

@@ -1,4 +1,11 @@
-import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+    type FC,
+    type ReactNode,
+    type SubmitEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
 import { OtpInput } from '@myconext/shared-gui';
@@ -6,7 +13,7 @@ import { Button } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
-import { LoginContainer } from '../../components';
+import { LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
@@ -72,6 +79,16 @@ export default function Code() {
         },
     });
 
+    const isValidForm = code.trim() !== '';
+
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (isVerifying || !isValidForm) {
+            return;
+        }
+        submitCode(code.trim());
+    };
+
     const footer = (
         <>
             <p>{I18n.t('codeScreen.noAccess')}</p>
@@ -103,13 +120,7 @@ export default function Code() {
 
     return (
         <Container email={email} onBack={goToLogin} footer={footer}>
-            <form
-                className={styles.form}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    submitCode(code.trim());
-                }}
-            >
+            <form className={styles.form} onSubmit={handleSubmit}>
                 <OtpInput
                     ariaLabel={I18n.t('codeScreen.inputLabel')}
                     value={code}
@@ -121,13 +132,14 @@ export default function Code() {
                     <p role="alert">Invalid code, please try again.</p>
                 )}
 
-                <Button
+                <LoadingButton
                     type="submit"
                     className={styles.submit}
-                    disabled={isVerifying}
+                    loading={isVerifying}
+                    disabled={!isValidForm}
                 >
                     {I18n.t('codeScreen.submit')}
-                </Button>
+                </LoadingButton>
             </form>
 
             <div className={styles.help}>

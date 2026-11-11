@@ -6,6 +6,7 @@ import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
 
 import type { SendError } from '../../api';
 import I18n from '../../locale/I18n';
+import { LoadingButton } from '../LoadingButton/LoadingButton';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './PhoneRecovery.module.scss';
 
@@ -54,15 +55,15 @@ export const PhoneConfirmationView = ({
         footer={
             <>
                 <p>{I18n.t('phoneConfirmation.noCode')}</p>
-                <Button
+                <LoadingButton
                     type="button"
                     variant="link"
                     className={styles.link}
-                    disabled={isResending}
+                    loading={isResending}
                     onClick={onResend}
                 >
                     {I18n.t('phoneConfirmation.resend')}
-                </Button>
+                </LoadingButton>
             </>
         }
     >
@@ -121,17 +122,15 @@ export const PhoneConfirmationView = ({
                     {I18n.t('phoneConfirmation.resent')}
                 </p>
             )}
-            <Button
+            <LoadingButton
                 type="submit"
+                loading={isVerifying}
                 disabled={
-                    !ready ||
-                    isVerifying ||
-                    code.length === 0 ||
-                    codeError === 'maxAttempts'
+                    !ready || code.length === 0 || codeError === 'maxAttempts'
                 }
             >
                 {I18n.t('phoneConfirmation.submit')}
-            </Button>
+            </LoadingButton>
         </form>
     </LoginContainer>
 );

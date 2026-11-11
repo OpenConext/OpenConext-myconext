@@ -4,7 +4,6 @@ import { WarningDiamondIcon } from '@phosphor-icons/react';
 import {
     Alert,
     AlertDescription,
-    Button,
     Field,
     FieldDescription,
     FieldLabel,
@@ -13,6 +12,7 @@ import {
 
 import type { SendError } from '../../api';
 import I18n from '../../locale/I18n';
+import { LoadingButton } from '../LoadingButton/LoadingButton';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './PhoneRecovery.module.scss';
 
@@ -82,16 +82,13 @@ export const PhoneVerificationView = ({
                     </AlertDescription>
                 </Alert>
             )}
-            <Button
+            <LoadingButton
                 type="submit"
-                disabled={
-                    isPending ||
-                    phoneNumber === '' ||
-                    sendError === 'rateLimited'
-                }
+                loading={isPending}
+                disabled={phoneNumber === '' || sendError === 'rateLimited'}
             >
                 {I18n.t('phoneVerification.submit')}
-            </Button>
+            </LoadingButton>
         </form>
     </LoginContainer>
 );

@@ -4,7 +4,7 @@ import { Button } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, rememberMe } from '../../api';
-import { LoginContainer } from '../../components';
+import { LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import { getProceedUrl } from '../../utils/sso.ts';
 import styles from './Remember.module.scss';
@@ -51,14 +51,15 @@ export default function Remember() {
                 >
                     {I18n.t('remember.no')}
                 </Button>
-                <Button
+                <LoadingButton
                     type="button"
                     className={styles.primary}
-                    disabled={isRemembering || isSuccess}
+                    loading={isRemembering}
+                    disabled={isSuccess}
                     onClick={() => remember(hash, { onSuccess: proceed })}
                 >
                     {I18n.t('remember.yes')}
-                </Button>
+                </LoadingButton>
             </div>
         </LoginContainer>
     );
