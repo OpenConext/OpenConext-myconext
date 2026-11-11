@@ -10,11 +10,7 @@ function App() {
     const dark = useAppStore((state) => state.dark);
     const toggleDark = useAppStore((state) => state.toggleDark);
 
-    const {
-        data: config,
-        isLoading,
-        isError,
-    } = useQuery(configQueryOptions);
+    const { data: config, isLoading, isError } = useQuery(configQueryOptions);
 
     if (isLoading) {
         return <div>Loading...</div>;

@@ -10,7 +10,8 @@ type UseAppFooterProps = {
 export const UseAppFooter = ({ onOtherMethod }: UseAppFooterProps) => (
     <div className={styles.footer}>
         <span>{I18n.t('useApp.noAccess')}</span>
-        <a href={I18n.t('useApp.reRegisterUrl')}
+        <a
+            href={I18n.t('useApp.reRegisterUrl')}
             target="_blank"
             rel="noopener noreferrer"
         >
