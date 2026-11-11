@@ -97,6 +97,10 @@ export default function PhoneConfirmation() {
     const goToPhoneVerification = () =>
         navigate(`/phone-verification${query}`, { state: { phoneNumber } });
 
+    const canVerify =
+        config !== undefined && !isVerifying && codeError !== 'maxAttempts';
+    const isValidForm = canVerify && code.length > 0;
+
     return (
         <PhoneConfirmationView
             phoneNumber={phoneNumber}
@@ -104,14 +108,18 @@ export default function PhoneConfirmation() {
             inputRef={inputRef}
             onCodeChange={setCode}
             onComplete={(value) => {
+                if (!canVerify) {
+                    return;
+                }
                 setCodeError(null);
                 verify(value);
             }}
             onSubmit={(e) => {
                 e.preventDefault();
-                if (code.length > 0) {
-                    verify(code);
+                if (!isValidForm) {
+                    return;
                 }
+                verify(code);
             }}
             onResend={() => resend()}
             onChangeNumber={goToPhoneVerification}

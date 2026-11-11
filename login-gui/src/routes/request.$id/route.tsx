@@ -1,14 +1,8 @@
-import { type FC, type ReactNode, useState } from 'react';
+import { type FC, type ReactNode, type SubmitEvent, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import { sanitizeHtml } from '@myconext/shared-gui';
-import {
-    Button,
-    Checkbox,
-    Field,
-    FieldLabel,
-    Input,
-} from '@surfnet/curve-react';
+import { Checkbox, Field, FieldLabel, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
@@ -16,7 +10,7 @@ import {
     fetchServiceName,
     generateCodeNewUser,
 } from '../../api';
-import { Captcha, LoginContainer } from '../../components';
+import { Captcha, LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import styles from './route.module.scss';
 
@@ -100,15 +94,24 @@ export default function Request() {
     const errorStatus = error instanceof Response ? error.status : undefined;
     const captchaPending = isPending || (!!captchaSiteKey && !captchaResponse);
 
+    const isValidForm =
+        email.trim() !== '' &&
+        givenName.trim() !== '' &&
+        familyName.trim() !== '' &&
+        agreed &&
+        !captchaPending;
+
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (isSubmitting || !isValidForm) {
+            return;
+        }
+        submit();
+    };
+
     return (
         <Container id={id}>
-            <form
-                className={styles.form}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    submit();
-                }}
-            >
+            <form className={styles.form} onSubmit={handleSubmit}>
                 <Field>
                     <FieldLabel htmlFor="email">
                         {I18n.t('request.email')}
@@ -181,12 +184,13 @@ export default function Request() {
                         onChange={setCaptchaResponse}
                     />
                 )}
-                <Button
+                <LoadingButton
                     type="submit"
-                    disabled={!agreed || captchaPending || isSubmitting}
+                    loading={isSubmitting}
+                    disabled={!isValidForm}
                 >
                     {I18n.t('request.submit')}
-                </Button>
+                </LoadingButton>
             </form>
         </Container>
     );
