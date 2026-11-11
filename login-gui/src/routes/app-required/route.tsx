@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, fetchServiceNameByHash } from '../../api';
-import { AppRequiredView } from '../../components';
+import { AppRequiredView, LoadingSpinner } from '../../components';
 import { getProceedUrl } from '../../utils/sso';
 
 export default function AppRequired() {
@@ -29,7 +29,7 @@ export default function AppRequired() {
     }
 
     if (isConfigPending || isServicePending) {
-        return null;
+        return <LoadingSpinner />;
     }
 
     const proceedUrl = getProceedUrl(searchParams, config?.magicLinkUrl ?? '');

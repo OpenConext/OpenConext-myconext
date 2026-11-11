@@ -10,6 +10,9 @@ const en: AppTranslation = {
         en: 'English',
         nl: 'Dutch',
     },
+    common: {
+        loading: 'Loading...',
+    },
     landing: {
         title: 'What is eduID for?',
         description: 'Your ID for lifelong learning',
@@ -29,7 +32,6 @@ const en: AppTranslation = {
         descriptionWithService: 'to continue to {{serviceName}}',
         description: 'to continue',
         useOtherAccount: 'Use another account',
-        loading: 'Loading...',
         submit: 'Continue',
         noAccount: "Don't have a {{productName}} yet?",
         createAccount: 'Create a {{productName}}',
@@ -69,6 +71,7 @@ const en: AppTranslation = {
         back: 'Go to eduid.nl',
     },
     codeScreen: {
+        sending: 'Sending code...',
         title: 'Log in with {{productName}}',
         description: 'Enter the code sent to {{email}}',
         inputLabel: 'Code',
@@ -110,7 +113,6 @@ const en: AppTranslation = {
         description:
             "We've sent a push notification to your app to check that it's you logging in.",
         scanTitle: 'Scan the QR code with your {{productName}} app',
-        loading: 'Loading...',
         qrAlt: 'QR code to log in with the {{productName}} app',
         openApp: 'Open the app on this device',
         noNotification: 'No notification?',
@@ -138,7 +140,6 @@ const en: AppTranslation = {
     options: {
         title: 'Log in with {{productName}}',
         description: 'Choose how you want to log in',
-        loading: 'Loading...',
         error: 'Failed to load login options. Please try again.',
         useApp: 'Use the {{productName}} app',
         useWebAuthn: 'Use your security key',
