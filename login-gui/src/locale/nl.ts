@@ -49,6 +49,13 @@ const nl: AppTranslation = {
         info: 'We hebben je ook een bevestigingsmail gestuurd.',
         next: 'Volgende',
     },
+    success: {
+        title: 'Inloggen is bijna klaar!',
+        info: [
+            'Ga terug naar het scherm waar je de link hebt aangevraagd en volg de instructies daar op.',
+            'Je kunt dit tabblad / venster sluiten.',
+        ],
+    },
     remember: {
         title: 'Ingelogd blijven?',
         info: 'Je hoeft de volgende keer niet opnieuw in te loggen. Doe dit alleen op een apparaat dat je niet met anderen deelt.',
