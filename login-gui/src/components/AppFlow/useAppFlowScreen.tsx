@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import type { TiqrFlow } from '../../hooks/useTiqrAuthentication';
 import I18n from '../../locale/I18n';
+import { LoadingSpinner } from '../Loading/LoadingSpinner';
 import type { ManualCode } from './ManualCodeEntry';
 import { PushPrompt } from './PushPrompt';
 import { QrScan } from './QrScan';
@@ -39,7 +40,7 @@ const getScreen = (
             return {
                 title: I18n.t('useApp.title'),
                 showFooter: false,
-                body: I18n.t('useApp.loading'),
+                body: <LoadingSpinner />,
             };
         case 'active': {
             const suspendedAlert = (

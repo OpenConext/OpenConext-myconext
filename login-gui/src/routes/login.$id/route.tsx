@@ -17,7 +17,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
-import { ItemList, LoginContainer } from '../../components';
+import { ItemList, LoadingSpinner, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import {
     forgetKnownUser,
@@ -100,7 +100,7 @@ export default function Login() {
     if (isLoading || isPending) {
         return (
             <Container serviceName={service?.name}>
-                {I18n.t('login.loading')}
+                <LoadingSpinner />
             </Container>
         );
     }

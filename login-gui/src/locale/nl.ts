@@ -10,6 +10,9 @@ const nl: AppTranslation = {
         en: 'Engels',
         nl: 'Nederlands',
     },
+    common: {
+        loading: 'Laden...',
+    },
     landing: {
         title: 'Waar is eduID voor?',
         description: 'Jouw ID voor een leven lang leren',
@@ -29,7 +32,6 @@ const nl: AppTranslation = {
         descriptionWithService: 'om door te gaan naar {{serviceName}}',
         description: 'om door te gaan',
         useOtherAccount: 'Gebruik een ander account',
-        loading: 'Laden...',
         submit: 'Ga door',
         noAccount: 'Heb je nog geen {{productName}}?',
         createAccount: 'Maak een {{productName}} aan',
@@ -69,6 +71,7 @@ const nl: AppTranslation = {
         back: 'Ga naar eduid.nl',
     },
     codeScreen: {
+        sending: 'Code wordt verzonden...',
         title: 'Log in met {{productName}}',
         description: 'Vul de code in die je hebt ontvangen op {{email}}',
         inputLabel: 'Code',
@@ -110,7 +113,6 @@ const nl: AppTranslation = {
         description:
             'We hebben een pushmelding naar je app gestuurd om te controleren dat jij het bent die inlogt.',
         scanTitle: 'Scan de QR-code met je {{productName}} app',
-        loading: 'Laden...',
         qrAlt: 'QR-code om in te loggen met de {{productName}} app',
         openApp: 'Open de app op dit apparaat',
         noNotification: 'Geen melding?',
@@ -138,7 +140,6 @@ const nl: AppTranslation = {
     options: {
         title: 'Log in met {{productName}}',
         description: 'Kies hoe je wilt inloggen',
-        loading: 'Laden...',
         error: 'Inlogopties laden mislukt. Probeer het opnieuw.',
         useApp: 'Gebruik de {{productName}} app',
         useWebAuthn: 'Gebruik je beveiligingssleutel',

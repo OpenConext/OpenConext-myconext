@@ -2,14 +2,14 @@ import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions } from '../../api';
-import { LoginContainer } from '../../components';
+import { LoadingSpinner, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 
 export default function Expired() {
     const { data: config, isPending } = useQuery(configQueryOptions);
 
     if (isPending) {
-        return null;
+        return <LoadingSpinner />;
     }
 
     const homeUrl = config?.baseDomain ? `https://${config.baseDomain}` : null;

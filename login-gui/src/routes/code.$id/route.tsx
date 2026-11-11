@@ -13,7 +13,11 @@ import { Button } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
-import { LoadingButton, LoginContainer } from '../../components';
+import {
+    LoadingButton,
+    LoadingSpinner,
+    LoginContainer,
+} from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
@@ -105,7 +109,7 @@ export default function Code() {
     if (isGenerating) {
         return (
             <Container email={email} onBack={goToLogin}>
-                Sending code...
+                <LoadingSpinner label={I18n.t('codeScreen.sending')} />
             </Container>
         );
     }

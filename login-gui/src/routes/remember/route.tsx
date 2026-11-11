@@ -4,7 +4,11 @@ import { Button } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, rememberMe } from '../../api';
-import { LoadingButton, LoginContainer } from '../../components';
+import {
+    LoadingButton,
+    LoadingSpinner,
+    LoginContainer,
+} from '../../components';
 import I18n from '../../locale/I18n.ts';
 import { getProceedUrl } from '../../utils/sso.ts';
 import styles from './Remember.module.scss';
@@ -24,7 +28,7 @@ export default function Remember() {
     });
 
     if (isPending) {
-        return null;
+        return <LoadingSpinner />;
     }
 
     const hash = searchParams.get('h');
