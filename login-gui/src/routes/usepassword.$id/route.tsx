@@ -1,4 +1,4 @@
-import { type FC, type ReactNode, useState } from 'react';
+import { type FC, type ReactNode, type SubmitEvent, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
 import { WarningDiamondIcon } from '@phosphor-icons/react';
@@ -13,7 +13,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchServiceName, passwordLoginRequest } from '../../api';
-import { LoginContainer } from '../../components';
+import { LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
@@ -80,6 +80,18 @@ export default function UsePassword() {
 
     const goToOptions = () => navigate(`/options/${id}`, { state: { email } });
 
+    const isLoading = isPending;
+    const isValidForm = password !== '';
+
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (isLoading || !isValidForm) {
+            return;
+        }
+        setIncorrect(false);
+        submitPassword(password);
+    };
+
     const footer = (
         <Button
             variant="link"
@@ -98,14 +110,7 @@ export default function UsePassword() {
             onBack={goToOptions}
             footer={footer}
         >
-            <form
-                className={styles.form}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    setIncorrect(false);
-                    submitPassword(password);
-                }}
-            >
+            <form className={styles.form} onSubmit={handleSubmit}>
                 <input
                     type="email"
                     hidden
@@ -142,9 +147,13 @@ export default function UsePassword() {
                         </AlertDescription>
                     </Alert>
                 )}
-                <Button type="submit" disabled={isPending || password === ''}>
+                <LoadingButton
+                    type="submit"
+                    loading={isLoading}
+                    disabled={!isValidForm}
+                >
                     {I18n.t('password.submit')}
-                </Button>
+                </LoadingButton>
             </form>
         </Container>
     );
