@@ -46,10 +46,7 @@ export const LoginContainer = ({
                 </Button>
             </div>
             <Card className={styles.card}>
-                <CardHeader
-                    className={styles.header}
-                    data-align={headerAlign}
-                >
+                <CardHeader className={styles.header} data-align={headerAlign}>
                     <CardTitle className={styles.title}>
                         <h1>{title}</h1>
                     </CardTitle>
