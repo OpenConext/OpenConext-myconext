@@ -6,8 +6,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { configQueryOptions, rememberMe } from '../../api';
 import {
     ErrorAlert,
+    Loading,
     LoadingButton,
-    LoadingSpinner,
     LoginContainer,
 } from '../../components';
 import I18n from '../../locale/I18n.ts';
@@ -29,7 +29,7 @@ export default function Remember() {
     });
 
     if (isPending) {
-        return <LoadingSpinner />;
+        return <Loading title={I18n.t('remember.title')} />;
     }
 
     const hash = searchParams.get('h');
