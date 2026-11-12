@@ -231,7 +231,7 @@ const nl: AppTranslation = {
             idin: 'iDIN',
             eherkenning: 'eIDAS',
             studielink: 'Studielink',
-            serviceDesk: 'Servicedesk',
+            servicedesk: 'Servicedesk',
         },
         unverified: {
             title: 'Nog niet bevestigd',

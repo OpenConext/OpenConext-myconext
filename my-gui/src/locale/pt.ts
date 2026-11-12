@@ -230,7 +230,7 @@ const pt: AppTranslation = {
             idin: 'iDIN',
             eherkenning: 'eIDAS',
             studielink: 'Studielink',
-            serviceDesk: 'Service desk',
+            servicedesk: 'Service desk',
         },
         unverified: {
             title: 'Not confirmed yet',
