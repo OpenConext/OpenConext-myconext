@@ -172,6 +172,8 @@ const en: AppTranslation = {
             bankMoreUrl: 'https://www.idin.nl/en/',
             bankMore: 'More about iDIN',
             bankMissing: 'Is your bank not listed?',
+            bankError:
+                'The list of banks could not be loaded. Please try again, or choose another method.',
             otherMethod: 'Choose another method',
         },
         validate_names: {
