@@ -1,11 +1,11 @@
 import type { Ref, SubmitEvent } from 'react';
 
 import { OtpInput } from '@myconext/shared-gui';
-import { WarningDiamondIcon } from '@phosphor-icons/react';
-import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
+import { Button } from '@surfnet/curve-react';
 
 import type { SendError } from '../../api';
 import I18n from '../../locale/I18n';
+import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { LoadingButton } from '../LoadingButton/LoadingButton';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './PhoneRecovery.module.scss';
@@ -77,45 +77,36 @@ export const PhoneConfirmationView = ({
                 onComplete={onComplete}
             />
             {codeError === 'maxAttempts' ? (
-                <Alert variant="warning">
-                    <WarningDiamondIcon />
-                    <AlertDescription>
-                        {I18n.t('phoneConfirmation.maxAttempts')}{' '}
-                        <Button
-                            type="button"
-                            variant="link"
-                            className={styles.link}
-                            onClick={onChangeNumber}
-                        >
-                            {I18n.t('phoneConfirmation.changeNumber')}
-                        </Button>
-                    </AlertDescription>
-                </Alert>
+                <ErrorAlert>
+                    {I18n.t('phoneConfirmation.maxAttempts')}{' '}
+                    <Button
+                        type="button"
+                        variant="link"
+                        className={styles.link}
+                        onClick={onChangeNumber}
+                    >
+                        {I18n.t('phoneConfirmation.changeNumber')}
+                    </Button>
+                </ErrorAlert>
             ) : (
                 codeError !== null && (
-                    <Alert variant="warning" role="alert">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t(
-                                codeError === 'incorrect'
-                                    ? 'phoneConfirmation.incorrect'
-                                    : 'phoneConfirmation.error',
-                            )}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>
+                        {I18n.t(
+                            codeError === 'incorrect'
+                                ? 'phoneConfirmation.incorrect'
+                                : 'phoneConfirmation.error',
+                        )}
+                    </ErrorAlert>
                 )
             )}
             {resendError !== null && (
-                <Alert variant="warning">
-                    <WarningDiamondIcon />
-                    <AlertDescription>
-                        {I18n.t(
-                            resendError === 'rateLimited'
-                                ? 'phoneVerification.rateLimited'
-                                : 'phoneVerification.error',
-                        )}
-                    </AlertDescription>
-                </Alert>
+                <ErrorAlert>
+                    {I18n.t(
+                        resendError === 'rateLimited'
+                            ? 'phoneVerification.rateLimited'
+                            : 'phoneVerification.error',
+                    )}
+                </ErrorAlert>
             )}
             {resent && resendError === null && (
                 <p role="status" className={styles.status}>

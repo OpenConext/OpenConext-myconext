@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, rememberMe } from '../../api';
 import {
+    ErrorAlert,
     LoadingButton,
     LoadingSpinner,
     LoginContainer,
@@ -44,7 +45,7 @@ export default function Remember() {
     return (
         <LoginContainer title={I18n.t('remember.title')} headerAlign="center">
             <p className={styles.info}>{I18n.t('remember.info')}</p>
-            {isError && <p role="alert">{I18n.t('remember.error')}</p>}
+            {isError && <ErrorAlert>{I18n.t('remember.error')}</ErrorAlert>}
             <div className={styles.actions}>
                 <Button
                     type="button"

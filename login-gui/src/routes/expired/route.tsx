@@ -2,7 +2,7 @@ import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions } from '../../api';
-import { LoadingSpinner, LoginContainer } from '../../components';
+import { ErrorAlert, LoadingSpinner, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 
 export default function Expired() {
@@ -16,7 +16,7 @@ export default function Expired() {
 
     return (
         <LoginContainer title={I18n.t('expired.title')}>
-            <p role="alert">{I18n.t('expired.info')}</p>
+            <ErrorAlert>{I18n.t('expired.info')}</ErrorAlert>
             {homeUrl && (
                 <Button
                     type="button"

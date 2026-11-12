@@ -1,23 +1,17 @@
 import { type FC, type ReactNode, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 
-import {
-    UserCircleIcon,
-    UserSwitchIcon,
-    WarningDiamondIcon,
-} from '@phosphor-icons/react';
-import {
-    Alert,
-    AlertDescription,
-    Button,
-    Field,
-    FieldLabel,
-    Input,
-} from '@surfnet/curve-react';
+import { UserCircleIcon, UserSwitchIcon } from '@phosphor-icons/react';
+import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
-import { ItemList, LoadingSpinner, LoginContainer } from '../../components';
+import {
+    ErrorAlert,
+    ItemList,
+    LoadingSpinner,
+    LoginContainer,
+} from '../../components';
 import I18n from '../../locale/I18n';
 import {
     forgetKnownUser,
@@ -129,12 +123,7 @@ export default function Login() {
                     ]}
                 />
                 {accountNotFound && (
-                    <Alert variant="warning">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t('login.accountNotFound')}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
             </Container>
         );
@@ -165,12 +154,7 @@ export default function Login() {
                     />
                 </Field>
                 {accountNotFound && (
-                    <Alert variant="warning">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t('login.accountNotFound')}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
                 <Button type="submit">{I18n.t('login.submit')}</Button>
             </form>

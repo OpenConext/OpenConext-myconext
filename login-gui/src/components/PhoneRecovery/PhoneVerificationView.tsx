@@ -1,9 +1,6 @@
 import type { SubmitEvent } from 'react';
 
-import { WarningDiamondIcon } from '@phosphor-icons/react';
 import {
-    Alert,
-    AlertDescription,
     Field,
     FieldDescription,
     FieldLabel,
@@ -12,6 +9,7 @@ import {
 
 import type { SendError } from '../../api';
 import I18n from '../../locale/I18n';
+import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { LoadingButton } from '../LoadingButton/LoadingButton';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './PhoneRecovery.module.scss';
@@ -63,24 +61,16 @@ export const PhoneVerificationView = ({
                 </FieldDescription>
             </Field>
             {invalid && (
-                <Alert variant="warning">
-                    <WarningDiamondIcon />
-                    <AlertDescription>
-                        {I18n.t('phoneVerification.incorrect')}
-                    </AlertDescription>
-                </Alert>
+                <ErrorAlert>{I18n.t('phoneVerification.incorrect')}</ErrorAlert>
             )}
             {sendError !== null && (
-                <Alert variant="warning">
-                    <WarningDiamondIcon />
-                    <AlertDescription>
-                        {I18n.t(
-                            sendError === 'rateLimited'
-                                ? 'phoneVerification.rateLimited'
-                                : 'phoneVerification.error',
-                        )}
-                    </AlertDescription>
-                </Alert>
+                <ErrorAlert>
+                    {I18n.t(
+                        sendError === 'rateLimited'
+                            ? 'phoneVerification.rateLimited'
+                            : 'phoneVerification.error',
+                    )}
+                </ErrorAlert>
             )}
             <LoadingButton
                 type="submit"
