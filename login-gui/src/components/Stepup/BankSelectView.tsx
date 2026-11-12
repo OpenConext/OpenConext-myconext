@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { idinIssuersQueryOptions } from '../../api';
 import I18n from '../../locale/I18n.ts';
+import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { handleArrowKeyNavigation } from '../ItemList/ItemList';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './ValidateNamesView.module.scss';
@@ -29,7 +30,11 @@ export const BankSelectView = ({
     onBack,
     disabled = false,
 }: BankSelectViewProps) => {
-    const { data: issuers, isPending } = useQuery(idinIssuersQueryOptions);
+    const {
+        data: issuers,
+        isPending,
+        isError,
+    } = useQuery(idinIssuersQueryOptions);
 
     return (
         <LoginContainer
@@ -55,6 +60,10 @@ export const BankSelectView = ({
                 <Spinner
                     aria-label={I18n.t('stepup.proveIdentity.bankTitle')}
                 />
+            ) : isError ? (
+                <ErrorAlert>
+                    {I18n.t('stepup.proveIdentity.bankError')}
+                </ErrorAlert>
             ) : (
                 <ItemGroup
                     className={styles.list}
