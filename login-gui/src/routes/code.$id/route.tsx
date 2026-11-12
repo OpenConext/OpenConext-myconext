@@ -14,6 +14,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
 import {
+    ErrorAlert,
     LoadingButton,
     LoadingSpinner,
     LoginContainer,
@@ -117,7 +118,7 @@ export default function Code() {
     if (generateFailed) {
         return (
             <Container email={email} onBack={goToLogin}>
-                Failed to send code. Please try again.
+                <ErrorAlert>{I18n.t('codeScreen.sendFailed')}</ErrorAlert>
             </Container>
         );
     }
@@ -133,7 +134,7 @@ export default function Code() {
                     onComplete={(value) => submitCode(value.trim())}
                 />
                 {verifyFailed && (
-                    <p role="alert">Invalid code, please try again.</p>
+                    <ErrorAlert>{I18n.t('codeScreen.invalid')}</ErrorAlert>
                 )}
 
                 <LoadingButton

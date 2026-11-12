@@ -1,9 +1,6 @@
 import { Navigate, useSearchParams } from 'react-router';
 
-import { WarningDiamondIcon } from '@phosphor-icons/react';
-import { Alert, AlertDescription } from '@surfnet/curve-react';
-
-import { LoadingButton, LoginContainer } from '../../components';
+import { ErrorAlert, LoadingButton, LoginContainer } from '../../components';
 import { useSecurityKeyRegistration } from '../../hooks';
 import I18n from '../../locale/I18n';
 import styles from './route.module.scss';
@@ -29,12 +26,7 @@ export default function WebAuthn() {
             <div className={styles.content}>
                 <p>{I18n.t('addWebAuthn.explanation')}</p>
                 {isError && (
-                    <Alert variant="warning">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t('addWebAuthn.error')}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>{I18n.t('addWebAuthn.error')}</ErrorAlert>
                 )}
                 <LoadingButton
                     type="button"

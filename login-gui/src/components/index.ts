@@ -8,6 +8,7 @@ export * from './AppEnrollment/RecoveryCodeView';
 export * from './AppEnrollment/RecoveryView';
 export * from './AppRequired/AppRequiredView';
 export * from './Captcha/Captcha';
+export * from './ErrorAlert/ErrorAlert';
 export * from './Footer/Footer';
 export * from './Header/Header';
 export * from './ItemList/ItemList';

@@ -10,7 +10,12 @@ import {
     fetchServiceName,
     generateCodeNewUser,
 } from '../../api';
-import { Captcha, LoadingButton, LoginContainer } from '../../components';
+import {
+    Captcha,
+    ErrorAlert,
+    LoadingButton,
+    LoginContainer,
+} from '../../components';
 import I18n from '../../locale/I18n.ts';
 import styles from './route.module.scss';
 
@@ -166,15 +171,15 @@ export default function Request() {
                     />
                 </label>
                 {errorStatus === 409 && (
-                    <p role="alert">
-                        This email address is already in use.{' '}
+                    <ErrorAlert>
+                        {I18n.t('request.emailInUse')}{' '}
                         <Link to={`/login/${id}`}>
                             {I18n.t('request.login')}
                         </Link>
-                    </p>
+                    </ErrorAlert>
                 )}
                 {errorStatus === 412 && (
-                    <p role="alert">This email address is not allowed.</p>
+                    <ErrorAlert>{I18n.t('request.emailNotAllowed')}</ErrorAlert>
                 )}
                 {captchaSiteKey && (
                     <Captcha

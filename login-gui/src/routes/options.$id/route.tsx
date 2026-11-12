@@ -11,7 +11,12 @@ import type { IconProps } from '@phosphor-icons/react';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods } from '../../api';
-import { ItemList, LoadingSpinner, LoginContainer } from '../../components';
+import {
+    ErrorAlert,
+    ItemList,
+    LoadingSpinner,
+    LoginContainer,
+} from '../../components';
 import I18n from '../../locale/I18n';
 import {
     type LoginMethod,
@@ -60,7 +65,7 @@ export default function Options() {
             backLabel={email}
         >
             {isPending && <LoadingSpinner />}
-            {isError && I18n.t('options.error')}
+            {isError && <ErrorAlert>{I18n.t('options.error')}</ErrorAlert>}
             {methods && (
                 <ItemList
                     items={options.map((option) => ({

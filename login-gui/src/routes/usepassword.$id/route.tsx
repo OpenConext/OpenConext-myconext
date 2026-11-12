@@ -1,19 +1,11 @@
 import { type FC, type ReactNode, type SubmitEvent, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
-import { WarningDiamondIcon } from '@phosphor-icons/react';
-import {
-    Alert,
-    AlertDescription,
-    Button,
-    Field,
-    FieldLabel,
-    Input,
-} from '@surfnet/curve-react';
+import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchServiceName, passwordLoginRequest } from '../../api';
-import { LoadingButton, LoginContainer } from '../../components';
+import { ErrorAlert, LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
@@ -132,20 +124,10 @@ export default function UsePassword() {
                     />
                 </Field>
                 {incorrect && (
-                    <Alert variant="warning">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t('password.incorrect')}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>{I18n.t('password.incorrect')}</ErrorAlert>
                 )}
                 {isError && !incorrect && (
-                    <Alert variant="warning">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t('password.error')}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>{I18n.t('password.error')}</ErrorAlert>
                 )}
                 <LoadingButton
                     type="submit"

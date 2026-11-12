@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import { useCopyToClipboard, useWarnBeforeUnload } from '@myconext/shared-gui';
-import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
+import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
+import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './AppEnrollment.module.scss';
 
@@ -45,11 +46,7 @@ export const RecoveryCodeView = ({
                     {I18n.t(copied ? 'recovery.copied' : 'recovery.copy')}
                 </Button>
                 {proceedFailed && (
-                    <Alert variant="warning">
-                        <AlertDescription>
-                            {I18n.t('recovery.error')}
-                        </AlertDescription>
-                    </Alert>
+                    <ErrorAlert>{I18n.t('recovery.error')}</ErrorAlert>
                 )}
                 <Button type="button" variant="outline" onClick={next}>
                     {I18n.t('recovery.next')}

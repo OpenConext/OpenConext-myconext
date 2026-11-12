@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import { OtpInput } from '@myconext/shared-gui';
-import { WarningDiamondIcon } from '@phosphor-icons/react';
-import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
+import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
+import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import styles from './AppFlow.module.scss';
 
 export type ManualCode = {
@@ -51,12 +51,9 @@ export const ManualCodeEntry = ({ manualCode }: ManualCodeEntryProps) => {
                         onComplete={(value) => void submitCode(value.trim())}
                     />
                     {manualCode.failed && (
-                        <Alert variant="warning">
-                            <WarningDiamondIcon />
-                            <AlertDescription>
-                                {I18n.t('useApp.codeIncorrect')}
-                            </AlertDescription>
-                        </Alert>
+                        <ErrorAlert>
+                            {I18n.t('useApp.codeIncorrect')}
+                        </ErrorAlert>
                     )}
                 </div>
             )}

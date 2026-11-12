@@ -1,8 +1,7 @@
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
 import { get } from '@github/webauthn-json';
-import { WarningDiamondIcon } from '@phosphor-icons/react';
-import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
+import { Button } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
@@ -10,7 +9,7 @@ import {
     webAuthnFinishAuthentication,
     webAuthnStartAuthentication,
 } from '../../api';
-import { LoadingButton, LoginContainer } from '../../components';
+import { ErrorAlert, LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import styles from './route.module.scss';
@@ -82,14 +81,7 @@ export default function UseWebAuthn() {
         >
             <div className={styles.content}>
                 <p>{I18n.t('webAuthn.explanation')}</p>
-                {isError && (
-                    <Alert variant="warning">
-                        <WarningDiamondIcon />
-                        <AlertDescription>
-                            {I18n.t('webAuthn.error')}
-                        </AlertDescription>
-                    </Alert>
-                )}
+                {isError && <ErrorAlert>{I18n.t('webAuthn.error')}</ErrorAlert>}
                 <LoadingButton
                     type="button"
                     loading={isPending}

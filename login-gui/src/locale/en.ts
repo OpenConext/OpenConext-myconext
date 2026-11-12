@@ -45,6 +45,8 @@ const en: AppTranslation = {
         agree: 'I agree with <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/terms-of-use/">the terms of service</a> and I\'ve read <a target="_blank" rel="noopener noreferrer" href="https://eduid.nl/privacy">the privacy policy</a>.',
         hasAccount: 'Already have a {{productName}}?',
         login: 'Log in',
+        emailInUse: 'This email address is already in use.',
+        emailNotAllowed: 'This email address is not allowed.',
     },
     requestSuccess: {
         title: 'Your {{productName}} has been created',
@@ -72,6 +74,8 @@ const en: AppTranslation = {
     },
     codeScreen: {
         sending: 'Sending code...',
+        sendFailed: 'The code could not be sent. Please try again.',
+        invalid: 'Invalid code, please try again.',
         title: 'Log in with {{productName}}',
         description: 'Enter the code sent to {{email}}',
         inputLabel: 'Code',
