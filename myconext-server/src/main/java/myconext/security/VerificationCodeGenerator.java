@@ -32,7 +32,7 @@ public class VerificationCodeGenerator {
     }
 
     public static String generateControlCode() {
-        return String.valueOf(getChars(5, NUMBERS));
+        return String.valueOf(getChars(6, NUMBERS));
     }
 
     public static String generateOneTimeLoginCode() {

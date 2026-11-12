@@ -4,6 +4,7 @@
     "workspaces": [
         "my-gui",
         "login-gui",
-        "shared-gui"
+        "shared-gui",
+        "servicedesk-gui"
     ]
 }

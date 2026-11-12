@@ -1,0 +1,18 @@
+.page-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: calc(var(--spacing) * 16);
+}
+
+.identity-check__content {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0 calc(var(--spacing) * 6);
+}
+
+// the confirmation has no page header
+.identity-check--done {
+    padding-top: calc(var(--spacing) * 8);
+}

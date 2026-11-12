@@ -126,6 +126,10 @@ public class User implements Serializable, UserDetails {
     @Setter
     private boolean serviceDeskMember;
 
+    //Blocked users are flagged by the service desk, searchable by the service desk user search
+    @Setter
+    private boolean blocked;
+
     @Setter
     private ControlCode controlCode;
 

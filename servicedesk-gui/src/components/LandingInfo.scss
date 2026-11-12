@@ -1,114 +1,80 @@
-@use "../styles/vars.scss" as *;
+@use '../styles/vars.scss' as *;
 
-.mod-login-container {
-    background-color: white;
+// The info cards below the login header
+.mod-login-container.bottom {
+    background-color: $background;
 
     @media (max-width: $medium) {
         padding: 0 15px;
     }
 
-    &.bottom {
-        background-color: $background;
+    .mod-login.bottom {
+        display: flex;
+        flex-direction: column;
+        margin: 30px auto 0;
+        max-width: 620px;
+        width: 100%;
+        padding-bottom: 35px;
     }
 
-    .mod-login {
-        margin: 60px auto 0;
-        max-width: $medium;
+    .mod-login.info {
         display: flex;
-        padding-bottom: 35px;
+        // distance between the text and the image, in both directions
+        gap: 40px;
+        background-color: white;
+        border-radius: 16px;
+        padding: 25px 40px;
+        margin: 30px auto 0;
+        min-height: 244px;
+        max-width: 620px;
+        width: 100%;
 
         &.reversed {
             flex-direction: row-reverse;
-            @media (max-width: $medium) {
+        }
+
+        // on small screens the image goes under the text, also for the reversed cards
+        @media (max-width: $medium) {
+            flex-direction: column;
+            gap: 0; // the margins of the text and image space them
+            padding: 15px 20px;
+
+            &.reversed {
                 flex-direction: column;
             }
         }
 
-        &.bottom {
-            flex-direction: column;
-            margin: 30px auto 0;
-        }
-
-        &.info {
-            background-color: white;
-            border-radius: 16px;
-            padding: 25px 40px;
-            margin: 30px auto 0;
-            min-height: 244px;
-        }
-
-        @media (max-width: $medium) {
-            flex-direction: column;
-            width: 100%;
-        }
-
+        // the text takes the space the image leaves
         .header-left {
-            margin-right: 50px;
-            width: 50%;
-
-            @media (max-width: $medium) {
-                width: auto;
-                margin: 25px auto;
-            }
-
-            button.blue {
-                width: 280px;
-                padding: 15px 60px;
-                font-size: 22px;
-            }
-
-
-            &.info {
-                width: 50%;
-                @media (max-width: $medium) {
-                    width: auto;
-                    margin: 25px auto;
-                }
-
-            }
+            flex: 1;
         }
 
         .header-right {
-            width: 50%;
-            @media (max-width: $medium) {
-                width: auto;
-                margin: 25px auto;
-            }
+            display: flex;
+            flex: none;
+            // keep the image proportions instead of stretching it to the card height
+            align-items: flex-start;
 
             img {
-                width: 310px;
+                width: 190px;
                 height: auto;
 
                 @media (max-width: $medium) {
                     width: 180px;
                 }
-
             }
+        }
 
-            &.info {
-                display: flex;
-                width: 55%;
-
-                @media (max-width: $medium) {
-                    width: auto;
-                    margin: 25px auto;
-                }
-
-                img {
-                    margin: 0 0 0 20px;
-                    width: 220px;
-                    height: auto;
-
-                    &.reversed {
-                        margin: 0 40px 0 0;
-                    }
-
-                    @media (max-width: $medium) {
-                        width: 180px;
-                    }
-
-                }
+        .header-left,
+        .header-right {
+            @media (max-width: $medium) {
+                width: auto;
+                margin: 25px auto;
             }
+        }
+
+        h3 {
+            font-weight: 500;
         }
     }
 
@@ -119,16 +85,6 @@
 
         .admin-function-container {
             margin-left: auto;
-
-            span.admin-function {
-                align-items: center;
-                display: flex;
-                background-color: #b2e4fe;
-                border-radius: 40px;
-                padding: 2px 8px;
-                font-size: 13px;
-            }
-
         }
     }
 
@@ -137,10 +93,6 @@
         border-radius: 16px;
         padding: 15px 25px;
         margin: 30px auto 0;
-        max-width: $medium;
         width: 100%;
-
     }
-
-
 }

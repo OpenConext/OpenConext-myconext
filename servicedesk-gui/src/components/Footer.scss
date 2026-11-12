@@ -1,3 +1,33 @@
-footer.sds--footer {
+footer.footer {
     margin-top: auto;
+    background-color: var(--card);
+    border-top: 1px solid var(--border-subtle);
+    padding: 20px 15px;
+
+    .footer-inner {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        max-width: 920px;
+        margin: 0 auto;
+        font-size: 14px;
+
+        @media (max-width: 920px) {
+            flex-wrap: wrap;
+        }
+    }
+
+    nav.menu ul {
+        display: flex;
+        gap: 25px;
+    }
+
+    .branding {
+        margin-left: auto;
+
+        img {
+            height: 30px;
+            width: auto;
+        }
+    }
 }

@@ -1,4 +1,7 @@
-export { ENVIRONMENT_RIBBON_URL, EnvironmentRibbon } from './components/EnvironmentRibbon';
+export {
+    ENVIRONMENT_RIBBON_URL,
+    EnvironmentRibbon,
+} from './components/EnvironmentRibbon';
 export { OtpInput, type OtpInputProps } from './components/OtpInput';
 export {
     UserFeedbackWidget,
@@ -7,12 +10,18 @@ export {
     type FeedbackUser,
     type UserFeedbackWidgetProps,
 } from './components/UserFeedbackWidget';
-export { InstallAppQr, type InstallAppQrProps } from './components/InstallAppQr';
+export {
+    InstallAppQr,
+    type InstallAppQrProps,
+} from './components/InstallAppQr';
 export { StoreBadges, type StoreBadgesProps } from './components/StoreBadges';
 
 export { createI18n, type CreateI18nOptions } from './utils/createI18n';
 export { sanitizeHtml } from './utils/sanitizeHtml';
-export { getParameterByName, replaceQueryParameter } from './utils/queryParameters';
+export {
+    getParameterByName,
+    replaceQueryParameter,
+} from './utils/queryParameters';
 export {
     isAndroid,
     isIos,

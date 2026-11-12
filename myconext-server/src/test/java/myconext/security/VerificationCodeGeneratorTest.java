@@ -16,7 +16,7 @@ public class VerificationCodeGeneratorTest {
 
     private final Pattern patternPhoneVerification = Pattern.compile("^[0-9]{6}$");
 
-    private final Pattern patternControlCode = Pattern.compile("^[0-9]{5}$");
+    private final Pattern patternControlCode = Pattern.compile("^[0-9]{6}$");
 
     @Test
     public void generate() {

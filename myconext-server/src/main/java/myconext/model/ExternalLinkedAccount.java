@@ -59,6 +59,9 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     private boolean preferred;
     @Setter
     private String documentId;
+    //Only relevant for serviceDesk - the schacHomeOrganization of the service desk member that confirmed the identity
+    @Setter
+    private String schacHomeOrganization;
     //Only relevant for studielink - the user is not allowed to delete this externalLinkedAccount while the
     //connection with the remote source still exists, i.e. before the remote source calls eduid-delete
     @Setter

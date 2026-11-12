@@ -1,4 +1,4 @@
-@use "../styles/vars.scss" as *;
+@use '../styles/vars.scss' as *;
 
 div.forbidden-container {
     display: flex;
@@ -17,13 +17,12 @@ div.forbidden-container {
         @media (max-width: $medium) {
             padding: 0 15px;
         }
-
     }
 
     svg {
         margin: 25px auto 25px auto;
         width: 220px;
         height: auto;
-        fill: var(--sds--color--red--400)
+        fill: var(--destructive);
     }
 }

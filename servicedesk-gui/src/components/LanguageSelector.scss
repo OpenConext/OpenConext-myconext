@@ -1,3 +1,13 @@
-.sds--language-switcher {
-    
+.language-switcher {
+    font-size: 14px;
+
+    ul {
+        display: flex;
+        gap: 8px;
+    }
+
+    a.is-active {
+        font-weight: 700;
+        text-decoration: none;
+    }
 }

@@ -126,8 +126,10 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
             List<String> memberships = Optional
                     .ofNullable(oidcUser.getClaimAsStringList("edumember_is_member_of"))
                     .orElse(Collections.emptyList());
+            String surfCrmId = (String) claims.get("surf-crm-id");
+
             ExternalUser externalUser = optionalExternalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
-                    provisionServiceDeskUser(uid, schacHomeOrganization, givenName, familyName, email, memberships));
+                    provisionServiceDeskUser(uid, schacHomeOrganization, givenName, familyName, email, surfCrmId, memberships));
 
             newClaims.put("id", externalUser.getId());
 
@@ -176,8 +178,8 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
     }
 
     private ExternalUser provisionServiceDeskUser(String uid, String schacHomeOrganization, String givenName, String familyName,
-                                                  String email, List<String> memberships) {
-        ExternalUser user = new ExternalUser(uid, email, givenName, familyName, schacHomeOrganization);
+                                                  String email, String surfCrmId, List<String> memberships) {
+        ExternalUser user = new ExternalUser(uid, email, givenName, familyName, schacHomeOrganization, surfCrmId);
         boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
         user.setServiceDeskMember(isServiceDeskMember);
         user.setNewUser(false);

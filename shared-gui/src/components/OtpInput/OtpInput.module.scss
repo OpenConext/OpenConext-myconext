@@ -2,6 +2,10 @@
     display: flex;
     justify-content: center;
 
+    &.start {
+        justify-content: flex-start;
+    }
+
     [data-slot='input-otp-group'] {
         gap: calc(var(--spacing) * 2);
     }

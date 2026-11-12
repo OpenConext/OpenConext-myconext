@@ -1,38 +1,44 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default [
-    {ignores: ['dist']},
+import js from '@eslint/js';
+
+export default defineConfig([
+    globalIgnores(['dist']),
     {
-        files: ['**/*.{js,jsx}'],
+        files: ['**/*.{ts,tsx}'],
+        extends: [
+            js.configs.recommended,
+            tseslint.configs.recommended,
+            reactHooks.configs.flat.recommended,
+            reactRefresh.configs.vite,
+        ],
         languageOptions: {
-            ecmaVersion: 2020,
             globals: globals.browser,
-            parserOptions: {
-                ecmaVersion: 'latest',
-                ecmaFeatures: {jsx: true},
-                sourceType: 'module',
-            },
-        },
-        settings: {react: {version: '18.3'}},
-        plugins: {
-            react,
-            'react-hooks': reactHooks,
-            'react-refresh': reactRefresh,
         },
         rules: {
-            ...js.configs.recommended.rules,
-            ...react.configs.recommended.rules,
-            ...react.configs['jsx-runtime'].rules,
-            ...reactHooks.configs.recommended.rules,
-            'react/jsx-no-target-blank': 'off',
-            'react-refresh/only-export-components': [
-                'warn',
-                {allowConstantExport: true},
+            curly: ['error', 'all'],
+            'no-console': ['error', { allow: ['error', 'warn'] }],
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'CallExpression[callee.property.name="then"]',
+                    message: 'Avoid .then(). Use async/await instead.',
+                },
+                {
+                    selector: 'CallExpression[callee.property.name="catch"]',
+                    message:
+                        'Avoid .catch(). Use try/catch with async/await instead.',
+                },
+                {
+                    selector: 'CallExpression[callee.property.name="finally"]',
+                    message:
+                        'Avoid .finally(). Use try/finally with async/await instead.',
+                },
             ],
         },
     },
-]
+]);

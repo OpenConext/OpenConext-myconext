@@ -1,5 +1,5 @@
-import './StoreBadges.scss';
 import badges from '../../assets/store-badges.png';
+import './StoreBadges.scss';
 
 export type StoreBadgesProps = {
     googleUrl: string;

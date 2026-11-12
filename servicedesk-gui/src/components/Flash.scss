@@ -1,10 +1,6 @@
-.sds--alert {
-    display: flex;
+.flash-alert {
     z-index: 4;
-    min-height: 3.75rem;
-
-    .sds--alert--inner {
-        max-width: 1296px;
-    }
-
+    border-radius: 0;
+    align-items: center;
+    padding: 15px 25px;
 }

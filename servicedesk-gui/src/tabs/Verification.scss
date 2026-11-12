@@ -1,64 +1,41 @@
-@use "../styles/vars.scss" as *;
+.verification {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 6);
+    align-items: center;
+    padding: calc(var(--spacing) * 6);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background-color: var(--card);
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
 
-div.info {
-    margin-top: 40px;
-    max-width: 660px;
-    h2 {
-        margin-bottom: 15px;
-    }
-
-    p.info {
-        margin-bottom: 25px;
-    }
-
-    ul {
-        list-style: inherit;
-
-        li {
-            margin-left: 16px;
-        }
-    }
-}
-
-div.verification {
-    margin: 30px 0 25px 0;
-    border: 1px solid var(--sds--color--gray--300);
-    border-radius: 8px;
-    max-width: $verification-width;
-
-    h3 {
-        margin: 25px 25px 0 25px;
-
-    }
-
-    .disclaimer {
+    &__intro {
         display: flex;
-        align-content: center;
-        padding: 15px;
-        margin-top: 25px;
-        background-color: var(--sds--color--blue--200);
-        border: 1px solid var(--sds--color--blue--200);
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 2);
+        width: 100%;
+        text-align: center;
+
+        h2 {
+            font-size: var(--text-lg-font-size);
+            line-height: var(--text-lg-line-height);
+            font-weight: var(--font-weight-medium);
+        }
 
         p {
-            font-weight: 600;
-            margin-left: 15px;
-        }
-
-        svg {
-            color: var(--sds--color--white);
-
-            circle.bg {
-                fill: var(--sds--color--blue--400);
-            }
+            color: var(--muted-foreground);
+            font-size: var(--text-sm-font-size);
+            line-height: var(--text-sm-line-height);
         }
     }
 
-    .sds--error-indicator {
-        margin-left: 25px;
+    .error-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--destructive);
         font-weight: 600;
     }
-
 }
-

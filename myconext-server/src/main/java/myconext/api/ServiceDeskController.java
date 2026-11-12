@@ -9,6 +9,7 @@ import myconext.exceptions.RemoteException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.*;
 import myconext.repository.ExternalUserRepository;
+import myconext.repository.ServiceDeskUserRepository;
 import myconext.repository.UserRepository;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
@@ -36,17 +37,17 @@ public class ServiceDeskController {
     @Getter
     private final UserRepository userRepository;
     private final ExternalUserRepository externalUserRepository;
+    private final ServiceDeskUserRepository serviceDeskUserRepository;
     private final AttributeMapper attributeMapper;
-    private final String myconextRedirectUrl;
 
     public ServiceDeskController(UserRepository userRepository,
                                  ExternalUserRepository externalUserRepository,
-                                 AttributeMapper attributeMapper,
-                                 @Value("${myconext_redirect_url}") String myconextRedirectUrl) {
+                                 ServiceDeskUserRepository serviceDeskUserRepository,
+                                 AttributeMapper attributeMapper) {
         this.userRepository = userRepository;
         this.externalUserRepository = externalUserRepository;
+        this.serviceDeskUserRepository = serviceDeskUserRepository;
         this.attributeMapper = attributeMapper;
-        this.myconextRedirectUrl = myconextRedirectUrl;
     }
 
     @GetMapping("/me")
@@ -55,6 +56,26 @@ public class ServiceDeskController {
         ExternalUser user = this.externalUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/users")
+    @Operation(summary = "Search users",
+            description = "Search the users with a linked account for the institution of the logged in service desk member")
+    public ResponseEntity<ServiceDeskUserSearchResult> searchUsers(
+            Authentication authentication,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "mfa", required = false) List<String> mfaMethods,
+            @RequestParam(value = "blocked", required = false) Boolean blocked,
+            @RequestParam(value = "sort", required = false, defaultValue = "name") String sort,
+            @RequestParam(value = "direction", required = false, defaultValue = "asc") String direction,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        return ResponseEntity.ok(serviceDeskUserRepository.search(serviceDeskMember.getSchacHomeOrganization(),
+                query, mfaMethods, blocked, sort, !"desc".equalsIgnoreCase(direction), page, size));
     }
 
     @GetMapping("/logout")
@@ -127,6 +148,7 @@ public class ServiceDeskController {
                 user.getEmail(), serviceDeskMember.getEmail()));
 
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.createFromControlCode(controlCode);
+        externalLinkedAccount.setSchacHomeOrganization(serviceDeskMember.getSchacHomeOrganization());
         user.getExternalLinkedAccounts().add(externalLinkedAccount);
         //The controlCode is now invalid as already used
         user.setControlCode(null);

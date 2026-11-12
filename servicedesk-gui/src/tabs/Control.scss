@@ -1,127 +1,126 @@
-@use "../styles/vars.scss" as *;
-
-
-div.control {
-    margin: 25px 0 25px 0;
-
-    .control-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 25px;
-        max-width: $verification-width;
-
-        @media (max-width: $medium) {
-            flex-direction: column;
-        }
-
-        span.code {
-            font-weight: 600;
-            color: var(--sds--color--blue--400);
-        }
-
-        button {
-            margin-left: auto;
-        }
-
-    }
-
-    p.inner-html span {
-        font-weight: 600;
-    }
-
-    .control-validation {
-        border: 1px solid var(--sds--color--gray--300);
-        border-radius: 8px;
-        max-width: $verification-width;
-        padding: 25px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        .sds--toaster {
-            max-width: max-content;
-        }
-    }
-
-    .validation-item {
-        display: flex;
-        align-items: center;
-        border: 2px solid var(--sds--color--gray--200);
-        border-radius: 2px;
-        padding: 10px;
-
-        &.column {
-            flex-direction: column;
-            align-items: normal;
-        }
-
-        .sds--tooltip-parent {
-            margin-left: auto;
-            padding-left: 8px;
-        }
-
-    }
-
-    .validation-item-inner {
-        display: flex;
-        align-items: center;
-
-        &.birthday {
-            margin-top: 25px;
-            position: relative;
-
-            &.invalid {
-                color: var(--sds--color--red--400);
-            }
-
-            &.valid {
-                font-weight: 600;
-            }
-        }
-
-        .sds--tooltip-parent {
-            margin-left: auto;
-        }
-
-    }
-
-    .sds--toaster {
-        margin-bottom: 10px;
-        font-weight: 600;
-    }
-
-    .code-validation {
-        padding: 15px 0 0 0;
-
-        button {
-            margin-left: auto;
-        }
-    }
+.control {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 6);
+    align-items: flex-start;
+    padding: calc(var(--spacing) * 6);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background-color: var(--card);
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
 
     .error {
-        margin: 15px 0;
-        font-size: 18px;
+        color: var(--destructive);
         font-weight: 600;
-        color: var(--sds--color--red--400);
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 3);
+        width: 100%;
+
+        h2 {
+            font-size: var(--text-lg-font-size);
+            line-height: var(--text-lg-line-height);
+            font-weight: var(--font-weight-medium);
+
+            span {
+                font-weight: inherit;
+            }
+        }
+    }
+
+    &__intro {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing);
+
+        p {
+            color: var(--muted-foreground);
+            font-size: var(--text-sm-font-size);
+            line-height: var(--text-sm-line-height);
+        }
+    }
+
+    &__checks {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+    }
+
+    &__check,
+    &__check-row {
+        display: flex;
+        gap: calc(var(--spacing) * 3);
+        align-items: center;
+        padding: calc(var(--spacing) * 3);
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+        font-weight: var(--font-weight-medium);
+        cursor: pointer;
+
+        span {
+            font-weight: inherit;
+        }
+    }
+
+    &__check + &__check,
+    &__check + &__check--column {
+        border-top: 1px solid var(--border);
+    }
+
+    &__check--column {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0;
+        border-top: 1px solid var(--border);
+    }
+
+    &__check-row {
+        padding: calc(var(--spacing) * 3);
+    }
+
+    .birthday {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(var(--spacing) * 2);
+        align-items: center;
+        padding: 0 calc(var(--spacing) * 3) calc(var(--spacing) * 3);
+
+        p {
+            flex: 1 1 100%;
+            font-size: var(--text-sm-font-size);
+        }
+
+        &.invalid p {
+            color: var(--destructive);
+        }
+
+        &.valid p {
+            font-weight: 600;
+        }
     }
 
     .react-datepicker-wrapper {
+        order: 2;
         opacity: 0;
         max-width: 60px;
     }
 
     .calendar {
-        margin: 0 12px 0 auto;
-        padding-left: 20px;
+        margin-right: auto;
         cursor: pointer;
         z-index: 2;
-        color: var(--sds--palette--main-color--400);
+        color: var(--info);
 
         svg {
             width: 32px;
             height: auto;
-            cursor: pointer;
         }
     }
-
 }

@@ -45,6 +45,7 @@ public class ExternalUser implements Serializable, UserDetails {
     @Indexed
     private String uid;
     private String schacHomeOrganization;
+    private String surfCrmId;
     @Setter
     private boolean newUser;
     private long created;
@@ -55,12 +56,13 @@ public class ExternalUser implements Serializable, UserDetails {
     private boolean serviceDeskMember;
 
     public ExternalUser(String uid, String email, String givenName, String familyName,
-                        String schacHomeOrganization) {
+                        String schacHomeOrganization, String surfCrmId) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization;
+        this.surfCrmId = surfCrmId;
         this.created = System.currentTimeMillis() / 1000L;
     }
 

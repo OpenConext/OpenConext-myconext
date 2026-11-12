@@ -79,7 +79,12 @@ public class LocalDevelopmentAuthenticationFilter implements Filter {
     }
 
     private ExternalUser provisionLocalMaryDoe() {
-        ExternalUser maryDoe = new ExternalUser(LOCAL_MARY_DOE_UID, "mdoe@example.com", "Mary", "Doe", "example.com");
+        ExternalUser maryDoe = new ExternalUser(LOCAL_MARY_DOE_UID,
+                "mdoe@example.com",
+                "Mary",
+                "Doe",
+                "example.com",
+                "ad93daef-0911-e511-80d0-005056956c1a");
         maryDoe.setServiceDeskMember(true);
         maryDoe.setNewUser(false);
         return externalUserRepository.save(maryDoe);

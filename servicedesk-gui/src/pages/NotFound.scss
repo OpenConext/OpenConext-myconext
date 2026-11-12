@@ -1,4 +1,4 @@
-@use "../styles/vars.scss" as *;
+@use '../styles/vars.scss' as *;
 
 div.not-found {
     display: flex;
@@ -8,6 +8,5 @@ div.not-found {
         margin: 25px auto 25px auto;
         width: 460px;
         height: auto;
-
     }
 }

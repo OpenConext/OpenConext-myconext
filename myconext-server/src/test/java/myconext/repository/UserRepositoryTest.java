@@ -77,7 +77,7 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
     @Test
     public void testFindOneUserByControlCode() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ControlCode controlCode = new ControlCode();
+        ControlCode controlCode = new ControlCode("John", "Doe", "11-03-1987");
         controlCode.setCode(VerificationCodeGenerator.generateControlCode());
         user.setControlCode(controlCode);
         userRepository.save(user);

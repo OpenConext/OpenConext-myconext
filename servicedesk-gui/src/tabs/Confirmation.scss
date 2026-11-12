@@ -1,50 +1,47 @@
-@use "../styles/vars.scss" as *;
-
-
-div.confirmation {
-    margin: 40px 0 25px 0;
-    border: 1px solid var(--sds--color--gray--300);
-    border-radius: 8px;
-    max-width: $verification-width;
+.confirmation {
     display: flex;
     flex-direction: column;
+    gap: calc(var(--spacing) * 8);
+    align-items: center;
+    padding: calc(var(--spacing) * 8);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background-color: var(--card);
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
 
-    h2 {
-        margin: 25px 25px 0 25px;
-    }
-
-    .sds--toaster {
-        max-width: max-content;
+    &__text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing);
         width: 100%;
-        margin: 20px auto 30px auto;
-    }
+        text-align: center;
 
-    .img-container {
-        display: flex;
-        padding: 20px;
+        h2 {
+            color: var(--card-foreground);
+            font-size: var(--text-xl-font-size);
+            line-height: 1;
+            font-weight: var(--font-weight-semibold);
+        }
 
-        svg {
-            margin: auto;
-            width: 460px;
-            height: auto;
-
-            @media (max-width: $verification-width) {
-                width: 310px;
-            }
-
+        p {
+            color: var(--muted-foreground);
+            font-size: var(--text-sm-font-size);
+            line-height: var(--text-sm-line-height);
         }
     }
 
-    .button-container {
-        display: flex;
-        padding: 20px;
-
-        button {
-            margin: auto;
-            max-width: 360px;
-        }
+    &__image svg {
+        width: 335px;
+        max-width: 100%;
+        height: auto;
     }
 
-
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(var(--spacing) * 3);
+        justify-content: center;
+    }
 }
-
