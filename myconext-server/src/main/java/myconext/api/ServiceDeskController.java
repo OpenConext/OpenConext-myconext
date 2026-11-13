@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
+import myconext.activity.ActivityContext;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.RemoteException;
 import myconext.exceptions.UserNotFoundException;
+import myconext.invite.Invite;
+import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.ServiceDeskUserRepository;
@@ -19,12 +22,14 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -39,15 +44,21 @@ public class ServiceDeskController {
     private final ExternalUserRepository externalUserRepository;
     private final ServiceDeskUserRepository serviceDeskUserRepository;
     private final AttributeMapper attributeMapper;
+    private final Manage manage;
+    private final Invite invite;
 
     public ServiceDeskController(UserRepository userRepository,
                                  ExternalUserRepository externalUserRepository,
                                  ServiceDeskUserRepository serviceDeskUserRepository,
-                                 AttributeMapper attributeMapper) {
+                                 AttributeMapper attributeMapper,
+                                 Manage manage,
+                                 Invite invite) {
         this.userRepository = userRepository;
         this.externalUserRepository = externalUserRepository;
         this.serviceDeskUserRepository = serviceDeskUserRepository;
         this.attributeMapper = attributeMapper;
+        this.manage = manage;
+        this.invite = invite;
     }
 
     @GetMapping("/me")
@@ -74,8 +85,27 @@ public class ServiceDeskController {
         ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        return ResponseEntity.ok(serviceDeskUserRepository.search(serviceDeskMember.getSchacHomeOrganization(),
-                query, mfaMethods, blocked, sort, !"desc".equalsIgnoreCase(direction), page, size));
+        String schacHomeOrganization = serviceDeskMember.getSchacHomeOrganization();
+        ServiceDeskUserSearchResult result = serviceDeskUserRepository.search(schacHomeOrganization,
+                query, mfaMethods, blocked, sort, !"desc".equalsIgnoreCase(direction), page, size);
+
+        Map<String, List<String>> roles = rolesOfInstitution(schacHomeOrganization);
+        if (roles.isEmpty()) {
+            return ResponseEntity.ok(result);
+        }
+        List<ServiceDeskUser> users = result.users().stream()
+                .map(user -> user.withRoles(roles.getOrDefault(user.eduPersonPrincipalName(), List.of())))
+                .toList();
+        return ResponseEntity.ok(new ServiceDeskUserSearchResult(users, result.total(), result.page(), result.pageSize()));
+    }
+
+    private Map<String, List<String>> rolesOfInstitution(String schacHomeOrganization) {
+        //The roles in Invite are coupled to the organization GUID of the institution in Manage
+        return manage.findIdentityProviderByDomainName(schacHomeOrganization)
+                .map(IdentityProvider::getInstitutionGuid)
+                .filter(StringUtils::hasText)
+                .map(invite::rolesByEduPersonPrincipalName)
+                .orElse(Map.of());
     }
 
     @GetMapping("/overview")
@@ -113,10 +143,47 @@ public class ServiceDeskController {
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         //Users of other institutions are not found
-        if (!serviceDeskUserRepository.block(id, serviceDeskMember.getSchacHomeOrganization())) {
+        if (!serviceDeskUserRepository.block(id, serviceDeskMember.getSchacHomeOrganization(),
+                ActivityContext.actor(serviceDeskMember.getId(), serviceDeskMember.getName()))) {
             throw new UserNotFoundException(id);
         }
         LOG.info(String.format("Service desk member %s blocked user %s", serviceDeskMember.getEmail(), id));
+        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
+    }
+
+    @PutMapping("/users/{id}/unblock")
+    @Operation(summary = "Unblock user",
+            description = "Unblock a user with a linked account for the institution of the logged in service desk member")
+    public ResponseEntity<StatusResponse> unblockUser(Authentication authentication,
+                                                      @PathVariable("id") String id) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        //Users of other institutions are not found
+        if (!serviceDeskUserRepository.unblock(id, serviceDeskMember.getSchacHomeOrganization(),
+                ActivityContext.actor(serviceDeskMember.getId(), serviceDeskMember.getName()))) {
+            throw new UserNotFoundException(id);
+        }
+        LOG.info(String.format("Service desk member %s unblocked user %s", serviceDeskMember.getEmail(), id));
+        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
+    }
+
+    @PutMapping("/users/{id}/reset-mfa")
+    @Operation(summary = "Reset MFA",
+            description = "Remove the MFA methods of a user with a linked account for the institution of the logged in service desk member")
+    public ResponseEntity<StatusResponse> resetMfa(Authentication authentication,
+                                                   @PathVariable("id") String id) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        //Users of other institutions are not found
+        if (!serviceDeskUserRepository.resetMfa(id, serviceDeskMember.getSchacHomeOrganization(),
+                ActivityContext.actor(serviceDeskMember.getId(), serviceDeskMember.getName()))) {
+            throw new UserNotFoundException(id);
+        }
+        LOG.info(String.format("Service desk member %s reset the MFA of user %s", serviceDeskMember.getEmail(), id));
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 

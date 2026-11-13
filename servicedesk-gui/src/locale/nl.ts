@@ -47,6 +47,10 @@ const nl = {
     serviceDesk: {
         member: 'Dashboard lid',
     },
+    theme: {
+        light: 'Licht',
+        dark: 'Donker',
+    },
     navigation: {
         overview: 'Overzicht',
         users: 'Gebruikers',
@@ -80,7 +84,7 @@ const nl = {
             email: 'E-mailadres',
             mfa: 'MFA methode',
             affiliations: 'Affiliation(s)',
-            id: 'ID',
+            roles: 'Rol(len)',
         },
         mfa: {
             app: 'Mobiele app',
@@ -105,9 +109,13 @@ const nl = {
         error: 'De gebruikers konden niet worden opgehaald',
     },
     userDetail: {
+        blockedToast: '{{name}} is geblokkeerd',
+        unblockedToast: '{{name}} is gedeblokkeerd',
+        mfaResetToast: 'De MFA methode van {{name}} is gereset',
         back: 'Terug naar gebruikers',
         notFound: 'Deze gebruiker is niet gevonden',
         block: 'Blokkeren',
+        unblock: 'Deblokkeren',
         verifiedWith: 'Geverifieerd met {{issuer}}',
         givenName: 'Voornaam',
         familyName: 'Achternaam',
@@ -124,6 +132,7 @@ const nl = {
         blocked: 'Geblokkeerd',
     },
     activity: {
+        you: ' (jij)',
         title: 'Activiteit',
         filter: 'Filter op type',
         allTypes: 'Alle types',
@@ -169,6 +178,9 @@ const nl = {
             CONTROL_CODE_DELETED: 'Controlecode voor de servicedesk verwijderd',
             SERVICE_REMOVED: 'Inloggegevens van {{service}} verwijderd',
             TOKENS_REMOVED: 'Toegang van een dienst ingetrokken',
+            BLOCKED_ACCOUNT: 'Geblokkeerd door {{name}}{{you}}',
+            DEBLOCKED_ACCOUNT: 'Gedeblokkeerd door {{name}}{{you}}',
+            MFA_RESET: 'MFA methode gereset door {{name}}{{you}}',
             SERVICE_FIRST_LOGIN: 'Eerste keer ingelogd bij {{service}}',
             SERVICE_LAST_LOGIN: 'Laatst ingelogd bij {{service}}',
         },
@@ -195,6 +207,31 @@ const nl = {
         cancel: 'Annuleren',
         confirm: 'Blokkeren',
         error: 'De gebruiker kon niet worden geblokkeerd',
+    },
+    unblockUser: {
+        title: 'Gebruiker deblokkeren?',
+        question:
+            'Weet je zeker dat je de toegang van het eduID van {{name}} bij {{institution}} wilt deblokkeren?',
+        info: {
+            institution:
+                'Het eduID kan daarna weer inloggen op diensten van {{institution}}.',
+            block: 'Je kunt het eduID later altijd weer blokkeren.',
+            notice: '{{name}} krijgt geen automatisch bericht over deze wijziging.',
+        },
+        cancel: 'Annuleren',
+        confirm: 'Deblokkeren',
+        error: 'De gebruiker kon niet worden gedeblokkeerd',
+    },
+    resetMfa: {
+        title: 'MFA methode resetten?',
+        explanation:
+            'De MFA methodes van {{name}} worden verwijderd. {{name}} moet een nieuwe MFA methode instellen.',
+        check: 'Controleer de identiteit van {{name}} aan de hand van een geldig identiteitsbewijs.',
+        familyName: 'De achternaam in het document: {{value}}',
+        givenName: 'De voornamen in het document: {{value}}',
+        cancel: 'Annuleren',
+        confirm: 'Resetten',
+        error: 'De MFA methode kon niet worden gereset',
     },
     identityCheck: {
         title: 'Identiteitscontrole',

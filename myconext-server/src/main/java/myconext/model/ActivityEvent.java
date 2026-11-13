@@ -28,6 +28,9 @@ public enum ActivityEvent {
     CONTROL_CODE_DELETED,
     SERVICE_REMOVED,
     TOKENS_REMOVED,
+    BLOCKED_ACCOUNT,
+    DEBLOCKED_ACCOUNT,
+    MFA_RESET,
     //The following events are derived from the services of the user and are never recorded
     SERVICE_FIRST_LOGIN,
     SERVICE_LAST_LOGIN

@@ -10,6 +10,7 @@ import myconext.model.LinkedAccount;
 import myconext.model.ServiceProvider;
 import myconext.model.ServiceDeskUser;
 import myconext.model.ServiceDeskOverview;
+import myconext.model.ProvisionedLinkedAccount;
 import myconext.model.ServiceDeskUserDetail;
 import myconext.model.ServiceDeskUserSearchResult;
 import myconext.model.User;
@@ -25,12 +26,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
-import java.time.temporal.IsoFields;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -151,7 +149,7 @@ public class ServiceDeskUserRepository {
      */
     public ServiceDeskOverview overview(String schacHomeOrganization) {
         if (!StringUtils.hasText(schacHomeOrganization)) {
-            return new ServiceDeskOverview(List.of(), List.of());
+            return new ServiceDeskOverview(null, 0, List.of(), List.of());
         }
         Query query = new Query(institutionCriteria(schacHomeOrganization));
         query.fields().include("created").include("eduIDS");
@@ -159,27 +157,21 @@ public class ServiceDeskUserRepository {
 
         //Accounts without a creation date are counted in the baseline
         long baseline = users.stream().filter(user -> user.getCreated() <= 0).count();
-        Map<LocalDate, Long> perWeek = new TreeMap<>();
+        Map<YearMonth, Long> perMonth = new TreeMap<>();
         users.stream()
                 .filter(user -> user.getCreated() > 0)
-                .map(user -> Instant.ofEpochSecond(user.getCreated()).atZone(ZoneOffset.UTC).toLocalDate()
-                        .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)))
-                .forEach(monday -> perWeek.merge(monday, 1L, Long::sum));
+                .map(user -> YearMonth.from(Instant.ofEpochSecond(user.getCreated()).atZone(ZoneOffset.UTC)))
+                .forEach(month -> perMonth.merge(month, 1L, Long::sum));
 
-        List<ServiceDeskOverview.AccountsPerWeek> accounts = new ArrayList<>();
-        if (!perWeek.isEmpty()) {
-            LocalDate last = LocalDate.now(ZoneOffset.UTC).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            LocalDate first = ((TreeMap<LocalDate, Long>) perWeek).firstKey();
-            long total = baseline;
-            for (LocalDate week = first; !week.isAfter(last); week = week.plusWeeks(1)) {
-                long added = perWeek.getOrDefault(week, 0L);
-                total += added;
-                accounts.add(new ServiceDeskOverview.AccountsPerWeek(
-                        week.get(IsoFields.WEEK_BASED_YEAR) + "-W" + String.format("%02d", week.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)),
-                        added, total));
+        String firstMonth = null;
+        List<Long> added = new ArrayList<>();
+        if (!perMonth.isEmpty()) {
+            YearMonth first = ((TreeMap<YearMonth, Long>) perMonth).firstKey();
+            YearMonth last = YearMonth.now(ZoneOffset.UTC);
+            firstMonth = first.toString();
+            for (YearMonth month = first; !month.isAfter(last); month = month.plusMonths(1)) {
+                added.add(perMonth.getOrDefault(month, 0L));
             }
-        } else if (baseline > 0) {
-            accounts.add(new ServiceDeskOverview.AccountsPerWeek("", 0, baseline));
         }
 
         Map<String, Long> serviceUsers = new LinkedHashMap<>();
@@ -198,7 +190,7 @@ public class ServiceDeskUserRepository {
                 .sorted(Comparator.comparingLong(ServiceDeskOverview.ServiceUsage::users).reversed()
                         .thenComparing(ServiceDeskOverview.ServiceUsage::name))
                 .toList();
-        return new ServiceDeskOverview(accounts, services);
+        return new ServiceDeskOverview(firstMonth, baseline, added, services);
     }
 
     /**
@@ -225,19 +217,74 @@ public class ServiceDeskUserRepository {
         return Optional.of(new ServiceDeskUserDetail(user.getId(), user.getUid(), user.getEduPersonPrincipalName(),
                 user.getEmail(), user.getDerivedGivenName(), user.getDerivedFamilyName(), user.getChosenName(),
                 user.getDerivedDateOfBirth(), namesVerified, user.isBlocked(), mfaMethods(user),
-                affiliations(user, schacHomeOrganization), verifiedBy, activities(user)));
+                affiliations(user, schacHomeOrganization), verifiedBy, activities(user),
+                institutionName(user, schacHomeOrganization, ProvisionedLinkedAccount::getGivenName),
+                institutionName(user, schacHomeOrganization, ProvisionedLinkedAccount::getFamilyName)));
     }
 
     /**
-     * @return true if the user is found for the institution and blocked, false if the user was not found
+     * The name as provided by the linked account of the user at the institution
      */
-    public boolean block(String id, String schacHomeOrganization) {
+    private String institutionName(User user, String schacHomeOrganization,
+                                   java.util.function.Function<ProvisionedLinkedAccount, String> name) {
+        return Stream.concat(
+                        user.getLinkedAccounts().stream()
+                                .filter(account -> schacHomeOrganization.equalsIgnoreCase(account.getSchacHomeOrganization()))
+                                .map(account -> (ProvisionedLinkedAccount) account),
+                        user.getExternalLinkedAccounts().stream()
+                                .filter(account -> schacHomeOrganization.equalsIgnoreCase(account.getSchacHomeOrganization()))
+                                .map(account -> (ProvisionedLinkedAccount) account))
+                .map(name)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Removes the MFA methods (the surfSecureId) of the user
+     *
+     * @param context the details of the activity that is recorded, e.g. the service desk member that reset the MFA
+     * @return true if the user is found for the institution, false if the user was not found
+     */
+    public boolean resetMfa(String id, String schacHomeOrganization, Map<String, String> context) {
         if (!StringUtils.hasText(schacHomeOrganization) || !StringUtils.hasText(id)) {
             return false;
         }
         Query query = new Query(new Criteria().andOperator(
                 Criteria.where("_id").is(id), institutionCriteria(schacHomeOrganization)));
-        return mongoTemplate.updateFirst(query, new Update().set("blocked", true), User.class).getMatchedCount() > 0;
+        Activity activity = new Activity(id, ActivityEvent.MFA_RESET, new Date(), context);
+        Update update = new Update().unset("surfSecureId")
+                .push("activities").slice(-User.MAX_ACTIVITIES).each(activity);
+        return mongoTemplate.updateFirst(query, update, User.class).getMatchedCount() > 0;
+    }
+
+    /**
+     * @param context the details of the activity that is recorded, e.g. the service desk member that blocked the user
+     * @return true if the user is found for the institution and blocked, false if the user was not found
+     */
+    public boolean block(String id, String schacHomeOrganization, Map<String, String> context) {
+        return updateBlocked(id, schacHomeOrganization, true, ActivityEvent.BLOCKED_ACCOUNT, context);
+    }
+
+    /**
+     * @param context the details of the activity that is recorded, e.g. the service desk member that deblocked the user
+     * @return true if the user is found for the institution and deblocked, false if the user was not found
+     */
+    public boolean unblock(String id, String schacHomeOrganization, Map<String, String> context) {
+        return updateBlocked(id, schacHomeOrganization, false, ActivityEvent.DEBLOCKED_ACCOUNT, context);
+    }
+
+    private boolean updateBlocked(String id, String schacHomeOrganization, boolean blocked, ActivityEvent event,
+                                  Map<String, String> context) {
+        if (!StringUtils.hasText(schacHomeOrganization) || !StringUtils.hasText(id)) {
+            return false;
+        }
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("_id").is(id), institutionCriteria(schacHomeOrganization)));
+        Activity activity = new Activity(id, event, new Date(), context);
+        Update update = new Update().set("blocked", blocked)
+                .push("activities").slice(-User.MAX_ACTIVITIES).each(activity);
+        return mongoTemplate.updateFirst(query, update, User.class).getMatchedCount() > 0;
     }
 
     /**
@@ -272,7 +319,8 @@ public class ServiceDeskUserRepository {
                         .filter(StringUtils::hasText)
                         .toList());
         return new ServiceDeskUser(user.getId(), user.getUid(), name, user.getEmail(), user.isBlocked(),
-                mfaMethods(user), affiliations(user, schacHomeOrganization));
+                mfaMethods(user), affiliations(user, schacHomeOrganization), List.of(),
+                user.getEduPersonPrincipalName());
     }
 
     private List<String> mfaMethods(User user) {

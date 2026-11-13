@@ -47,6 +47,10 @@ const en = {
     serviceDesk: {
         member: 'Dashboard member',
     },
+    theme: {
+        light: 'Light',
+        dark: 'Dark',
+    },
     navigation: {
         overview: 'Overview',
         users: 'Users',
@@ -80,7 +84,7 @@ const en = {
             email: 'Email address',
             mfa: 'MFA method',
             affiliations: 'Affiliation(s)',
-            id: 'ID',
+            roles: 'Role(s)',
         },
         mfa: {
             app: 'Mobile app',
@@ -105,9 +109,13 @@ const en = {
         error: 'The users could not be retrieved',
     },
     userDetail: {
+        blockedToast: '{{name}} has been blocked',
+        unblockedToast: '{{name}} has been unblocked',
+        mfaResetToast: 'The MFA method of {{name}} has been reset',
         back: 'Back to users',
         notFound: 'This user could not be found',
         block: 'Block',
+        unblock: 'Unblock',
         verifiedWith: 'Verified with {{issuer}}',
         givenName: 'First name',
         familyName: 'Last name',
@@ -124,6 +132,7 @@ const en = {
         blocked: 'Blocked',
     },
     activity: {
+        you: ' (you)',
         title: 'Activity',
         filter: 'Filter by type',
         allTypes: 'All types',
@@ -167,6 +176,9 @@ const en = {
             CONTROL_CODE_DELETED: 'Service desk control code removed',
             SERVICE_REMOVED: 'Login details of {{service}} removed',
             TOKENS_REMOVED: 'Access of a service revoked',
+            BLOCKED_ACCOUNT: 'Blocked by {{name}}{{you}}',
+            DEBLOCKED_ACCOUNT: 'Unblocked by {{name}}{{you}}',
+            MFA_RESET: 'MFA method reset by {{name}}{{you}}',
             SERVICE_FIRST_LOGIN: 'First login at {{service}}',
             SERVICE_LAST_LOGIN: 'Latest login at {{service}}',
         },
@@ -193,6 +205,31 @@ const en = {
         cancel: 'Cancel',
         confirm: 'Block',
         error: 'The user could not be blocked',
+    },
+    unblockUser: {
+        title: 'Unblock user?',
+        question:
+            'Are you sure you want to unblock the access of the eduID of {{name}} at {{institution}}?',
+        info: {
+            institution:
+                'The eduID can log in again to services of {{institution}}.',
+            block: 'You can always block the eduID again.',
+            notice: '{{name}} will not receive an automatic message about this change.',
+        },
+        cancel: 'Cancel',
+        confirm: 'Unblock',
+        error: 'The user could not be unblocked',
+    },
+    resetMfa: {
+        title: 'Reset MFA method?',
+        explanation:
+            'The MFA methods of {{name}} are removed. {{name}} has to set up a new MFA method.',
+        check: 'Check the identity of {{name}} with a valid identity document.',
+        familyName: 'The last name in the document: {{value}}',
+        givenName: 'The first names in the document: {{value}}',
+        cancel: 'Cancel',
+        confirm: 'Reset',
+        error: 'The MFA method could not be reset',
     },
     identityCheck: {
         title: 'Identity check',

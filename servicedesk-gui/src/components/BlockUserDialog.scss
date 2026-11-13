@@ -12,7 +12,20 @@
         height: calc(var(--spacing) * 16);
         font-size: 32px;
         color: var(--destructive);
-        background-color: color-mix(in srgb, var(--destructive) 10%, white);
+        background-color: color-mix(
+            in srgb,
+            var(--destructive) 10%,
+            var(--background)
+        );
+    }
+
+    &__media--positive {
+        color: var(--primary-strong);
+        background-color: color-mix(
+            in srgb,
+            var(--primary-strong) 10%,
+            var(--background)
+        );
     }
 
     &__text {

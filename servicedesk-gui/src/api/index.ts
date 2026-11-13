@@ -46,6 +46,7 @@ export type ServiceDeskUser = {
     blocked: boolean;
     mfaMethods: string[];
     affiliations: string[];
+    roles: string[];
 };
 
 export type ServiceDeskUserSearchResult = {
@@ -100,6 +101,9 @@ export type ServiceDeskUserDetail = {
     affiliations: string[];
     verifiedBy: string[];
     activities: ActivityEntry[];
+    // the names of the linked account at the institution of the service desk member
+    institutionGivenName?: string;
+    institutionFamilyName?: string;
 };
 
 export const getUserDetail = (id: string) =>
@@ -115,21 +119,36 @@ export const blockUser = (id: string) =>
         },
     );
 
-export type AccountsPerWeek = {
-    week: string;
-    added: number;
-    total: number;
-};
-
 export type ServiceUsage = {
     name: string;
     users: number;
 };
 
 export type ServiceDeskOverview = {
-    accounts: AccountsPerWeek[];
+    // the month (yyyy-MM) of the first entry in added
+    firstMonth: string | null;
+    // the accounts without a creation date
+    baseline: number;
+    // the new accounts per month, from firstMonth until the current month
+    added: number[];
     services: ServiceUsage[];
 };
 
 export const getOverview = () =>
     apiFetch<ServiceDeskOverview>('/myconext/api/servicedesk/overview');
+
+export const unblockUser = (id: string) =>
+    apiFetch(
+        `/myconext/api/servicedesk/users/${encodeURIComponent(id)}/unblock`,
+        {
+            method: 'PUT',
+        },
+    );
+
+export const resetMfa = (id: string) =>
+    apiFetch(
+        `/myconext/api/servicedesk/users/${encodeURIComponent(id)}/reset-mfa`,
+        {
+            method: 'PUT',
+        },
+    );

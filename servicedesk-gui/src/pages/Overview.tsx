@@ -25,6 +25,7 @@ import {
 import { type ServiceDeskOverview, getOverview } from '../api';
 import { PageHeader } from '../components/PageHeader';
 import I18n from '../locale/I18n';
+import { useAppStore } from '../stores/AppStore';
 import './Overview.scss';
 
 ChartJS.register(
@@ -40,7 +41,8 @@ ChartJS.register(
 
 const BLUE = '#0041a8';
 const GREEN = '#00d27a';
-const GRID = 'rgba(0, 0, 0, 0.06)';
+const GRID_LIGHT = 'rgba(0, 0, 0, 0.06)';
+const GRID_DARK = 'rgba(255, 255, 255, 0.12)';
 const INITIAL_SERVICES = 6;
 const BAR_HEIGHT = 36;
 const BAR_GAP = 12;
@@ -99,7 +101,7 @@ const barLabels = {
             ctx.fillStyle = '#fff';
             ctx.textAlign = 'left';
             ctx.fillText(label, base + 10, y);
-            ctx.fillStyle = '#000';
+            ctx.fillStyle = String(chart.options.color ?? '#000');
             ctx.fillText(value.text, x + 10, y);
         });
         ctx.restore();
@@ -109,6 +111,9 @@ const barLabels = {
 export const Overview = () => {
     const [overview, setOverview] = useState<ServiceDeskOverview>();
     const [error, setError] = useState(false);
+    const dark = useAppStore((state) => state.dark);
+    const GRID = dark ? GRID_DARK : GRID_LIGHT;
+    const textColor = dark ? '#f5f5f4' : '#0a0a0a';
     const [search, setSearch] = useState('');
     const [percentage, setPercentage] = useState(false);
     const [showAll, setShowAll] = useState(false);
@@ -124,10 +129,29 @@ export const Overview = () => {
         void load();
     }, []);
 
-    const accountsData = useMemo(() => {
-        const accounts = overview?.accounts ?? [];
-        return {
-            labels: accounts.map((a) => a.week),
+    const accounts = useMemo(() => {
+        if (!overview?.firstMonth) {
+            return [];
+        }
+        const [year, month] = overview.firstMonth.split('-').map(Number);
+        const formatter = new Intl.DateTimeFormat(I18n.locale, {
+            month: 'short',
+            year: 'numeric',
+        });
+        let total = overview.baseline;
+        return overview.added.map((added, index) => {
+            total += added;
+            return {
+                month: formatter.format(new Date(year, month - 1 + index, 1)),
+                added,
+                total,
+            };
+        });
+    }, [overview]);
+
+    const accountsData = useMemo(
+        () => ({
+            labels: accounts.map((a) => a.month),
             datasets: [
                 {
                     label: I18n.t('overview.total'),
@@ -153,10 +177,11 @@ export const Overview = () => {
                     pointRadius: accounts.length > 40 ? 0 : 4,
                 },
             ],
-        };
-    }, [overview]);
+        }),
+        [accounts],
+    );
 
-    const totalAccounts = overview?.accounts.at(-1)?.total ?? 0;
+    const totalAccounts = accounts.at(-1)?.total ?? overview?.baseline ?? 0;
     const matchingServices = useMemo(() => {
         const query = search.trim().toLowerCase();
         return (overview?.services ?? []).filter((service) =>
@@ -237,7 +262,7 @@ export const Overview = () => {
                             </li>
                         </ul>
                     </div>
-                    {overview.accounts.length === 0 ? (
+                    {accounts.length === 0 ? (
                         <p className="overview__empty">
                             {I18n.t('overview.noData')}
                         </p>
@@ -246,6 +271,7 @@ export const Overview = () => {
                             <Line
                                 data={accountsData}
                                 options={{
+                                    color: textColor,
                                     responsive: true,
                                     maintainAspectRatio: false,
                                     interaction: {
@@ -329,6 +355,7 @@ export const Overview = () => {
                                 plugins={[barLabels]}
                                 options={{
                                     indexAxis: 'y',
+                                    color: textColor,
                                     responsive: true,
                                     maintainAspectRatio: false,
                                     layout: { padding: { right: 56 } },

@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { CaretDownIcon } from '@phosphor-icons/react';
+import { CaretDownIcon, MoonIcon, SunIcon } from '@phosphor-icons/react';
 import {
     Button,
     DropdownMenu,
@@ -27,6 +27,8 @@ const navigationItems = [
 
 export const TopNavigation = () => {
     const user = useAppStore((state) => state.user);
+    const dark = useAppStore((state) => state.dark);
+    const toggleDark = useAppStore((state) => state.toggleDark);
     const navigate = useNavigate();
     const isMember = Boolean(user?.serviceDeskMember);
 
@@ -72,6 +74,14 @@ export const TopNavigation = () => {
                 )}
                 {isMember && (
                     <div className="top-navigation__actions">
+                        <Button
+                            variant="ghost"
+                            data-testid="theme-switch"
+                            onClick={toggleDark}
+                        >
+                            {dark ? <SunIcon /> : <MoonIcon />}
+                            {I18n.t(dark ? 'theme.light' : 'theme.dark')}
+                        </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger
                                 data-testid="user-menu"

@@ -9,6 +9,8 @@ import java.util.List;
  * @param verifiedBy        the {@link IdpScoping} names of the external accounts that verified the identity of the user
  * @param namesVerified     if the given and family name are verified by an external account
  * @param dateOfBirth       the (verified) date of birth, null if not known
+ * @param institutionGivenName  the given name of the linked account at the institution of the service desk member
+ * @param institutionFamilyName the family name of the linked account at the institution of the service desk member
  * @param activities        all recorded activities, most recent first
  */
 public record ServiceDeskUserDetail(String id,
@@ -24,5 +26,7 @@ public record ServiceDeskUserDetail(String id,
                                     List<String> mfaMethods,
                                     List<String> affiliations,
                                     List<String> verifiedBy,
-                                    List<Activity> activities) {
+                                    List<Activity> activities,
+                                    String institutionGivenName,
+                                    String institutionFamilyName) {
 }

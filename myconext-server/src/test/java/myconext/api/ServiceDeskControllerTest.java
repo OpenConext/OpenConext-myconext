@@ -1,6 +1,8 @@
 package myconext.api;
 
 import myconext.AbstractIntegrationTest;
+import myconext.invite.Invite;
+import myconext.invite.MockInvite;
 import myconext.model.Activity;
 import myconext.model.ActivityEvent;
 import myconext.model.EduID;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,6 +51,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ServiceDeskControllerTest
         extends AbstractIntegrationTest {
+
+    @Autowired
+    private Invite invite;
+
+    private MockInvite mockInvite() {
+        return (MockInvite) invite;
+    }
 
     @Test
     void getUserControlCode() {
@@ -178,6 +188,20 @@ class ServiceDeskControllerTest
     }
 
     @Test
+    void searchUsersWithRoles() {
+        confirmIdentityOfMdoe();
+        //The institution of the service desk member is example.com
+        mockInvite().setRoles("8017e83f-bca7-e911-90f2-0050569571ea",
+                Map.of("mdoe@surfguest.nl", List.of("Admins", "Readers"), "other@eduid.nl", List.of("Nope")));
+        try {
+            assertEquals(List.of("Admins", "Readers"), search(Map.of()).users().getFirst().roles());
+        } finally {
+            mockInvite().clear();
+        }
+        assertTrue(search(Map.of()).users().getFirst().roles().isEmpty());
+    }
+
+    @Test
     void overview() {
         seedUsers();
 
@@ -186,8 +210,8 @@ class ServiceDeskControllerTest
                 .get("/myconext/api/servicedesk/overview")
                 .as(ServiceDeskOverview.class);
         //25 seeded users are linked to the institution of the service desk member, the other 5 are not
-        assertEquals(25, overview.accounts().getLast().total());
-        assertEquals(25, overview.accounts().stream().mapToLong(ServiceDeskOverview.AccountsPerWeek::added).sum());
+        assertNotNull(overview.firstMonth());
+        assertEquals(25, overview.baseline() + overview.added().stream().mapToLong(Long::longValue).sum());
         //The first 3 users have 3 services each
         assertEquals(3, overview.services().size());
         assertEquals(3, overview.services().getFirst().users());
@@ -199,7 +223,8 @@ class ServiceDeskControllerTest
                 .when()
                 .get("/myconext/api/servicedesk/overview")
                 .as(ServiceDeskOverview.class);
-        assertTrue(overview.accounts().isEmpty());
+        assertNull(overview.firstMonth());
+        assertTrue(overview.added().isEmpty());
         assertTrue(overview.services().isEmpty());
     }
 
@@ -387,8 +412,81 @@ class ServiceDeskControllerTest
                 .then()
                 .statusCode(200);
 
-        assertTrue(userRepository.findOneUserByEmail("mdoe@example.com").isBlocked());
+        User blocked = userRepository.findOneUserByEmail("mdoe@example.com");
+        assertTrue(blocked.isBlocked());
         assertEquals(1, search(Map.of("blocked", "true")).total());
+        Activity activity = blocked.recentActivities(1).getFirst();
+        assertEquals(ActivityEvent.BLOCKED_ACCOUNT, activity.getEvent());
+        assertNotNull(activity.getContext().get("actor"));
+        assertEquals("Mary Doe", activity.getContext().get("name"));
+    }
+
+    @Test
+    void unblockUser() {
+        confirmIdentityOfMdoe();
+        String id = search(Map.of()).users().getFirst().id();
+        given().when().pathParam("id", id).put("/myconext/api/servicedesk/users/{id}/block").then().statusCode(200);
+
+        given()
+                .when()
+                .pathParam("id", id)
+                .put("/myconext/api/servicedesk/users/{id}/unblock")
+                .then()
+                .statusCode(200);
+
+        User unblocked = userRepository.findOneUserByEmail("mdoe@example.com");
+        assertFalse(unblocked.isBlocked());
+        assertEquals(0, search(Map.of("blocked", "true")).total());
+        assertEquals(ActivityEvent.DEBLOCKED_ACCOUNT, unblocked.recentActivities(1).getFirst().getEvent());
+        assertEquals(ActivityEvent.BLOCKED_ACCOUNT, unblocked.recentActivities(2).get(1).getEvent());
+    }
+
+    @Test
+    void resetMfa() {
+        confirmIdentityOfMdoe();
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        user.getSurfSecureId().put("phone-verified", true);
+        userRepository.save(user);
+        String id = user.getId();
+        assertFalse(userRepository.findOneUserByEmail("mdoe@example.com").getSurfSecureId().isEmpty());
+
+        given()
+                .when()
+                .pathParam("id", id)
+                .put("/myconext/api/servicedesk/users/{id}/reset-mfa")
+                .then()
+                .statusCode(200);
+
+        User reset = userRepository.findOneUserByEmail("mdoe@example.com");
+        assertTrue(reset.getSurfSecureId().isEmpty());
+        Activity activity = reset.recentActivities(1).getFirst();
+        assertEquals(ActivityEvent.MFA_RESET, activity.getEvent());
+        assertEquals("Mary Doe", activity.getContext().get("name"));
+    }
+
+    @Test
+    void resetMfaOtherInstitution() {
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        user.getSurfSecureId().put("phone-verified", true);
+        userRepository.save(user);
+        given()
+                .when()
+                .pathParam("id", user.getId())
+                .put("/myconext/api/servicedesk/users/{id}/reset-mfa")
+                .then()
+                .statusCode(404);
+        assertFalse(userRepository.findOneUserByEmail("mdoe@example.com").getSurfSecureId().isEmpty());
+    }
+
+    @Test
+    void unblockUserOtherInstitution() {
+        String id = userRepository.findOneUserByEmail("mdoe@example.com").getId();
+        given()
+                .when()
+                .pathParam("id", id)
+                .put("/myconext/api/servicedesk/users/{id}/unblock")
+                .then()
+                .statusCode(404);
     }
 
     @Test

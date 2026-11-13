@@ -1,5 +1,6 @@
 import type { ActivityEntry } from '../api';
 import I18n from '../locale/I18n';
+import { useAppStore } from '../stores/AppStore';
 
 export type ActivityType = 'account' | 'security' | 'institution' | 'service';
 
@@ -26,6 +27,9 @@ const TYPES: Record<string, ActivityType> = {
     CONTROL_CODE_DELETED: 'institution',
     SERVICE_REMOVED: 'service',
     TOKENS_REMOVED: 'service',
+    BLOCKED_ACCOUNT: 'account',
+    DEBLOCKED_ACCOUNT: 'account',
+    MFA_RESET: 'security',
     SERVICE_FIRST_LOGIN: 'service',
     SERVICE_LAST_LOGIN: 'service',
 };
@@ -58,6 +62,11 @@ export const activityText = ({ event, context }: ActivityEntry): string => {
         email: '',
         name: '',
         ...rest,
+        // the actor of the activity, e.g. the service desk member that blocked the user
+        you:
+            context?.actor && context.actor === useAppStore.getState().user.id
+                ? I18n.t('activity.you')
+                : '',
         institution: localized(context ?? {}, 'institution'),
         service: localized(context ?? {}, 'service'),
         language: language ? I18n.t(`languages.${language}`) : '',

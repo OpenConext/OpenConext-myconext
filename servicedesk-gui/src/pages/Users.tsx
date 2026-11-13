@@ -284,7 +284,7 @@ export const Users = () => {
                                     {I18n.t('users.columns.affiliations')}
                                 </TableHead>
                                 <TableHead>
-                                    {I18n.t('users.columns.id')}
+                                    {I18n.t('users.columns.roles')}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -364,7 +364,18 @@ export const Users = () => {
                                                   ),
                                               )}
                                     </TableCell>
-                                    <TableCell>{user.uid}</TableCell>
+                                    <TableCell>
+                                        {user.roles.length === 0
+                                            ? '–'
+                                            : user.roles.map((role) => (
+                                                  <Badge
+                                                      key={role}
+                                                      variant="info"
+                                                  >
+                                                      {role}
+                                                  </Badge>
+                                              ))}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                             {result && result.users.length === 0 && (

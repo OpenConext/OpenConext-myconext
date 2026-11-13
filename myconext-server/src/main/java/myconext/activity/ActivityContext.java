@@ -29,6 +29,8 @@ public final class ActivityContext {
     public static final String SERVICE = "service";
     /** The Dutch name of the service, only if known */
     public static final String SERVICE_NL = "serviceNl";
+    /** The id of the user that performed the action, if this is not the user of the activity (e.g. a service desk member) */
+    public static final String ACTOR = "actor";
     /** Distinguishes events with a different meaning, e.g. recoveryCode or phone */
     public static final String VARIANT = "variant";
 
@@ -46,6 +48,17 @@ public final class ActivityContext {
         Map<String, String> context = new LinkedHashMap<>();
         if (value != null) {
             context.put(key, value);
+        }
+        return context;
+    }
+
+    /**
+     * The service desk member that performed an action on the account of another user.
+     */
+    public static Map<String, String> actor(String actorId, String name) {
+        Map<String, String> context = of(NAME, name);
+        if (StringUtils.hasText(actorId)) {
+            context.put(ACTOR, actorId);
         }
         return context;
     }

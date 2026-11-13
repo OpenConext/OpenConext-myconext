@@ -1,0 +1,28 @@
+.reset-mfa {
+    &__check {
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+        color: var(--muted-foreground);
+    }
+
+    &__checks {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--border);
+    }
+
+    &__item {
+        display: flex;
+        gap: calc(var(--spacing) * 3);
+        align-items: flex-start;
+        padding: calc(var(--spacing) * 3);
+        font-size: var(--text-sm-font-size);
+        font-weight: 500;
+        line-height: var(--text-sm-line-height);
+        cursor: pointer;
+
+        & + & {
+            border-top: 1px solid var(--border);
+        }
+    }
+}

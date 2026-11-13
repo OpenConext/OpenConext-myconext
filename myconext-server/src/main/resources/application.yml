@@ -81,6 +81,14 @@ manage:
   base_url: https://manage.test2.surfconext.nl
   enabled: False
 
+# Invite provides the roles of the eduID users, shown in the service desk. Results are cached per organization
+invite:
+  username: eduid
+  password: secret
+  base_url: http://localhost:8080
+  cache_minutes: 5
+  enabled: False
+
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
 saml_metadata_base_path: http://localhost:8081

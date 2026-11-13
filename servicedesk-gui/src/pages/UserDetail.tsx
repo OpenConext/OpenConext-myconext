@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import { toast } from 'sonner';
+
 import {
     ArrowLeftIcon,
     BuildingOfficeIcon,
@@ -12,6 +14,7 @@ import {
     PasswordIcon,
     PlusCircleIcon,
     ProhibitIcon,
+    SealCheckIcon,
     ShieldCheckIcon,
     UserCircleGearIcon,
 } from '@phosphor-icons/react';
@@ -26,9 +29,17 @@ import {
     Spinner,
 } from '@surfnet/curve-react';
 
-import { type ServiceDeskUserDetail, blockUser, getUserDetail } from '../api';
+import {
+    type ServiceDeskUserDetail,
+    blockUser,
+    getUserDetail,
+    resetMfa,
+    unblockUser,
+} from '../api';
 import { BlockUserDialog } from '../components/BlockUserDialog';
 import { PageHeader } from '../components/PageHeader';
+import { ResetMfaDialog } from '../components/ResetMfaDialog';
+import { UnblockUserDialog } from '../components/UnblockUserDialog';
 import I18n from '../locale/I18n';
 import { useAppStore } from '../stores/AppStore';
 import {
@@ -46,6 +57,12 @@ const ACTIVITY_ICONS = {
     security: LockKeyOpenIcon,
     institution: BuildingOfficeIcon,
     service: LockKeyOpenIcon,
+};
+
+// events with an icon of their own
+const EVENT_ICONS: Record<string, typeof KeyIcon> = {
+    BLOCKED_ACCOUNT: ProhibitIcon,
+    DEBLOCKED_ACCOUNT: SealCheckIcon,
 };
 
 const MFA_ICONS: Record<string, typeof KeyIcon> = {
@@ -97,6 +114,11 @@ const Field = ({ label, value, verified }: FieldProps) => (
     </div>
 );
 
+const userName = (user: ServiceDeskUserDetail | null) =>
+    [user?.chosenName || user?.givenName, user?.familyName]
+        .filter(Boolean)
+        .join(' ');
+
 export const UserDetail = () => {
     const { id } = useParams();
     const [user, setUser] = useState<ServiceDeskUserDetail | null>(null);
@@ -110,6 +132,10 @@ export const UserDetail = () => {
     const institution = useAppStore(
         (state) => state.user?.schacHomeOrganization,
     );
+
+    const [resettingMfa, setResettingMfa] = useState(false);
+    const [resetPending, setResetPending] = useState(false);
+    const [resetFailed, setResetFailed] = useState(false);
 
     // incremented to reload the details of the user
     const [reloads, setReloads] = useState(0);
@@ -130,14 +156,41 @@ export const UserDetail = () => {
         setBlockPending(true);
         setBlockFailed(false);
         try {
-            await blockUser(id ?? '');
-            // reload the details of the user after the user is blocked
+            const wasBlocked = user?.blocked;
+            await (wasBlocked ? unblockUser : blockUser)(id ?? '');
+            toast.success(
+                I18n.t(
+                    wasBlocked
+                        ? 'userDetail.unblockedToast'
+                        : 'userDetail.blockedToast',
+                    { name: userName(user) },
+                ),
+            );
+            // reload the details of the user after the user is (un)blocked
             setReloads((count) => count + 1);
             setBlocking(false);
         } catch {
             setBlockFailed(true);
         } finally {
             setBlockPending(false);
+        }
+    };
+
+    const reset = async () => {
+        setResetPending(true);
+        setResetFailed(false);
+        try {
+            await resetMfa(id ?? '');
+            toast.success(
+                I18n.t('userDetail.mfaResetToast', { name: userName(user) }),
+            );
+            // reload the details of the user after the MFA methods are reset
+            setReloads((count) => count + 1);
+            setResettingMfa(false);
+        } catch {
+            setResetFailed(true);
+        } finally {
+            setResetPending(false);
         }
     };
 
@@ -158,9 +211,7 @@ export const UserDetail = () => {
         return <Spinner className="loading" />;
     }
 
-    const name = [user.chosenName || user.givenName, user.familyName]
-        .filter(Boolean)
-        .join(' ');
+    const name = userName(user);
     const activities = user.activities.filter(
         (activity) => type === 'all' || activityType(activity.event) === type,
     );
@@ -170,6 +221,12 @@ export const UserDetail = () => {
             <PageHeader
                 subtitle={
                     <span className="user-detail__badges">
+                        {user.blocked && (
+                            <Badge variant="danger">
+                                <ProhibitIcon />
+                                {I18n.t('userDetail.blocked')}
+                            </Badge>
+                        )}
                         {user.affiliations.map((affiliation) => (
                             <Badge key={affiliation} variant="success">
                                 <CheckCircleIcon />
@@ -191,16 +248,15 @@ export const UserDetail = () => {
                 action={
                     <Button
                         variant="outline"
-                        disabled={user.blocked}
                         onClick={() => {
                             setBlockFailed(false);
                             setBlocking(true);
                         }}
                     >
-                        <ProhibitIcon />
+                        {user.blocked ? <SealCheckIcon /> : <ProhibitIcon />}
                         {I18n.t(
                             user.blocked
-                                ? 'userDetail.blocked'
+                                ? 'userDetail.unblock'
                                 : 'userDetail.block',
                         )}
                     </Button>
@@ -208,7 +264,17 @@ export const UserDetail = () => {
             >
                 {name}
             </PageHeader>
-            {blocking && (
+            {blocking && user.blocked && (
+                <UnblockUserDialog
+                    name={name}
+                    institution={institution}
+                    isPending={blockPending}
+                    isError={blockFailed}
+                    onConfirm={() => void block()}
+                    onClose={() => setBlocking(false)}
+                />
+            )}
+            {blocking && !user.blocked && (
                 <BlockUserDialog
                     name={name}
                     institution={institution}
@@ -216,6 +282,17 @@ export const UserDetail = () => {
                     isError={blockFailed}
                     onConfirm={() => void block()}
                     onClose={() => setBlocking(false)}
+                />
+            )}
+            {resettingMfa && (
+                <ResetMfaDialog
+                    name={name}
+                    givenName={user.institutionGivenName}
+                    familyName={user.institutionFamilyName}
+                    isPending={resetPending}
+                    isError={resetFailed}
+                    onConfirm={() => void reset()}
+                    onClose={() => setResettingMfa(false)}
                 />
             )}
             <div className="user-detail__content">
@@ -278,10 +355,18 @@ export const UserDetail = () => {
                                       })}
                             </span>
                         </div>
-                        {/* TODO: resetting the MFA methods is implemented later */}
-                        <Button variant="link">
-                            {I18n.t('userDetail.reset')}
-                        </Button>
+                        {/* only the mobile app can be reset, it is gone after a reset */}
+                        {user.mfaMethods.includes('app') && (
+                            <Button
+                                variant="link"
+                                onClick={() => {
+                                    setResetFailed(false);
+                                    setResettingMfa(true);
+                                }}
+                            >
+                                {I18n.t('userDetail.reset')}
+                            </Button>
+                        )}
                     </div>
                     <div className="user-detail__row user-detail__row--action">
                         <Field
@@ -346,6 +431,7 @@ export const UserDetail = () => {
                     )}
                     {activities.slice(0, shown).map((activity, index) => {
                         const Icon =
+                            EVENT_ICONS[activity.event] ??
                             ACTIVITY_ICONS[activityType(activity.event)];
                         return (
                             <div
