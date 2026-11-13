@@ -13,7 +13,7 @@ export * from './Footer/Footer';
 export * from './Header/Header';
 export * from './ItemList/ItemList';
 export * from './Loading/Loading';
-export * from './Loading/LoadingSpinner';
+export * from './Loading/Spinner.tsx';
 export * from './LoadingButton/LoadingButton';
 export * from './LinkOutcome/LinkOutcome';
 export * from './LoginContainer/LoginContainer';

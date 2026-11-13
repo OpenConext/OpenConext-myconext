@@ -1,5 +1,5 @@
 import { LoginContainer } from '../LoginContainer/LoginContainer';
-import { LoadingSpinner } from './LoadingSpinner';
+import { Spinner } from './Spinner.tsx';
 
 interface LoadingProps {
     title: string;
@@ -7,6 +7,6 @@ interface LoadingProps {
 
 export const Loading = ({ title }: LoadingProps) => (
     <LoginContainer title={title}>
-        <LoadingSpinner />
+        <Spinner />
     </LoginContainer>
 );

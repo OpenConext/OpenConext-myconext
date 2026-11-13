@@ -10,8 +10,8 @@ import {
     ErrorAlert,
     ItemList,
     LoadingButton,
-    LoadingSpinner,
     LoginContainer,
+    Spinner,
 } from '../../components';
 import I18n from '../../locale/I18n';
 import {
@@ -115,7 +115,7 @@ export default function Login() {
         // Todo: this should become the spinner without loginbox
         return (
             <Container serviceName="TODO: N/A">
-                <LoadingSpinner />
+                <Spinner />
             </Container>
         );
     }
@@ -150,7 +150,7 @@ export default function Login() {
                         },
                     ]}
                 />
-                {isSubmitting && <LoadingSpinner />}
+                {isSubmitting && <Spinner />}
                 {accountNotFound && (
                     <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
