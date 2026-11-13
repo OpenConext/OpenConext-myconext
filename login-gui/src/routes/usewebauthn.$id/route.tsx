@@ -84,8 +84,7 @@ export default function UseWebAuthn() {
                 {isError && <ErrorAlert>{I18n.t('webAuthn.error')}</ErrorAlert>}
                 <LoadingButton
                     type="button"
-                    loading={isPending}
-                    disabled={isSuccess}
+                    loading={isPending || isSuccess}
                     autoFocus
                     onClick={() => startAuthentication()}
                 >

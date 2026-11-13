@@ -29,7 +29,11 @@ export default function PhoneVerification() {
     const [touched, setTouched] = useState(false);
     const [sendError, setSendError] = useState<SendError | null>(null);
 
-    const { mutate: send, isPending } = useMutation({
+    const {
+        mutate: send,
+        isPending: isSending,
+        isSuccess,
+    } = useMutation({
         mutationFn: (number: string) => sendPhoneCode(hash, number),
         onSuccess: (_, number) =>
             navigate(`/phone-confirmation${query}`, {
@@ -42,6 +46,7 @@ export default function PhoneVerification() {
         return <Navigate to="/expired" replace />;
     }
 
+    const isSubmitting = isSending || isSuccess;
     const invalid = touched && !isValidPhoneNumber(phoneNumber);
 
     // The user already finalized a recovery method, so a phone number can't be added
@@ -58,13 +63,13 @@ export default function PhoneVerification() {
             phoneNumber={phoneNumber}
             onPhoneNumberChange={setPhoneNumber}
             onBack={() => navigate(`/recovery${query}`)}
-            isPending={isPending}
+            isSubmitting={isSubmitting}
             invalid={invalid}
             sendError={sendError}
             onSubmit={(e) => {
                 e.preventDefault();
                 // Enter submits even when the button is disabled
-                if (isPending || sendError === 'rateLimited') {
+                if (isSubmitting || sendError === 'rateLimited') {
                     return;
                 }
                 setTouched(true);

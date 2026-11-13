@@ -29,6 +29,7 @@ export default function RequestSuccess() {
                 onClick={() => {
                     window.location.href = proceedUrl;
                 }}
+                autoFocus
             >
                 {I18n.t('requestSuccess.next')}
             </Button>

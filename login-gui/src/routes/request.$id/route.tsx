@@ -1,4 +1,11 @@
-import { type FC, type ReactNode, type SubmitEvent, useState } from 'react';
+import {
+    type FC,
+    type ReactNode,
+    type SubmitEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import { sanitizeHtml } from '@myconext/shared-gui';
@@ -44,6 +51,7 @@ export default function Request() {
     const [givenName, setGivenName] = useState('');
     const [familyName, setFamilyName] = useState('');
     const [agreed, setAgreed] = useState(false);
+    const emailInputRef = useRef<HTMLInputElement>(null);
 
     // Captcha tokens are single-use; remounting the widget yields a fresh one after a rejected attempt.
     const [captchaKey, setCaptchaKey] = useState(0);
@@ -61,7 +69,8 @@ export default function Request() {
 
     const {
         mutate: submit,
-        isPending: isSubmitting,
+        isPending: isMutating,
+        isSuccess,
         error,
     } = useMutation({
         mutationFn: () =>
@@ -96,6 +105,14 @@ export default function Request() {
             navigate('/expired', { replace: true });
         },
     });
+    const isSubmitting = isMutating || isSuccess;
+
+    useEffect(() => {
+        if (!isSubmitting) {
+            emailInputRef.current?.focus();
+        }
+    }, [isSubmitting]);
+
     const errorStatus = error instanceof Response ? error.status : undefined;
     const captchaPending = isPending || (!!captchaSiteKey && !captchaResponse);
 
@@ -123,11 +140,13 @@ export default function Request() {
                     </FieldLabel>
                     <Input
                         id="email"
+                        ref={emailInputRef}
                         type="email"
                         autoComplete="email"
                         autoFocus
                         required
                         value={email}
+                        disabled={isSubmitting}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </Field>
@@ -141,6 +160,7 @@ export default function Request() {
                         autoComplete="given-name"
                         required
                         value={givenName}
+                        disabled={isSubmitting}
                         onChange={(e) => setGivenName(e.target.value)}
                     />
                 </Field>
@@ -154,12 +174,14 @@ export default function Request() {
                         autoComplete="family-name"
                         required
                         value={familyName}
+                        disabled={isSubmitting}
                         onChange={(e) => setFamilyName(e.target.value)}
                     />
                 </Field>
                 <label className={styles.terms}>
                     <Checkbox
                         checked={agreed}
+                        disabled={isSubmitting}
                         onCheckedChange={(checked) =>
                             setAgreed(checked === true)
                         }

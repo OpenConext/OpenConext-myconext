@@ -60,6 +60,7 @@ export const PhoneConfirmationView = ({
                     variant="link"
                     className={styles.link}
                     loading={isResending}
+                    disabled={isVerifying}
                     onClick={onResend}
                 >
                     {I18n.t('phoneConfirmation.resend')}

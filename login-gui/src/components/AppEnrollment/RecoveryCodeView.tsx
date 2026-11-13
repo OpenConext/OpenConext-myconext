@@ -6,6 +6,7 @@ import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
 import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
+import { LoadingButton } from '../LoadingButton/LoadingButton';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './AppEnrollment.module.scss';
 
@@ -48,9 +49,14 @@ export const RecoveryCodeView = ({
                 {proceedFailed && (
                     <ErrorAlert>{I18n.t('recovery.error')}</ErrorAlert>
                 )}
-                <Button type="button" variant="outline" onClick={next}>
+                <LoadingButton
+                    type="button"
+                    variant="outline"
+                    loading={leaving}
+                    onClick={next}
+                >
                     {I18n.t('recovery.next')}
-                </Button>
+                </LoadingButton>
             </div>
         </LoginContainer>
     );

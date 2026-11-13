@@ -23,7 +23,8 @@ const UseAppFlow = ({ email, id }: UseAppFlowProps) => {
 
     const {
         mutateAsync: submitCode,
-        isPending: isVerifying,
+        isPending,
+        isSuccess,
         isError: codeFailed,
     } = useMutation({
         mutationFn: (code: string) => tiqrManualResponse(sessionKey, code),
@@ -39,7 +40,7 @@ const UseAppFlow = ({ email, id }: UseAppFlowProps) => {
                 return false;
             }
         },
-        isVerifying,
+        isVerifying: isPending || isSuccess,
         failed: codeFailed,
     };
 

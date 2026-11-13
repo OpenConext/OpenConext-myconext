@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     Navigate,
     useLocation,
@@ -36,7 +36,11 @@ export default function PhoneConfirmation() {
 
     const { data: config } = useQuery(configQueryOptions);
 
-    const { mutate: verify, isPending: isVerifying } = useMutation({
+    const {
+        mutate: verify,
+        isPending: isVerifyPending,
+        isSuccess: isVerified,
+    } = useMutation({
         mutationFn: (value: string) => verifyPhoneCode(hash, value),
         onSuccess: ({ redirect }) => {
             const proceedUrl = getProceedUrl(
@@ -60,8 +64,6 @@ export default function PhoneConfirmation() {
                       ? 'incorrect'
                       : 'failed',
             );
-            // The input is disabled while verifying and loses focus
-            queueMicrotask(() => inputRef.current?.focus());
         },
     });
 
@@ -84,6 +86,14 @@ export default function PhoneConfirmation() {
             setResendError(failure);
         },
     });
+
+    const isVerifying = isVerifyPending || isVerified;
+
+    useEffect(() => {
+        if (!isVerifying) {
+            inputRef.current?.focus();
+        }
+    }, [isVerifying]);
 
     if (!hash) {
         return <Navigate to="/expired" replace />;

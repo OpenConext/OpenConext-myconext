@@ -38,6 +38,8 @@ export default function Remember() {
         return <Navigate to="/expired" replace />;
     }
 
+    const isSubmitting = isRemembering || isSuccess;
+
     const proceed = () => {
         window.location.href = proceedUrl;
     };
@@ -51,7 +53,7 @@ export default function Remember() {
                     type="button"
                     variant="outline"
                     className={styles.secondary}
-                    disabled={isRemembering || isSuccess}
+                    disabled={isSubmitting}
                     onClick={proceed}
                 >
                     {I18n.t('remember.no')}
@@ -59,8 +61,7 @@ export default function Remember() {
                 <LoadingButton
                     type="button"
                     className={styles.primary}
-                    loading={isRemembering}
-                    disabled={isSuccess}
+                    loading={isSubmitting}
                     onClick={() => remember(hash, { onSuccess: proceed })}
                 >
                     {I18n.t('remember.yes')}
