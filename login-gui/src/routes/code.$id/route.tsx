@@ -49,6 +49,7 @@ export default function Code() {
 
     const [code, setCode] = useState('');
     const hasFired = useRef(false);
+    const otpInputRef = useRef<HTMLInputElement>(null);
 
     const goToLogin = () => navigate(`/login/${id}`);
     const goToOptions = () => navigate(`/options/${id}`, { state: { email } });
@@ -75,6 +76,7 @@ export default function Code() {
     const {
         mutate: submitCode,
         isPending: isVerifying,
+        isSuccess: isVerified,
         isError: verifyFailed,
     } = useMutation({
         mutationFn: (code: string) => verifyCodeRequest(code, id),
@@ -84,11 +86,19 @@ export default function Code() {
         },
     });
 
+    const isSubmitting = isVerifying || isVerified;
+
+    useEffect(() => {
+        if (!isSubmitting) {
+            otpInputRef.current?.focus();
+        }
+    }, [isSubmitting]);
+
     const isValidForm = code.trim() !== '';
 
     const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isVerifying || !isValidForm) {
+        if (isSubmitting || !isValidForm) {
             return;
         }
         submitCode(code.trim());
@@ -128,9 +138,10 @@ export default function Code() {
             <form className={styles.form} onSubmit={handleSubmit}>
                 <OtpInput
                     ariaLabel={I18n.t('codeScreen.inputLabel')}
+                    ref={otpInputRef}
                     value={code}
                     onChange={setCode}
-                    disabled={isVerifying}
+                    disabled={isSubmitting}
                     onComplete={(value) => submitCode(value.trim())}
                 />
                 {verifyFailed && (
@@ -140,7 +151,7 @@ export default function Code() {
                 <LoadingButton
                     type="submit"
                     className={styles.submit}
-                    loading={isVerifying}
+                    loading={isSubmitting}
                     disabled={!isValidForm}
                 >
                     {I18n.t('codeScreen.submit')}
@@ -152,6 +163,7 @@ export default function Code() {
                 <Button
                     variant="link"
                     className={`${styles.link} ${styles.resend}`}
+                    disabled={isSubmitting}
                     onClick={() => generateCode()}
                 >
                     {I18n.t('codeScreen.resend')}

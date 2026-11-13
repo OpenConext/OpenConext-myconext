@@ -30,8 +30,7 @@ export default function WebAuthn() {
                 )}
                 <LoadingButton
                     type="button"
-                    loading={isPending}
-                    disabled={isSuccess}
+                    loading={isPending || isSuccess}
                     autoFocus
                     onClick={() => startRegistration()}
                 >

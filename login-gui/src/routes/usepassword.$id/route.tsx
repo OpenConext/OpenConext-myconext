@@ -1,4 +1,11 @@
-import { type FC, type ReactNode, type SubmitEvent, useState } from 'react';
+import {
+    type FC,
+    type ReactNode,
+    type SubmitEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
 import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
@@ -40,6 +47,7 @@ export default function UsePassword() {
 
     const [password, setPassword] = useState('');
     const [incorrect, setIncorrect] = useState(false);
+    const passwordInputRef = useRef<HTMLInputElement>(null);
 
     const { data: service } = useQuery({
         queryKey: ['serviceName', id],
@@ -50,6 +58,7 @@ export default function UsePassword() {
     const {
         mutate: submitPassword,
         isPending,
+        isSuccess,
         isError,
     } = useMutation({
         mutationFn: (password: string) =>
@@ -66,18 +75,25 @@ export default function UsePassword() {
         },
     });
 
+    const isSubmitting = isPending || isSuccess;
+
+    useEffect(() => {
+        if (!isSubmitting) {
+            passwordInputRef.current?.focus();
+        }
+    }, [isSubmitting]);
+
     if (!email) {
         return <Navigate to={`/login/${id}`} replace />;
     }
 
     const goToOptions = () => navigate(`/options/${id}`, { state: { email } });
 
-    const isLoading = isPending;
     const isValidForm = password !== '';
 
     const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isLoading || !isValidForm) {
+        if (isSubmitting || !isValidForm) {
             return;
         }
         setIncorrect(false);
@@ -116,10 +132,12 @@ export default function UsePassword() {
                     </FieldLabel>
                     <Input
                         id="password"
+                        ref={passwordInputRef}
                         type="password"
                         autoComplete="current-password"
                         autoFocus
                         value={password}
+                        disabled={isSubmitting}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Field>
@@ -131,7 +149,7 @@ export default function UsePassword() {
                 )}
                 <LoadingButton
                     type="submit"
-                    loading={isLoading}
+                    loading={isSubmitting}
                     disabled={!isValidForm}
                 >
                     {I18n.t('password.submit')}

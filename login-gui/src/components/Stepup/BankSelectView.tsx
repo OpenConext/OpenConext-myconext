@@ -4,7 +4,6 @@ import {
     ItemGroup,
     ItemMedia,
     ItemTitle,
-    Spinner,
 } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -12,6 +11,7 @@ import { idinIssuersQueryOptions } from '../../api';
 import I18n from '../../locale/I18n.ts';
 import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { handleArrowKeyNavigation } from '../ItemList/ItemList';
+import { Spinner } from '../Loading/Spinner';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './ValidateNamesView.module.scss';
 
@@ -57,9 +57,7 @@ export const BankSelectView = ({
             }
         >
             {isPending ? (
-                <Spinner
-                    aria-label={I18n.t('stepup.proveIdentity.bankTitle')}
-                />
+                <Spinner label={I18n.t('stepup.proveIdentity.bankTitle')} />
             ) : isError ? (
                 <ErrorAlert>
                     {I18n.t('stepup.proveIdentity.bankError')}

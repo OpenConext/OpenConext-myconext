@@ -62,14 +62,12 @@ export default function Login() {
     const [accountNotFound, setAccountNotFound] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const emailInputRef = useRef<HTMLInputElement>(null);
-    const wasSubmitting = useRef(false);
 
-    // A disabled input loses focus, so restore it once submitting ends (i.e. after an error).
+    // A disabled input loses focus, so restore it once submitting ends.
     useEffect(() => {
-        if (wasSubmitting.current && !isSubmitting) {
+        if (!isSubmitting) {
             emailInputRef.current?.focus();
         }
-        wasSubmitting.current = isSubmitting;
     }, [isSubmitting]);
 
     const { data: service, isLoading } = useQuery({
