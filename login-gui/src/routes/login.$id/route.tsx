@@ -10,6 +10,7 @@ import {
     ErrorAlert,
     ItemList,
     LoadingButton,
+    LoadingLoginContainer,
     LoginContainer,
     Spinner,
 } from '../../components';
@@ -113,11 +114,7 @@ export default function Login() {
 
     if (isLoading) {
         // Todo: this should become the spinner without loginbox
-        return (
-            <Container serviceName="TODO: N/A">
-                <Spinner />
-            </Container>
-        );
+        return <LoadingLoginContainer title="Hahahahahha" />;
     }
 
     if (knownUser) {

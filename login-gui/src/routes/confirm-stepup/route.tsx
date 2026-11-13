@@ -5,7 +5,7 @@ import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, fetchServiceNameByHash } from '../../api';
-import { Loading, LoginContainer } from '../../components';
+import { LoadingLoginContainer, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import { getProceedUrl } from '../../utils/sso.ts';
 
@@ -49,7 +49,7 @@ export default function ConfirmStepup() {
     }
 
     if (isConfigPending || isServicePending) {
-        return <Loading title={I18n.t('confirmStepup.title')} />;
+        return <LoadingLoginContainer title={I18n.t('confirmStepup.title')} />;
     }
 
     const proceedUrl = getProceedUrl(searchParams, config?.magicLinkUrl ?? '');

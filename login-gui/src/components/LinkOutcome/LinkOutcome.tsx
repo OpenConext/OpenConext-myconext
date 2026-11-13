@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { configQueryOptions, fetchServiceName } from '../../api';
 import I18n, { tArray } from '../../locale/I18n';
 import { getProceedUrl } from '../../utils/sso';
-import { Loading } from '../Loading/Loading';
+import { LoadingLoginContainer } from '../Loading/LoadingLoginContainer.tsx';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './LinkOutcome.module.scss';
 
@@ -51,7 +51,7 @@ export const LinkOutcome = ({
     }
 
     if (isConfigPending || isServicePending) {
-        return <Loading title={I18n.t(`${scope}.title`)} />;
+        return <LoadingLoginContainer title={I18n.t(`${scope}.title`)} />;
     }
 
     const proceedUrl = getProceedUrl(searchParams, config?.magicLinkUrl ?? '');

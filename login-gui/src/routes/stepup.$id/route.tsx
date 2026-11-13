@@ -4,7 +4,7 @@ import { Navigate, useParams, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, fetchServiceName } from '../../api';
-import { Loading } from '../../components/Loading/Loading';
+import { LoadingLoginContainer } from '../../components/Loading/LoadingLoginContainer';
 import { StepupExplanation } from '../../components/Stepup/StepupExplanation';
 import {
     MODE_BY_EXPLANATION,
@@ -53,7 +53,7 @@ export default function Stepup() {
     }
 
     if (isPending || configPending) {
-        return <Loading title={I18n.t('stepup.title')} />;
+        return <LoadingLoginContainer title={I18n.t('stepup.title')} />;
     }
 
     if (showValidateExplanation && explanation) {
