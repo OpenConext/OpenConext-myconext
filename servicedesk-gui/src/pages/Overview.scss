@@ -1,0 +1,35 @@
+.overview {
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 6);
+        width: 100%;
+        max-width: 80rem;
+        padding: 0 calc(var(--spacing) * 6);
+    }
+
+    &__card {
+        padding: calc(var(--spacing) * 6);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        background-color: var(--card);
+
+        h2 {
+            margin: 0 0 calc(var(--spacing) * 4);
+            font-size: 1.125rem;
+        }
+    }
+
+    &__subtitle {
+        margin: calc(var(--spacing) * -3) 0 calc(var(--spacing) * 4);
+        color: var(--muted-foreground);
+    }
+
+    &__line {
+        height: 22rem;
+    }
+
+    &__empty {
+        color: var(--muted-foreground);
+    }
+}

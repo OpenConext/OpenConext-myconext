@@ -78,6 +78,17 @@ public class ServiceDeskController {
                 query, mfaMethods, blocked, sort, !"desc".equalsIgnoreCase(direction), page, size));
     }
 
+    @GetMapping("/overview")
+    @Operation(summary = "Overview",
+            description = "The number of eduID accounts in time and the services they are logged into, for the institution of the logged in service desk member")
+    public ResponseEntity<ServiceDeskOverview> overview(Authentication authentication) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        return ResponseEntity.ok(serviceDeskUserRepository.overview(serviceDeskMember.getSchacHomeOrganization()));
+    }
+
     @GetMapping("/users/{id}")
     @Operation(summary = "User details",
             description = "All details of a user with a linked account for the institution of the logged in service desk member")

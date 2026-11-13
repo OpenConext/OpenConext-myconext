@@ -12,7 +12,7 @@ import Forbidden from './pages/Forbidden';
 import IdentityCheck from './pages/IdentityCheck';
 import { Login } from './pages/Login';
 import NotFound from './pages/NotFound';
-import Placeholder from './pages/Placeholder';
+import { Overview } from './pages/Overview';
 import RefreshRoute from './pages/RefreshRoute';
 import { UserDetail } from './pages/UserDetail';
 import { Users } from './pages/Users';
@@ -74,14 +74,9 @@ const App = () => {
                     <Routes>
                         <Route
                             path="/"
-                            element={<Navigate replace to="/identity-check" />}
+                            element={<Navigate replace to="/overview" />}
                         />
-                        <Route
-                            path="/overview"
-                            element={
-                                <Placeholder titleKey="navigation.overview" />
-                            }
-                        />
+                        <Route path="/overview" element={<Overview />} />
                         <Route path="/users" element={<Users />} />
                         <Route path="/users/:id" element={<UserDetail />} />
                         <Route
@@ -90,7 +85,7 @@ const App = () => {
                         />
                         <Route
                             path="/home/*"
-                            element={<Navigate replace to="/identity-check" />}
+                            element={<Navigate replace to="/overview" />}
                         />
                         <Route
                             path="/refresh-route/:path"
@@ -99,7 +94,7 @@ const App = () => {
                         <Route path="/forbidden" element={<Forbidden />} />
                         <Route
                             path="/login"
-                            element={<Navigate replace to="/identity-check" />}
+                            element={<Navigate replace to="/overview" />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

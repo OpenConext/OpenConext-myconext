@@ -52,6 +52,15 @@ const nl = {
         users: 'Gebruikers',
         identityCheck: 'Identiteitscontrole',
     },
+    overview: {
+        accountsOverTime: 'Accounts in de tijd',
+        total: 'Totaal aantal accounts',
+        added: 'Nieuwe accounts',
+        services: 'Accounts per dienst',
+        servicesSubtitle: 'Diensten waarbij de eduID accounts zijn ingelogd',
+        noData: 'Geen gegevens beschikbaar',
+        loadError: 'Het overzicht kon niet worden geladen',
+    },
     users: {
         title: 'Gebruikers',
         description:

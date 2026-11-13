@@ -114,3 +114,22 @@ export const blockUser = (id: string) =>
             method: 'PUT',
         },
     );
+
+export type AccountsPerWeek = {
+    week: string;
+    added: number;
+    total: number;
+};
+
+export type ServiceUsage = {
+    name: string;
+    users: number;
+};
+
+export type ServiceDeskOverview = {
+    accounts: AccountsPerWeek[];
+    services: ServiceUsage[];
+};
+
+export const getOverview = () =>
+    apiFetch<ServiceDeskOverview>('/myconext/api/servicedesk/overview');

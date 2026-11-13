@@ -7,6 +7,7 @@ import myconext.model.EduID;
 import myconext.model.ServiceProvider;
 import myconext.model.ControlCode;
 import myconext.model.ExternalLinkedAccount;
+import myconext.model.ServiceDeskOverview;
 import myconext.model.ServiceDeskUserDetail;
 import myconext.model.ServiceDeskUserSearchResult;
 import myconext.model.LinkedAccount;
@@ -174,6 +175,32 @@ class ServiceDeskControllerTest
         assertEquals("mdoe@example.com", result.users().getFirst().email());
         assertEquals("mdoe", result.users().getFirst().uid());
         assertFalse(result.users().getFirst().blocked());
+    }
+
+    @Test
+    void overview() {
+        seedUsers();
+
+        ServiceDeskOverview overview = given()
+                .when()
+                .get("/myconext/api/servicedesk/overview")
+                .as(ServiceDeskOverview.class);
+        //25 seeded users are linked to the institution of the service desk member, the other 5 are not
+        assertEquals(25, overview.accounts().getLast().total());
+        assertEquals(25, overview.accounts().stream().mapToLong(ServiceDeskOverview.AccountsPerWeek::added).sum());
+        //The first 3 users have 3 services each
+        assertEquals(3, overview.services().size());
+        assertEquals(3, overview.services().getFirst().users());
+    }
+
+    @Test
+    void overviewOtherInstitution() {
+        ServiceDeskOverview overview = given()
+                .when()
+                .get("/myconext/api/servicedesk/overview")
+                .as(ServiceDeskOverview.class);
+        assertTrue(overview.accounts().isEmpty());
+        assertTrue(overview.services().isEmpty());
     }
 
     @Test

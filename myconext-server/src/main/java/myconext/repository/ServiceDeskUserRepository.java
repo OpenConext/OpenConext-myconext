@@ -9,6 +9,7 @@ import myconext.model.IdpScoping;
 import myconext.model.LinkedAccount;
 import myconext.model.ServiceProvider;
 import myconext.model.ServiceDeskUser;
+import myconext.model.ServiceDeskOverview;
 import myconext.model.ServiceDeskUserDetail;
 import myconext.model.ServiceDeskUserSearchResult;
 import myconext.model.User;
@@ -24,6 +25,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -32,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -136,6 +144,61 @@ public class ServiceDeskUserRepository {
         //Unknown methods match nothing
         return methods.isEmpty() ? Criteria.where("_id").exists(false) :
                 new Criteria().orOperator(methods.toArray(Criteria[]::new));
+    }
+
+    /**
+     * The number of eduID accounts in time and the services they are logged into, for the institution
+     */
+    public ServiceDeskOverview overview(String schacHomeOrganization) {
+        if (!StringUtils.hasText(schacHomeOrganization)) {
+            return new ServiceDeskOverview(List.of(), List.of());
+        }
+        Query query = new Query(institutionCriteria(schacHomeOrganization));
+        query.fields().include("created").include("eduIDS");
+        List<User> users = mongoTemplate.find(query, User.class);
+
+        //Accounts without a creation date are counted in the baseline
+        long baseline = users.stream().filter(user -> user.getCreated() <= 0).count();
+        Map<LocalDate, Long> perWeek = new TreeMap<>();
+        users.stream()
+                .filter(user -> user.getCreated() > 0)
+                .map(user -> Instant.ofEpochSecond(user.getCreated()).atZone(ZoneOffset.UTC).toLocalDate()
+                        .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)))
+                .forEach(monday -> perWeek.merge(monday, 1L, Long::sum));
+
+        List<ServiceDeskOverview.AccountsPerWeek> accounts = new ArrayList<>();
+        if (!perWeek.isEmpty()) {
+            LocalDate last = LocalDate.now(ZoneOffset.UTC).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            LocalDate first = ((TreeMap<LocalDate, Long>) perWeek).firstKey();
+            long total = baseline;
+            for (LocalDate week = first; !week.isAfter(last); week = week.plusWeeks(1)) {
+                long added = perWeek.getOrDefault(week, 0L);
+                total += added;
+                accounts.add(new ServiceDeskOverview.AccountsPerWeek(
+                        week.get(IsoFields.WEEK_BASED_YEAR) + "-W" + String.format("%02d", week.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)),
+                        added, total));
+            }
+        } else if (baseline > 0) {
+            accounts.add(new ServiceDeskOverview.AccountsPerWeek("", 0, baseline));
+        }
+
+        Map<String, Long> serviceUsers = new LinkedHashMap<>();
+        for (User user : users) {
+            //A user is counted once per service, even if multiple eduID's share the service
+            user.getEduIDS().stream()
+                    .flatMap(eduID -> eduID.getServices().stream())
+                    .map(service -> StringUtils.hasText(service.getNameNl()) && !StringUtils.hasText(service.getName()) ?
+                            service.getNameNl() : StringUtils.hasText(service.getName()) ? service.getName() : service.getEntityId())
+                    .filter(StringUtils::hasText)
+                    .distinct()
+                    .forEach(name -> serviceUsers.merge(name, 1L, Long::sum));
+        }
+        List<ServiceDeskOverview.ServiceUsage> services = serviceUsers.entrySet().stream()
+                .map(entry -> new ServiceDeskOverview.ServiceUsage(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparingLong(ServiceDeskOverview.ServiceUsage::users).reversed()
+                        .thenComparing(ServiceDeskOverview.ServiceUsage::name))
+                .toList();
+        return new ServiceDeskOverview(accounts, services);
     }
 
     /**

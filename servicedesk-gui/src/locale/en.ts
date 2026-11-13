@@ -52,6 +52,15 @@ const en = {
         users: 'Users',
         identityCheck: 'Identity check',
     },
+    overview: {
+        accountsOverTime: 'Accounts over time',
+        total: 'Total accounts',
+        added: 'New accounts',
+        services: 'Accounts per service',
+        servicesSubtitle: 'Services the eduID accounts are logged into',
+        noData: 'No data available',
+        loadError: 'The overview could not be loaded',
+    },
     users: {
         title: 'Users',
         description:
