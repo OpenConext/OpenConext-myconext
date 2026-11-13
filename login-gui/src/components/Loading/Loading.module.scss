@@ -1,13 +1,24 @@
 @use '../../styles/spacing' as *;
 
+.spinner {
+    width: spacing(8);
+    height: spacing(8);
+}
+
+.page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    background-color: var(--primary-strong);
+    color: var(--primary-foreground);
+    flex-direction: column;
+    padding: spacing(8) 0;
+}
+
 .wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     height: spacing(20);
-
-    .spinner {
-        width: spacing(8);
-        height: spacing(8);
-    }
 }
