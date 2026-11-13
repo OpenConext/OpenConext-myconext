@@ -25,7 +25,10 @@ export default defineConfig({
     webServer: process.env.E2E_BASE_URL
         ? undefined
         : {
-              command: 'yarn vite --port 3003 --no-open',
+              // `yarn dev` resolves vite from my-gui, `yarn vite` takes the hoisted .bin/vite at the
+              // root that can point to the vite of another workspace (servicedesk-gui), which breaks
+              // the React Router plugin: every request then returns 404
+              command: 'yarn dev --port 3003 --no-open',
               url: `http://localhost:${port}`,
               reuseExistingServer: true,
               timeout: 120_000,
