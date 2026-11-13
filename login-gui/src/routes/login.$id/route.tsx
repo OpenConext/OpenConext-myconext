@@ -1,14 +1,15 @@
-import { type FC, type ReactNode, useState } from 'react';
+import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 
 import { UserCircleIcon, UserSwitchIcon } from '@phosphor-icons/react';
-import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
+import { Field, FieldLabel, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
 import {
     ErrorAlert,
     ItemList,
+    LoadingButton,
     LoadingSpinner,
     LoginContainer,
 } from '../../components';
@@ -58,6 +59,17 @@ export default function Login() {
     const [knownUser, setKnownUser] = useState(getKnownUser);
     const [email, setEmail] = useState('');
     const [accountNotFound, setAccountNotFound] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const emailInputRef = useRef<HTMLInputElement>(null);
+    const wasSubmitting = useRef(false);
+
+    // A disabled input loses focus, so restore it once submitting ends (i.e. after an error).
+    useEffect(() => {
+        if (wasSubmitting.current && !isSubmitting) {
+            emailInputRef.current?.focus();
+        }
+        wasSubmitting.current = isSubmitting;
+    }, [isSubmitting]);
 
     const { data: service, isLoading } = useQuery({
         queryKey: ['serviceName', id],
@@ -65,7 +77,7 @@ export default function Login() {
         enabled: Boolean(id),
     });
 
-    const { mutate: submitEmail, isPending } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: (email: string) => fetchLoginMethods(email),
         onSuccess: (methods, email) => {
             rememberKnownUser(email);
@@ -77,9 +89,12 @@ export default function Login() {
 
             if (method) {
                 navigate(loginMethodPath(method, id), { state: { email } });
+            } else {
+                setIsSubmitting(false);
             }
         },
         onError: (error, submittedEmail) => {
+            setIsSubmitting(false);
             if (error instanceof Response && error.status === 404) {
                 // A stale remembered account would otherwise dead-end the user.
                 if (submittedEmail === knownUser) {
@@ -91,9 +106,15 @@ export default function Login() {
         },
     });
 
-    if (isLoading || isPending) {
+    const handleSubmitEmail = (value: string) => {
+        setIsSubmitting(true);
+        mutate(value);
+    };
+
+    if (isLoading) {
+        // Todo: this should become the spinner without loginbox
         return (
-            <Container serviceName={service?.name}>
+            <Container serviceName="TODO: N/A">
                 <LoadingSpinner />
             </Container>
         );
@@ -108,13 +129,20 @@ export default function Login() {
                             key: 'known-user',
                             icon: UserCircleIcon,
                             label: knownUser,
-                            onClick: () => submitEmail(knownUser),
+                            onClick: () => {
+                                if (!isSubmitting) {
+                                    handleSubmitEmail(knownUser);
+                                }
+                            },
                         },
                         {
                             key: 'other-account',
                             icon: UserSwitchIcon,
                             label: I18n.t('login.useOtherAccount'),
                             onClick: () => {
+                                if (isSubmitting) {
+                                    return;
+                                }
                                 forgetKnownUser();
                                 setKnownUser(undefined);
                                 setAccountNotFound(false);
@@ -122,6 +150,7 @@ export default function Login() {
                         },
                     ]}
                 />
+                {isSubmitting && <LoadingSpinner />}
                 {accountNotFound && (
                     <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
@@ -135,7 +164,10 @@ export default function Login() {
                 className={styles.form}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    submitEmail(email);
+                    // Guards Enter-key submits while a request is in flight.
+                    if (!isSubmitting) {
+                        handleSubmitEmail(email);
+                    }
                 }}
             >
                 <Field>
@@ -144,9 +176,11 @@ export default function Login() {
                     </FieldLabel>
                     <Input
                         id="email"
+                        ref={emailInputRef}
                         type="email"
                         autoFocus
                         value={email}
+                        disabled={isSubmitting}
                         onChange={(e) => {
                             setEmail(e.target.value);
                             setAccountNotFound(false);
@@ -156,7 +190,9 @@ export default function Login() {
                 {accountNotFound && (
                     <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
-                <Button type="submit">{I18n.t('login.submit')}</Button>
+                <LoadingButton type="submit" loading={isSubmitting}>
+                    {I18n.t('login.submit')}
+                </LoadingButton>
             </form>
         </Container>
     );
