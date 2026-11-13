@@ -5,7 +5,11 @@ import { useEnrollmentPolling } from '@myconext/shared-gui';
 import { useMutation } from '@tanstack/react-query';
 
 import { pollEnrollment, startEnrollment } from '../../api';
-import { type EnrollAppState, EnrollAppView, Loading } from '../../components';
+import {
+    type EnrollAppState,
+    EnrollAppView,
+    LoadingLoginContainer,
+} from '../../components';
 import I18n from '../../locale/I18n';
 
 export default function EnrollApp() {
@@ -67,7 +71,7 @@ export default function EnrollApp() {
     } else if (timedOut) {
         state = { phase: 'timedOut' };
     } else if (!enrollment) {
-        return <Loading title={I18n.t('enrollApp.scanTitle')} />;
+        return <LoadingLoginContainer title={I18n.t('enrollApp.scanTitle')} />;
     } else if (status === 'RETRIEVED' || processed) {
         state = { phase: 'finish' };
     } else {

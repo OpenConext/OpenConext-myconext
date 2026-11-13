@@ -5,7 +5,7 @@ interface LoadingProps {
     title: string;
 }
 
-export const Loading = ({ title }: LoadingProps) => (
+export const LoadingLoginContainer = ({ title }: LoadingProps) => (
     <LoginContainer title={title}>
         <Spinner />
     </LoginContainer>

@@ -10,7 +10,11 @@ import {
     configQueryOptions,
     generateBackupCode,
 } from '../../api';
-import { Loading, LoginContainer, RecoveryCodeView } from '../../components';
+import {
+    LoadingLoginContainer,
+    LoginContainer,
+    RecoveryCodeView,
+} from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import { getProceedUrl } from '../../utils/sso';
@@ -89,7 +93,7 @@ export default function RecoveryCode() {
     }
 
     if (!code) {
-        return <Loading title={I18n.t('recovery.backupTitle')} />;
+        return <LoadingLoginContainer title={I18n.t('recovery.backupTitle')} />;
     }
 
     // Validated on click: the one-time code must be shown even if this fails

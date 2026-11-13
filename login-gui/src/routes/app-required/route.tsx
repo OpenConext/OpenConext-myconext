@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { configQueryOptions, fetchServiceNameByHash } from '../../api';
-import { AppRequiredView, Loading } from '../../components';
+import { AppRequiredView, LoadingLoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { getProceedUrl } from '../../utils/sso';
 
@@ -30,7 +30,7 @@ export default function AppRequired() {
     }
 
     if (isConfigPending || isServicePending) {
-        return <Loading title={I18n.t('appRequired.title')} />;
+        return <LoadingLoginContainer title={I18n.t('appRequired.title')} />;
     }
 
     const proceedUrl = getProceedUrl(searchParams, config?.magicLinkUrl ?? '');
