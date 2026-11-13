@@ -16,8 +16,8 @@ import { generateCodeRequest, verifyCodeRequest } from '../../api';
 import {
     ErrorAlert,
     LoadingButton,
-    LoadingSpinner,
     LoginContainer,
+    Spinner,
 } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
@@ -110,7 +110,7 @@ export default function Code() {
     if (isGenerating) {
         return (
             <Container email={email} onBack={goToLogin}>
-                <LoadingSpinner label={I18n.t('codeScreen.sending')} />
+                <Spinner label={I18n.t('codeScreen.sending')} />
             </Container>
         );
     }

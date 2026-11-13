@@ -14,8 +14,8 @@ import { fetchLoginMethods } from '../../api';
 import {
     ErrorAlert,
     ItemList,
-    LoadingSpinner,
     LoginContainer,
+    Spinner,
 } from '../../components';
 import I18n from '../../locale/I18n';
 import {
@@ -64,7 +64,7 @@ export default function Options() {
             onBack={() => navigate(`/login/${id}`)}
             backLabel={email}
         >
-            {isPending && <LoadingSpinner />}
+            {isPending && <Spinner />}
             {isError && <ErrorAlert>{I18n.t('options.error')}</ErrorAlert>}
             {methods && (
                 <ItemList
