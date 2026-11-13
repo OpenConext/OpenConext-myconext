@@ -78,6 +78,37 @@ public class ServiceDeskController {
                 query, mfaMethods, blocked, sort, !"desc".equalsIgnoreCase(direction), page, size));
     }
 
+    @GetMapping("/users/{id}")
+    @Operation(summary = "User details",
+            description = "All details of a user with a linked account for the institution of the logged in service desk member")
+    public ResponseEntity<ServiceDeskUserDetail> userDetail(Authentication authentication,
+                                                            @PathVariable("id") String id) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        //Users of other institutions are not found
+        return ResponseEntity.ok(serviceDeskUserRepository.findDetail(id, serviceDeskMember.getSchacHomeOrganization())
+                .orElseThrow(() -> new UserNotFoundException(id)));
+    }
+
+    @PutMapping("/users/{id}/block")
+    @Operation(summary = "Block user",
+            description = "Block a user with a linked account for the institution of the logged in service desk member")
+    public ResponseEntity<StatusResponse> blockUser(Authentication authentication,
+                                                    @PathVariable("id") String id) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        //Users of other institutions are not found
+        if (!serviceDeskUserRepository.block(id, serviceDeskMember.getSchacHomeOrganization())) {
+            throw new UserNotFoundException(id);
+        }
+        LOG.info(String.format("Service desk member %s blocked user %s", serviceDeskMember.getEmail(), id));
+        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
+    }
+
     @GetMapping("/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")

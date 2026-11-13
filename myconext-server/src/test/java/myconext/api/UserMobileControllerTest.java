@@ -160,7 +160,7 @@ public class UserMobileControllerTest extends AbstractMailBoxTest {
                 .when()
                 .post("/mobile/api/sp/control-code")
                 .as(ControlCode.class);
-        assertEquals(5, responseControlCode.getCode().length());
+        assertEquals(6, responseControlCode.getCode().length());
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
 

@@ -1,0 +1,165 @@
+.user-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 8);
+        width: 100%;
+        max-width: 42rem;
+        padding: 0 calc(var(--spacing) * 6);
+    }
+
+    &__back {
+        display: inline-flex;
+        gap: calc(var(--spacing) * 2);
+        align-items: center;
+        color: var(--primary-strong, var(--primary));
+    }
+
+    &__badges {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: calc(var(--spacing) * 2);
+        align-items: center;
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background-color: var(--card);
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
+    }
+
+    &__row {
+        display: flex;
+        gap: calc(var(--spacing) * 6);
+        padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+
+        &:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+        }
+
+        // the fields share the width of the row equally
+        > .user-detail__field {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        &--action {
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__label {
+        color: var(--muted-foreground);
+    }
+
+    &__value {
+        display: inline-flex;
+        gap: calc(var(--spacing) * 1);
+        align-items: center;
+        font-weight: var(--font-weight-medium);
+        overflow-wrap: anywhere;
+    }
+
+    &__verified {
+        flex-shrink: 0;
+        color: var(--success, #00a661);
+    }
+
+    &__activity-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: calc(var(--spacing) * -5);
+
+        h2 {
+            font-size: var(--text-xl-font-size, 20px);
+            line-height: var(--text-xl-line-height, 30px);
+            font-weight: var(--font-weight-semibold);
+        }
+    }
+
+    &__filter {
+        background-color: var(--card);
+        color: var(--muted-foreground);
+        font-weight: var(--font-weight-normal);
+    }
+
+    &__activities {
+        margin-bottom: calc(var(--spacing) * 6);
+    }
+
+    &__activity {
+        display: flex;
+        gap: calc(var(--spacing) * 4);
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+        border-bottom: 1px solid var(--border);
+    }
+
+    &__activity-text {
+        display: inline-flex;
+        gap: calc(var(--spacing) * 1.5);
+        align-items: center;
+
+        svg {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    &__activity-time {
+        flex-shrink: 0;
+        color: var(--muted-foreground);
+        text-align: right;
+    }
+
+    &__more {
+        display: flex;
+        justify-content: center;
+        padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 4);
+    }
+
+    &__empty {
+        padding: calc(var(--spacing) * 4);
+        color: var(--muted-foreground);
+        text-align: center;
+    }
+
+    @media (max-width: 40rem) {
+        &__row {
+            flex-direction: column;
+            gap: calc(var(--spacing) * 3);
+
+            &--action {
+                flex-direction: row;
+            }
+        }
+
+        &__activity {
+            flex-direction: column;
+            gap: calc(var(--spacing) * 1);
+        }
+
+        &__activity-time {
+            text-align: left;
+        }
+    }
+}

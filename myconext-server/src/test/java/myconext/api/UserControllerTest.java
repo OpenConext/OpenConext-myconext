@@ -1935,7 +1935,7 @@ public class UserControllerTest extends AbstractMailBoxTest {
                 .when()
                 .post("/myconext/api/sp/control-code")
                 .as(ControlCode.class);
-        assertEquals(5, responseControlCode.getCode().length());
+        assertEquals(6, responseControlCode.getCode().length());
         User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
 

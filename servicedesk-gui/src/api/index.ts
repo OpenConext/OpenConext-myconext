@@ -77,3 +77,40 @@ export const searchUsers = ({ mfa = [], ...params }: UserSearchParams) => {
         `/myconext/api/servicedesk/users?${searchParams.toString()}`,
     );
 };
+
+export type ActivityEntry = {
+    userId: string;
+    event: string;
+    dateTime: number;
+    context: Record<string, string>;
+};
+
+export type ServiceDeskUserDetail = {
+    id: string;
+    uid: string;
+    eduPersonPrincipalName: string;
+    email: string;
+    givenName?: string;
+    familyName?: string;
+    chosenName?: string;
+    dateOfBirth?: number;
+    namesVerified: boolean;
+    blocked: boolean;
+    mfaMethods: string[];
+    affiliations: string[];
+    verifiedBy: string[];
+    activities: ActivityEntry[];
+};
+
+export const getUserDetail = (id: string) =>
+    apiFetch<ServiceDeskUserDetail>(
+        `/myconext/api/servicedesk/users/${encodeURIComponent(id)}`,
+    );
+
+export const blockUser = (id: string) =>
+    apiFetch(
+        `/myconext/api/servicedesk/users/${encodeURIComponent(id)}/block`,
+        {
+            method: 'PUT',
+        },
+    );

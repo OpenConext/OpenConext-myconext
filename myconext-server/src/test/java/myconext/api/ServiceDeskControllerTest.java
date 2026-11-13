@@ -1,8 +1,13 @@
 package myconext.api;
 
 import myconext.AbstractIntegrationTest;
+import myconext.model.Activity;
+import myconext.model.ActivityEvent;
+import myconext.model.EduID;
+import myconext.model.ServiceProvider;
 import myconext.model.ControlCode;
 import myconext.model.ExternalLinkedAccount;
+import myconext.model.ServiceDeskUserDetail;
 import myconext.model.ServiceDeskUserSearchResult;
 import myconext.model.LinkedAccount;
 import myconext.model.PublicKeyCredentials;
@@ -23,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -278,6 +284,114 @@ class ServiceDeskControllerTest
         assertEquals(3, search(Map.of("size", "100", "query", "Jansen")).total());
     }
 
+    @Test
+    void userDetail() {
+        confirmIdentityOfMdoe();
+        String id = search(Map.of()).users().getFirst().id();
+
+        ServiceDeskUserDetail detail = given()
+                .when()
+                .pathParam("id", id)
+                .get("/myconext/api/servicedesk/users/{id}")
+                .as(ServiceDeskUserDetail.class);
+        assertEquals(id, detail.id());
+        assertEquals("mdoe", detail.uid());
+        assertEquals("mdoe@example.com", detail.email());
+        assertEquals("mdoe@" + userRepository.findOneUserByEmail("mdoe@example.com").getSchacHomeOrganization(),
+                detail.eduPersonPrincipalName());
+        assertNotNull(detail.dateOfBirth());
+        assertTrue(detail.verifiedBy().contains("serviceDesk"));
+        assertTrue(detail.mfaMethods().contains("password"));
+        assertNotNull(detail.activities());
+    }
+
+    @Test
+    void userDetailServiceLogins() {
+        confirmIdentityOfMdoe();
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        user.getEduIDS().add(new EduID(UUID.randomUUID().toString(), serviceProvider("https://mock-sp", "Mock SP")));
+        userRepository.save(user);
+
+        ServiceDeskUserDetail detail = given()
+                .when()
+                .pathParam("id", user.getId())
+                .get("/myconext/api/servicedesk/users/{id}")
+                .as(ServiceDeskUserDetail.class);
+        Activity login = detail.activities().stream()
+                .filter(activity -> activity.getEvent() == ActivityEvent.SERVICE_FIRST_LOGIN)
+                .findFirst()
+                .orElseThrow();
+        assertEquals("Mock SP", login.getContext().get("service"));
+        assertEquals(1, detail.activities().stream()
+                .filter(activity -> activity.getEvent() == ActivityEvent.SERVICE_LAST_LOGIN).count());
+        //Most recent first
+        for (int i = 1; i < detail.activities().size(); i++) {
+            assertFalse(detail.activities().get(i).getDateTime().after(detail.activities().get(i - 1).getDateTime()));
+        }
+    }
+
+    private ServiceProvider serviceProvider(String entityId, String name) {
+        return serviceProvider(entityId, name, null);
+    }
+
+    private ServiceProvider serviceProvider(String entityId, String name, String nameNl) {
+        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setEntityId(entityId);
+        serviceProvider.setName(name);
+        serviceProvider.setNameNl(nameNl);
+        serviceProvider.setLogoUrl("https://static.surfconext.nl/media/sp/eduid.png");
+        serviceProvider.setHomeUrl("https://eduid.nl/");
+        serviceProvider.setInstitutionGuid("ad93daef-0911-e511-80d0-005056956c1a");
+        serviceProvider.setCreatedAt(new Date(System.currentTimeMillis() - 5 * 24 * 3600 * 1000L));
+        serviceProvider.setLastLogin(new Date());
+        return serviceProvider;
+    }
+
+    @Test
+    void blockUser() {
+        confirmIdentityOfMdoe();
+        String id = search(Map.of()).users().getFirst().id();
+        assertFalse(search(Map.of()).users().getFirst().blocked());
+
+        given()
+                .when()
+                .pathParam("id", id)
+                .put("/myconext/api/servicedesk/users/{id}/block")
+                .then()
+                .statusCode(200);
+
+        assertTrue(userRepository.findOneUserByEmail("mdoe@example.com").isBlocked());
+        assertEquals(1, search(Map.of("blocked", "true")).total());
+    }
+
+    @Test
+    void blockUserOtherInstitution() {
+        String id = userRepository.findOneUserByEmail("mdoe@example.com").getId();
+        given()
+                .when()
+                .pathParam("id", id)
+                .put("/myconext/api/servicedesk/users/{id}/block")
+                .then()
+                .statusCode(404);
+        assertFalse(userRepository.findOneUserByEmail("mdoe@example.com").isBlocked());
+    }
+
+    @Test
+    void userDetailOtherInstitution() {
+        //Not linked to the institution of the service desk member
+        String id = userRepository.findOneUserByEmail("mdoe@example.com").getId();
+        given()
+                .when()
+                .pathParam("id", id)
+                .get("/myconext/api/servicedesk/users/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    /**
+     * Users with eduID values (3 eduID's with one service each, so 6 login activities):
+     * anna.jansen@example.com, bram.devries@example.com and cleo.bakker@example.com
+     */
     private void seedUsers() {
         String[][] names = {
                 {"Anna", "Jansen"}, {"Bram", "de Vries"}, {"Cleo", "Bakker"}, {"Daan", "Visser"},
@@ -315,6 +429,19 @@ class ServiceDeskControllerTest
             //7 users (and mdoe) have a password (users 0, 4, 8 ... 24), some of them also have an app or a passkey
             if (i % 4 == 0 && i < 25) {
                 ReflectionTestUtils.setField(user, "password", "{bcrypt}seed-password-hash-" + i);
+            }
+            //The first 3 users have 3 eduID's, each for one service (as jdoe@example.com in users.json)
+            if (i < 3) {
+                for (int e = 0; e < 3; e++) {
+                    user.getEduIDS().add(new EduID(UUID.randomUUID().toString(),
+                            serviceProvider("https://sp" + e, "Service " + e, "Service NL " + e)));
+                }
+            }
+            //Activities, so the user details have something to show. Every user gets at least the account creation
+            user.addActivity(ActivityEvent.ACCOUNT_CREATED, Map.of("institution", "idin"));
+            user.addActivity(ActivityEvent.INSTITUTION_LINKED, Map.of("institution", org));
+            for (int a = 0; a < i % 8; a++) {
+                user.addActivity(ActivityEvent.values()[(i + a) % 8 + 4], Map.of("name", "Seed " + a));
             }
             userRepository.save(user);
         }

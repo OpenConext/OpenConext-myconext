@@ -57,7 +57,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         Optional<File> optionalFile = this.latestDownloadBinary(true);
         optionalFile.ifPresent(file -> {
             try {
-                InputStream     inputStream = new FileInputStream(file);
+                InputStream inputStream = new FileInputStream(file);
                 this.databaseReader = new DatabaseReader.Builder(inputStream).withCache(new CHMCache()).build();
             } catch (IOException e) {
                 LOG.error("Unable to find file", e);
@@ -80,7 +80,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         if (needToRefreshGeoData(refresh, databaseBinary)) {
             return this.latestDownloadBinary(false);
         }
-        Optional<File> optionalFile =  databaseBinary != null && databaseBinary.length > 0 ? Optional.of(databaseBinary[0]) : Optional.empty();
+        Optional<File> optionalFile = databaseBinary != null && databaseBinary.length > 0 ? Optional.of(databaseBinary[0]) : Optional.empty();
         if (optionalFile.isPresent()) {
             LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
                     optionalFile.get().getAbsolutePath(),
@@ -128,9 +128,8 @@ public class MaxMindGeoLocation implements GeoLocation {
             File dir = new File(String.format("%s/%s", this.downloadDirectory, name));
             if (dir.exists()) {
                 FileUtils.deleteDirectory(dir);
-            } else {
-                FileUtils.forceMkdir(dir);
             }
+            FileUtils.forceMkdir(dir);
             File file = new File(String.format("%s/%s/%s.tar.gz", this.downloadDirectory, name, GEO_LITE_2_CITY));
             try (FileOutputStream fileOutputStream = new FileOutputStream(file);
                  InputStream inputStream = new URI(String.format(urlTemplate, licenseKey)).toURL().openStream();

@@ -46,6 +46,10 @@
         }
     }
 
+    &__row {
+        cursor: pointer;
+    }
+
     &__sort {
         display: inline-flex;
         gap: var(--spacing);

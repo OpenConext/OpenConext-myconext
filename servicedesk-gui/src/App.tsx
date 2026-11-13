@@ -14,6 +14,7 @@ import { Login } from './pages/Login';
 import NotFound from './pages/NotFound';
 import Placeholder from './pages/Placeholder';
 import RefreshRoute from './pages/RefreshRoute';
+import { UserDetail } from './pages/UserDetail';
 import { Users } from './pages/Users';
 import { useAppStore } from './stores/AppStore';
 
@@ -82,6 +83,7 @@ const App = () => {
                             }
                         />
                         <Route path="/users" element={<Users />} />
+                        <Route path="/users/:id" element={<UserDetail />} />
                         <Route
                             path="/identity-check"
                             element={<IdentityCheck />}

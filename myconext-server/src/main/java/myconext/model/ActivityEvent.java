@@ -27,6 +27,9 @@ public enum ActivityEvent {
     CONTROL_CODE_CREATED,
     CONTROL_CODE_DELETED,
     SERVICE_REMOVED,
-    TOKENS_REMOVED
+    TOKENS_REMOVED,
+    //The following events are derived from the services of the user and are never recorded
+    SERVICE_FIRST_LOGIN,
+    SERVICE_LAST_LOGIN
 
 }

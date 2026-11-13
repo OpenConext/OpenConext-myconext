@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
     CaretDownIcon,
@@ -79,6 +80,7 @@ const affiliationLabel = (affiliation: string) => {
 };
 
 export const Users = () => {
+    const navigate = useNavigate();
     const [searchText, setSearchText] = useState('');
     const [query, setQuery] = useState('');
     const [mfa, setMfa] = useState<string[]>([]);
@@ -288,7 +290,19 @@ export const Users = () => {
                         </TableHeader>
                         <TableBody>
                             {result?.users.map((user) => (
-                                <TableRow key={user.id}>
+                                <TableRow
+                                    key={user.id}
+                                    className="users__row"
+                                    tabIndex={0}
+                                    onClick={() =>
+                                        navigate(`/users/${user.id}`)
+                                    }
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            navigate(`/users/${user.id}`);
+                                        }
+                                    }}
+                                >
                                     <TableCell className="users__name">
                                         <Tooltip>
                                             <TooltipTrigger
