@@ -12,21 +12,11 @@ updates:
       - "/account-gui/docker/"
     schedule:
       interval: "daily"
-    groups:
-      docker:
-        applies-to: version-updates
-        patterns:
-          - "*"
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
-    groups:
-      github-actions:
-        applies-to: version-updates
-        patterns:
-          - "*"
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
     directories:
@@ -36,19 +26,6 @@ updates:
       - "/account-gui/"
     schedule:
       interval: "daily"
-    groups:
-      frontends-prod:
-        applies-to: version-updates
-        dependency-type: production
-        update-types:
-          - "minor"
-          - "patch"
-      frontends-dev:
-        applies-to: version-updates
-        dependency-type: development
-        update-types:
-          - "minor"
-          - "patch"
     # Security updates only
     open-pull-requests-limit: 0
   # Maintain dependencies for server
@@ -57,18 +34,5 @@ updates:
       - "/**"
     schedule:
       interval: "daily"
-    groups:
-      backend-prod:
-        applies-to: version-updates
-        dependency-type: production
-        update-types:
-          - "minor"
-          - "patch"
-      backend-dev:
-        applies-to: version-updates
-        dependency-type: development
-        update-types:
-          - "minor"
-          - "patch"
     # Security updates only
     open-pull-requests-limit: 0
