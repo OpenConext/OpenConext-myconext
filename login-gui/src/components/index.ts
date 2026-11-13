@@ -13,6 +13,7 @@ export * from './Footer/Footer';
 export * from './Header/Header';
 export * from './ItemList/ItemList';
 export * from './Loading/LoadingLoginContainer';
+export * from './Loading/LoadingPage';
 export * from './Loading/Spinner';
 export * from './LoadingButton/LoadingButton';
 export * from './LinkOutcome/LinkOutcome';
