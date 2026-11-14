@@ -18,6 +18,7 @@ export * from './Loading/Spinner';
 export * from './LoadingButton/LoadingButton';
 export * from './LinkOutcome/LinkOutcome';
 export * from './LoginContainer/LoginContainer';
+export * from './NudgeApp/NudgeAppView';
 export * from './PhoneRecovery/PhoneConfirmationView';
 export * from './PhoneRecovery/PhoneFinalizedView';
 export * from './PhoneRecovery/PhoneVerificationView';

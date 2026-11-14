@@ -274,6 +274,13 @@ const nl: AppTranslation = {
                 'Je eduID-account is gekoppeld aan een vertrouwde partij.',
         },
     },
+    nudgeApp: {
+        title: 'Wil je de volgende keer sneller en veiliger inloggen?',
+        description:
+            'Installeer de eduID-app en log veiliger in zonder wachtwoord of het openen van je e-mail. Het kost je maar een minuut.',
+        skip: 'Nee bedankt',
+        download: 'Installeer nu',
+    },
     appRequired: {
         title: 'Je bent er bijna',
         description:

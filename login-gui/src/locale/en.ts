@@ -272,6 +272,13 @@ const en: AppTranslation = {
             any_link: 'Your eduID account is linked to a trusted party.',
         },
     },
+    nudgeApp: {
+        title: 'Want to sign in quicker and more securely next time?',
+        description:
+            'Get the eduID app and securely sign in without passwords or accessing your email. It will only take a minute.',
+        skip: 'No thanks',
+        download: 'Get it now',
+    },
     appRequired: {
         title: 'Almost there',
         description:
