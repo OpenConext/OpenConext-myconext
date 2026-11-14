@@ -1,0 +1,17 @@
+@use '../../styles/spacing' as *;
+
+.image {
+    display: block;
+    align-self: center;
+    width: spacing(45);
+    height: auto;
+}
+
+.actions {
+    display: flex;
+    gap: spacing(3);
+}
+
+.download {
+    flex: 1;
+}
