@@ -84,6 +84,7 @@ export default function Code() {
             rememberLoginMethod('useCode');
             window.location.href = url;
         },
+        onError: () => setCode(''),
     });
 
     const isSubmitting = isVerifying || isVerified;
