@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import { type ComponentType, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
 import {
@@ -36,6 +36,7 @@ export default function Options() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const email: string = state?.email ?? '';
+    const [isRedirecting, setIsRedirecting] = useState(false);
 
     const {
         data: methods,
@@ -54,6 +55,10 @@ export default function Options() {
     const options = methods?.filter(isLoginMethod) ?? [];
 
     const selectOption = (option: LoginMethod) => {
+        if (isRedirecting) {
+            return;
+        }
+        setIsRedirecting(true);
         navigate(loginMethodPath(option, id), { state: { email } });
     };
 
@@ -64,18 +69,21 @@ export default function Options() {
             onBack={() => navigate(`/login/${id}`)}
             backLabel={email}
         >
-            {isPending && <Spinner />}
-            {isError && <ErrorAlert>{I18n.t('options.error')}</ErrorAlert>}
-            {methods && (
-                <ItemList
-                    items={options.map((option) => ({
-                        key: option,
-                        icon: OPTION_ICONS[option],
-                        label: I18n.t(`options.${option}`),
-                        onClick: () => selectOption(option),
-                    }))}
-                />
+            {isPending || isRedirecting ? (
+                <Spinner />
+            ) : (
+                methods && (
+                    <ItemList
+                        items={options.map((option) => ({
+                            key: option,
+                            icon: OPTION_ICONS[option],
+                            label: I18n.t(`options.${option}`),
+                            onClick: () => selectOption(option),
+                        }))}
+                    />
+                )
             )}
+            {isError && <ErrorAlert>{I18n.t('options.error')}</ErrorAlert>}
         </LoginContainer>
     );
 }
