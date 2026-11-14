@@ -18,7 +18,7 @@ import styles from './ValidateNamesView.module.scss';
 interface BankSelectViewProps {
     onSelectBank: (bankId: string) => void;
     onBack: () => void;
-    disabled?: boolean;
+    isRedirecting?: boolean;
 }
 
 // Issuer logos are delivered as inline svg markup.
@@ -28,7 +28,7 @@ const svgDataUri = (svg: string): string =>
 export const BankSelectView = ({
     onSelectBank,
     onBack,
-    disabled = false,
+    isRedirecting = false,
 }: BankSelectViewProps) => {
     const {
         data: issuers,
@@ -56,7 +56,7 @@ export const BankSelectView = ({
                 </>
             }
         >
-            {isPending ? (
+            {isPending || isRedirecting ? (
                 <Spinner label={I18n.t('stepup.proveIdentity.bankTitle')} />
             ) : isError ? (
                 <ErrorAlert>
@@ -74,7 +74,6 @@ export const BankSelectView = ({
                             render={
                                 <button
                                     type="button"
-                                    disabled={disabled}
                                     // Buttons mount after the issuers load, so this focuses once they appear.
                                     autoFocus={index === 0}
                                 />

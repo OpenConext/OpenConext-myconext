@@ -117,34 +117,37 @@ export default function Login() {
     if (knownUser) {
         return (
             <Container serviceName={service?.name}>
-                <ItemList
-                    items={[
-                        {
-                            key: 'known-user',
-                            icon: UserCircleIcon,
-                            label: knownUser,
-                            onClick: () => {
-                                if (!isSubmitting) {
-                                    handleSubmitEmail(knownUser);
-                                }
+                {isSubmitting ? (
+                    <Spinner />
+                ) : (
+                    <ItemList
+                        items={[
+                            {
+                                key: 'known-user',
+                                icon: UserCircleIcon,
+                                label: knownUser,
+                                onClick: () => {
+                                    if (!isSubmitting) {
+                                        handleSubmitEmail(knownUser);
+                                    }
+                                },
                             },
-                        },
-                        {
-                            key: 'other-account',
-                            icon: UserSwitchIcon,
-                            label: I18n.t('login.useOtherAccount'),
-                            onClick: () => {
-                                if (isSubmitting) {
-                                    return;
-                                }
-                                forgetKnownUser();
-                                setKnownUser(undefined);
-                                setAccountNotFound(false);
+                            {
+                                key: 'other-account',
+                                icon: UserSwitchIcon,
+                                label: I18n.t('login.useOtherAccount'),
+                                onClick: () => {
+                                    if (isSubmitting) {
+                                        return;
+                                    }
+                                    forgetKnownUser();
+                                    setKnownUser(undefined);
+                                    setAccountNotFound(false);
+                                },
                             },
-                        },
-                    ]}
-                />
-                {isSubmitting && <Spinner />}
+                        ]}
+                    />
+                )}
                 {accountNotFound && (
                     <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
