@@ -1,5 +1,6 @@
 import { Navigate, useSearchParams } from 'react-router';
 
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -48,7 +49,10 @@ export default function Remember() {
         <LoginContainer title={I18n.t('remember.title')} headerAlign="center">
             <p className={styles.info}>{I18n.t('remember.info')}</p>
             {isError && <ErrorAlert>{I18n.t('remember.error')}</ErrorAlert>}
-            <div className={styles.actions}>
+            <div
+                className={styles.actions}
+                onKeyDown={handleArrowKeyNavigation}
+            >
                 <Button
                     type="button"
                     variant="outline"

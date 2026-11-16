@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { ShieldIcon } from '@phosphor-icons/react';
 import {
     Alert,
@@ -47,7 +48,10 @@ export const AppRequiredView = ({
                 </AlertDescription>
             </Alert>
             <img className={styles.image} src={mobileApp} alt="" />
-            <div className={styles.actions}>
+            <div
+                className={styles.actions}
+                onKeyDown={handleArrowKeyNavigation}
+            >
                 <Button
                     type="button"
                     variant="outline"
@@ -77,7 +81,7 @@ export const AppRequiredView = ({
                             {I18n.t('appRequired.warning', { serviceName })}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
+                    <AlertDialogFooter onKeyDown={handleArrowKeyNavigation}>
                         <Button
                             type="button"
                             variant="outline"

@@ -1,5 +1,6 @@
 import { Navigate, useSearchParams } from 'react-router';
 
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -70,7 +71,10 @@ export const LinkOutcome = ({
                 ),
                 { ...options, serviceName: service.name },
             )}
-            <div className={styles.actions}>
+            <div
+                className={styles.actions}
+                onKeyDown={handleArrowKeyNavigation}
+            >
                 <Button
                     type="button"
                     variant="outline"
