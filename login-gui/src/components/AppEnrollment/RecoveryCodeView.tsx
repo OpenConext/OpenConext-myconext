@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
 
-import { useCopyToClipboard, useWarnBeforeUnload } from '@myconext/shared-gui';
+import {
+    handleArrowKeyNavigation,
+    useCopyToClipboard,
+    useWarnBeforeUnload,
+} from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
@@ -41,7 +45,10 @@ export const RecoveryCodeView = ({
             description={I18n.t('recovery.backupDescription')}
             headerAlign="start"
         >
-            <div className={styles.content}>
+            <div
+                className={styles.content}
+                onKeyDown={handleArrowKeyNavigation}
+            >
                 <p className={styles.recoveryCode}>{recoveryCode}</p>
                 <Button type="button" onClick={() => void copy()}>
                     {I18n.t(copied ? 'recovery.copied' : 'recovery.copy')}

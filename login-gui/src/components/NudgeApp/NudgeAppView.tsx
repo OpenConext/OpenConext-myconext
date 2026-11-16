@@ -1,3 +1,4 @@
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 
 import mobileApp from '../../assets/mobile-app.svg';
@@ -17,7 +18,7 @@ export const NudgeAppView = ({ onDownload, onSkip }: NudgeAppViewProps) => (
         headerAlign="start"
     >
         <img className={styles.image} src={mobileApp} alt="" />
-        <div className={styles.actions}>
+        <div className={styles.actions} onKeyDown={handleArrowKeyNavigation}>
             <Button type="button" variant="outline" onClick={onSkip}>
                 {I18n.t('nudgeApp.skip')}
             </Button>
