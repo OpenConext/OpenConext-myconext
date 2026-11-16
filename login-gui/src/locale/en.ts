@@ -176,6 +176,21 @@ const en: AppTranslation = {
                 'The list of banks could not be loaded. Please try again, or choose another method.',
             otherMethod: 'Choose another method',
         },
+        serviceDesk: {
+            title: 'Confirm who you are with your ID',
+            description:
+                'You can also confirm your identity at one of our eduID Service Desks.',
+            stepsHeader: 'Follow these steps:',
+            steps: [
+                'Enter your full name as it appears on your ID (first and last name).',
+                'Generate a personal verification code.',
+                'Present your code and ID to an eduID Service Desk. They will verify your identity manually.',
+            ],
+            alertTitle: 'You will be redirected',
+            redirectWarning:
+                "We will redirect you to another website to enter your name. You won't be able to log in to {{serviceName}} immediately afterward; you will first need to contact an eduID Service Desk.",
+            next: 'Enter your details',
+        },
         validate_names: {
             description:
                 'To continue to {{serviceName}}, your first name and last name must be verified by a trusted party.',
