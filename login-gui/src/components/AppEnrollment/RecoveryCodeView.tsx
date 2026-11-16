@@ -54,6 +54,7 @@ export const RecoveryCodeView = ({
                     variant="outline"
                     loading={leaving}
                     onClick={next}
+                    autoFocus
                 >
                     {I18n.t('recovery.next')}
                 </LoadingButton>
