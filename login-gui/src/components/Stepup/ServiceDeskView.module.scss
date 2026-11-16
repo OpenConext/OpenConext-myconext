@@ -1,0 +1,20 @@
+@use '../../styles/spacing' as *;
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(2);
+}
+
+.stepsHeader {
+    font-weight: var(--font-weight-medium);
+}
+
+.list {
+    margin: 0;
+    padding-left: spacing(5);
+    list-style: decimal;
+    display: flex;
+    flex-direction: column;
+    gap: spacing(2);
+}

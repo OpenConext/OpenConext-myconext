@@ -31,6 +31,11 @@ export default function Stepup() {
         window.location.href = `/myconext/api/idp/oidc/account/${encodeURIComponent(id)}`;
     };
 
+    const serviceDeskUrl =
+        config?.featureServiceDeskActive === true
+            ? `/servicedesk/${encodeURIComponent(id)}`
+            : undefined;
+
     const explanationParam = searchParams.get('explanation');
     const explanation = isSupportedExplanation(explanationParam)
         ? explanationParam
@@ -81,6 +86,8 @@ export default function Stepup() {
                     : MODE_BY_EXPLANATION[explanation]
             }
             onUseInstitution={goToInstitution}
+            serviceName={service.name}
+            serviceDeskUrl={serviceDeskUrl}
         />
     );
 }

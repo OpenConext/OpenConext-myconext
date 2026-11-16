@@ -11,6 +11,7 @@ export type Config = {
     captchaSiteKey: string;
     myconextWebAuthnRedirectUrl: string;
     featureIdVerify: boolean;
+    featureServiceDeskActive?: boolean;
     [key: string]: unknown;
 };
 

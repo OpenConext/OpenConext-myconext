@@ -176,6 +176,21 @@ const nl: AppTranslation = {
                 'De lijst met banken kon niet worden geladen. Probeer het opnieuw of kies een andere methode.',
             otherMethod: 'Kies een andere methode',
         },
+        serviceDesk: {
+            title: 'Bevestig wie je bent met je identiteitsbewijs',
+            description:
+                'Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks.',
+            stepsHeader: 'Volg deze stappen:',
+            steps: [
+                'Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).',
+                'Genereer een persoonlijke controlecode.',
+                'Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.',
+            ],
+            alertTitle: 'Je wordt doorgestuurd',
+            redirectWarning:
+                'We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij {{serviceName}}, maar je moet eerst contact opnemen met een eduID Service Desk.',
+            next: 'Naar gegevens invullen',
+        },
         validate_names: {
             description:
                 'Om door te gaan naar {{serviceName}} moeten je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.',
