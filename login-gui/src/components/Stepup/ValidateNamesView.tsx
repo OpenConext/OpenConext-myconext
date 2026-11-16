@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import {
     Button,
@@ -14,7 +15,6 @@ import { verifyLinkUrl } from '../../api';
 import eidasLogo from '../../assets/eidas.svg';
 import idinLogo from '../../assets/idin.svg';
 import I18n from '../../locale/I18n.ts';
-import { handleArrowKeyNavigation } from '../ItemList/ItemList';
 import { Spinner } from '../Loading/Spinner';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import { BankSelectView } from './BankSelectView';

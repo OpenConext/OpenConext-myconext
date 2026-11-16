@@ -1,3 +1,4 @@
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import {
     Item,
     ItemContent,
@@ -10,7 +11,6 @@ import { useQuery } from '@tanstack/react-query';
 import { idinIssuersQueryOptions } from '../../api';
 import I18n from '../../locale/I18n.ts';
 import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
-import { handleArrowKeyNavigation } from '../ItemList/ItemList';
 import { Spinner } from '../Loading/Spinner';
 import { LoginContainer } from '../LoginContainer/LoginContainer';
 import styles from './ValidateNamesView.module.scss';

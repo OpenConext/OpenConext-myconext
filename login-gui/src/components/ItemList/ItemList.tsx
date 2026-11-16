@@ -1,5 +1,6 @@
-import type { ComponentType, KeyboardEvent } from 'react';
+import type { ComponentType } from 'react';
 
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import type { IconProps } from '@phosphor-icons/react';
 import {
     Item,
@@ -21,34 +22,6 @@ export interface ItemListEntry {
 interface ItemListProps {
     items: ItemListEntry[];
 }
-
-const KEY_STEP: Partial<Record<string, 1 | -1>> = {
-    ArrowDown: 1,
-    ArrowRight: 1,
-    ArrowUp: -1,
-    ArrowLeft: -1,
-};
-
-export const handleArrowKeyNavigation = (event: KeyboardEvent<HTMLElement>) => {
-    const step = KEY_STEP[event.key];
-    if (step === undefined) {
-        return;
-    }
-
-    const buttons = Array.from(
-        event.currentTarget.querySelectorAll<HTMLButtonElement>('button'),
-    );
-    const current = buttons.indexOf(
-        document.activeElement as HTMLButtonElement,
-    );
-    if (current === -1) {
-        return;
-    }
-
-    event.preventDefault();
-    // Wrap around at both ends.
-    buttons[(current + step + buttons.length) % buttons.length]?.focus();
-};
 
 export const ItemList = ({ items }: ItemListProps) => (
     <ItemGroup onKeyDown={handleArrowKeyNavigation}>

@@ -55,5 +55,6 @@ export {
     type VerifyPhoneCodeResponse,
 } from './api/enrollment';
 export { formatRecoveryCode } from './utils/formatRecoveryCode';
+export { handleArrowKeyNavigation } from './utils/handleArrowKeyNavigation';
 export { useCopyToClipboard } from './hooks/useCopyToClipboard';
 export { useWarnBeforeUnload } from './hooks/useWarnBeforeUnload';

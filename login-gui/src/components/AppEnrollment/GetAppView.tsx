@@ -1,3 +1,4 @@
+import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 
 import I18n from '../../locale/I18n';
@@ -18,7 +19,7 @@ export const GetAppView = ({ onBack, onNext }: GetAppViewProps) => (
     >
         <AppStores />
         <p className={styles.after}>{I18n.t('getApp.after')}</p>
-        <div className={styles.actions}>
+        <div className={styles.actions} onKeyDown={handleArrowKeyNavigation}>
             <Button type="button" variant="outline" onClick={onBack}>
                 {I18n.t('getApp.back')}
             </Button>

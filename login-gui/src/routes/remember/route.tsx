@@ -62,6 +62,7 @@ export default function Remember() {
                     type="button"
                     className={styles.primary}
                     loading={isSubmitting}
+                    autoFocus
                     onClick={() => remember(hash, { onSuccess: proceed })}
                 >
                     {I18n.t('remember.yes')}
