@@ -30,6 +30,7 @@ import { useUserStore } from '../../store/me';
 import { useAppStore } from '../../store/store';
 import { activityText, withHistory } from '../../utils/activity';
 import { formatDateTime } from '../../utils/format';
+import { isVerified } from '../../utils/verification';
 import './route.scss';
 
 const RECENT_LIMIT = 4;
@@ -109,9 +110,9 @@ export default function Home() {
                     to="/identity"
                     title={I18n.t('home.cards.identity.title')}
                     description={I18n.t(
-                        counts.identity > 0
-                            ? 'home.cards.identity.unverified'
-                            : 'home.cards.identity.verified',
+                        me && isVerified(me)
+                            ? 'home.cards.identity.verified'
+                            : 'home.cards.identity.unverified',
                     )}
                     color="green"
                     icon={identity}
