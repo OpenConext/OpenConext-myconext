@@ -208,6 +208,7 @@ public class ServiceDeskController {
                 .orElseThrow(() -> new UserNotFoundException(String.format("No user found with controlCode %s", code)));
         ControlCode controlCode = user.getControlCode();
         controlCode.setUserUid(user.getUid());
+        controlCode.setUserId(user.getId());
 
         return ResponseEntity.ok(controlCode);
     }

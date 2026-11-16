@@ -1938,7 +1938,6 @@ public class UserControllerTest extends AbstractMailBoxTest {
         assertEquals(6, responseControlCode.getCode().length());
         User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
-
         Map<String, Object> userResponse = given()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .when()

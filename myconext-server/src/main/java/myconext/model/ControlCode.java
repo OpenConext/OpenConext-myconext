@@ -32,6 +32,10 @@ public class ControlCode implements Serializable {
     @Setter
     private String userUid;
 
+    //Only used in the response to the service desk, the id of the user the control code belongs to
+    @Setter
+    private String userId;
+
     public ControlCode(String firstName, String lastName, String dayOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;

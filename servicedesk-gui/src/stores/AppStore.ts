@@ -20,6 +20,7 @@ export type ControlCode = {
     lastName?: string;
     dayOfBirth?: string;
     userUid?: string;
+    userId?: string;
 };
 
 export type FlashType = 'info' | 'warning' | 'error';

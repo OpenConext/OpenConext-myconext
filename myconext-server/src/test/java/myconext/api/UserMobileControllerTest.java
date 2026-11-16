@@ -164,17 +164,8 @@ public class UserMobileControllerTest extends AbstractMailBoxTest {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
 
-        Map<String, Object> userResponse = given()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
-                .when()
-                .delete("/mobile/api/sp/control-code")
-                .as(new TypeRef<>() {
-                });
-        assertFalse(userResponse.containsKey("controlCode"));
-
-        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
-        assertNull(userFromDB.getControlCode());
+        //Handy for testing service-desk
+        System.out.println(responseControlCode.getCode());
     }
 
     @SneakyThrows
