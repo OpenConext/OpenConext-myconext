@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="[Stack] MyConext Classic" type="CompoundRunConfigurationType">
+    <toRun name="FE - Account-gui" type="js.build_tools.npm" />
+    <toRun name="FE - MyConext-gui" type="js.build_tools.npm" />
+    <toRun name="BE - MyConextServerApplication (MyConext)" type="SpringBootApplicationConfigurationType" />
+    <toRun name="BE - TiqrApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

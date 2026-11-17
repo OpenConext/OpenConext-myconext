@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="[Stack] E2E - Login-gui" type="CompoundRunConfigurationType">
+    <toRun name="E2E - Login-gui" type="js.build_tools.npm" />
+    <toRun name="FE - Login-gui" type="js.build_tools.npm" />
+    <toRun name="BE - MyConextServerApplication (MyConext) - e2e" type="SpringBootApplicationConfigurationType" />
+    <toRun name="BE - TiqrApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
