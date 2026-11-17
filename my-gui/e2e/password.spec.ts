@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { expect, test } from './support/fixtures';
-import { waitForCode } from './support/mailpit';
+import { waitForCode } from '@myconext/shared-gui/e2e';
 
 // Saving a password continues on the login domain (account-gui), that sets the
 // login preference and redirects back. That domain is not part of this stack.

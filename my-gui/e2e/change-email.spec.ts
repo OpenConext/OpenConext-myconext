@@ -1,5 +1,5 @@
 import { expect, test } from './support/fixtures';
-import { waitForCode } from './support/mailpit';
+import { waitForCode } from '@myconext/shared-gui/e2e';
 
 test('change the email with a code from the mail', async ({
     page,
