@@ -3,3 +3,9 @@
 oidc:
   # The OIDC mock of the tiqr-mock application plays the institution login
   base-url: http://localhost:8088
+
+email:
+  idp-surfconext-url: http://localhost:3004
+account_redirect_url: http://localhost:3004
+account_origin: http://localhost:3004
+myconext_redirect_url: http://localhost:3003
