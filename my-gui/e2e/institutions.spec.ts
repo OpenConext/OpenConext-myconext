@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { expect, test } from './support/fixtures';
-import { waitForCode } from './support/mailpit';
+import { waitForCode } from '@myconext/shared-gui/e2e';
 import { TIQR_MOCK_URL } from './support/tiqr';
 
 // The server runs with oidc.base-url pointing at the OIDC mock in the tiqr-mock,

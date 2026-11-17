@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 
 import { expectNoA11yViolations } from './support/a11y';
 import { expect, test } from './support/fixtures';
-import { waitForCode } from './support/mailpit';
+import { waitForCode } from '@myconext/shared-gui/e2e';
 import { expectSmsCode } from './support/sms';
 import { completeEnrollment } from './support/tiqr';
 

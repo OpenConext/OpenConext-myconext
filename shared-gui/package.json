@@ -4,7 +4,8 @@
     "version": "0.0.0",
     "type": "module",
     "exports": {
-        ".": "./src/index.ts"
+        ".": "./src/index.ts",
+        "./e2e": "./src/e2e/index.ts"
     },
     "scripts": {
         "tsc": "tsc --noEmit -p tsconfig.json",
