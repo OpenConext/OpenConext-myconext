@@ -4,8 +4,8 @@ import { expect, test } from './support/fixtures';
 // that is not part of this stack. Here the hand over and the management of the
 // seeded passkey are tested.
 test('adding a passkey continues on the login domain', async ({ page }) => {
-    const handover = page.waitForRequest(/localhost:3000\/webauthn/);
-    await page.route(/localhost:3000/, (route) =>
+    const handover = page.waitForRequest(/localhost:3004\/webauthn/);
+    await page.route(/localhost:3004/, (route) =>
         route.fulfill({ status: 200, body: 'login domain' }),
     );
 

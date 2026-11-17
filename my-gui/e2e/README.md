@@ -114,4 +114,4 @@ Environment overrides: `E2E_BASE_URL`, `SERVER_URL`, `TIQR_MOCK_URL`, `MAILPIT_U
 
 All tests share one user, so they run serially (`workers: 1`).
 
-The login domain (account-gui) is not part of the stack. Where a flow continues there (finishing the app enrollment, saving a password, deleting the account, registering a passkey) the tests stub the requests to `localhost:3000` and assert on them.
+The login domain (account-gui) is not part of the stack. Where a flow continues there (finishing the app enrollment, saving a password, deleting the account, registering a passkey) the tests stub the requests to `localhost:3004` and assert on them.

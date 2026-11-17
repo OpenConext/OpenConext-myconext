@@ -7,7 +7,7 @@ import { waitForCode } from '@myconext/shared-gui/e2e';
 // login preference and redirects back. That domain is not part of this stack.
 const stubLoginDomain = async (page: Page) => {
     const requests: string[] = [];
-    await page.route(/localhost:3000/, (route) => {
+    await page.route(/localhost:3004/, (route) => {
         requests.push(route.request().url());
         return route.fulfill({ status: 200, body: 'login domain' });
     });
