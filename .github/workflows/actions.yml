@@ -93,10 +93,16 @@ jobs:
           git push
         fi
 
+  # One runner with its own stack per gui, so the suites run in parallel and cannot affect each other's data
   e2e:
+    name: e2e (${{ matrix.gui }})
     needs: jars
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        gui: [my-gui, login-gui]
     services:
       mailpit:
         image: axllent/mailpit:v1.27
@@ -142,24 +148,24 @@ jobs:
             exit 1
           fi
         done
-    - name: Install my-gui
-      working-directory: my-gui
+    - name: Install ${{ matrix.gui }}
+      working-directory: ${{ matrix.gui }}
       run: yarn install --frozen-lockfile
     - name: Install Playwright browsers
-      working-directory: my-gui
+      working-directory: ${{ matrix.gui }}
       run: npx playwright install --with-deps chromium
     - name: Run the e2e tests
-      working-directory: my-gui
+      working-directory: ${{ matrix.gui }}
       run: yarn e2e
     - name: Upload the Playwright report
       if: failure()
       uses: actions/upload-artifact@v7
       with:
-        name: playwright-report
+        name: playwright-report-${{ matrix.gui }}
         retention-days: 7
         path: |
-          my-gui/playwright-report
-          my-gui/test-results
+          ${{ matrix.gui }}/playwright-report
+          ${{ matrix.gui }}/test-results
           server.log
           tiqr-mock.log
           threads.txt
