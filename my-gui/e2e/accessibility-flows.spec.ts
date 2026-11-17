@@ -13,7 +13,7 @@ const scan = (page: Page, step: string) =>
 
 // the login domain (account-gui) is not part of the stack
 const stubLoginDomain = (page: Page) =>
-    page.route(/localhost:3000/, (route) =>
+    page.route(/localhost:3004/, (route) =>
         route.fulfill({ status: 200, body: 'login domain' }),
     );
 
