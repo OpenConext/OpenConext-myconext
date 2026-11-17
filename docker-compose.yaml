@@ -39,6 +39,9 @@ services:
     environment:
       MP_UI_AUTH: "user:password"
       MP_MAX_MESSAGES: 5000
+      # Without this every SMTP connection waits for a reverse DNS lookup (~10s on Colima), which
+      # makes mails arrive too late for the e2e tests
+      MP_SMTP_DISABLE_RDNS: "true"
     restart: unless-stopped
 
 volumes:
