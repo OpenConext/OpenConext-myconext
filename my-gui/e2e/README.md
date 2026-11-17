@@ -17,6 +17,16 @@ The tests need the complete stack below. Open **four terminal windows** (A to D)
 | Node.js | see `my-gui/.nvmrc` (`nvm use`) | `node -v` |
 | Yarn | 1.x | `yarn -v` |
 
+If `docker compose version` says `unknown command` (typical with Colima or a plain `brew install docker`), install the Compose plugin:
+
+```bash
+brew install docker-compose
+```
+
+```bash
+mkdir -p ~/.docker/cli-plugins && ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+```
+
 These ports must be free: `27017` (MongoDB), `1025` and `8025` (Mailpit), `8081` (myconext-server), `8088` (tiqr-mock) and `3003` (my-gui). Stop a locally installed MongoDB, Mailpit or an IDE run configuration of the server that uses them, otherwise the tests talk to the wrong service.
 
 ### 1. Install the dependencies (once, terminal A)
