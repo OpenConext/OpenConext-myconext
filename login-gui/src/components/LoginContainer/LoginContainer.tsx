@@ -31,7 +31,7 @@ export const LoginContainer = ({
     backLabel,
     headerAlign = 'center',
 }: LoginContainerProps) => (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="login-container">
         <div className={styles.inner}>
             <div className={styles.top} data-hidden={!onBack || undefined}>
                 <Button
@@ -48,10 +48,10 @@ export const LoginContainer = ({
             <Card className={styles.card}>
                 <CardHeader className={styles.header} data-align={headerAlign}>
                     <CardTitle className={styles.title}>
-                        <h1>{title}</h1>
+                        <h1 data-testid="login-container-title">{title}</h1>
                     </CardTitle>
                     {description && (
-                        <CardDescription className={styles.description}>
+                        <CardDescription className={styles.description} data-testid="login-container-description">
                             {description}
                         </CardDescription>
                     )}
