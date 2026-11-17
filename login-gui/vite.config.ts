@@ -31,6 +31,9 @@ export default defineConfig({
     server: {
         port: 3004,
         open: false,
+        warmup: {
+            clientFiles: ['./src/root.tsx', './src/routes/**/*.tsx'],
+        },
         proxy: {
             '/config': {
                 target: 'http://localhost:8081',
