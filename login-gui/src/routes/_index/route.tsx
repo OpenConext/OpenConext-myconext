@@ -18,7 +18,10 @@ export default function Home() {
             <p>{I18n.t('landing.career')}</p>
             <p>{I18n.t('landing.control')}</p>
             <p className={styles.more}>
-                <a href="https://eduid.nl/home">{I18n.t('landing.more')}</a>
+                <a
+                    href="https://eduid.nl/home"
+                    data-testid="landing-more-link"
+                >{I18n.t('landing.more')}</a>
             </p>
         </LoginContainer>
     );
