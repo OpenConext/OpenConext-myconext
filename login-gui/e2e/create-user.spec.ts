@@ -33,15 +33,15 @@ test.describe('create user', () => {
             await test.step('create authentication request', async () => {
                 const requestId = await createAuthenticationRequestId(request);
                 await page.goto(`/request/${requestId}`);
-                await expect(page.locator('#email')).toBeVisible();
+                await expect(page.getByTestId('request-email')).toBeVisible();
                 return requestId;
             });
 
         await test.step('fill in the new user form', async () => {
-            await page.locator('#email').fill(email);
-            await page.locator('#givenName').fill('E2E');
-            await page.locator('#familyName').fill(familyName);
-            await page.getByRole('checkbox').check();
+            await page.getByTestId('request-email').fill(email);
+            await page.getByTestId('request-given-name').fill('E2E');
+            await page.getByTestId('request-family-name').fill(familyName);
+            await page.getByTestId('request-agree').check();
         });
 
         await test.step('submit the form', async () => {
@@ -54,7 +54,7 @@ test.describe('create user', () => {
 
         await test.step('enter the code', async () => {
             // OtpInput submits automatically once all digits are entered
-            await page.getByRole('textbox').fill(code);
+            await page.getByTestId('code-input').fill(code);
             await expect(page).toHaveURL(/\/request-success\?h=/);
         });
 

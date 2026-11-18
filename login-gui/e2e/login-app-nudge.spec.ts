@@ -21,12 +21,12 @@ test.describe('login-app-nudge', () => {
                 const requestId = await createAuthenticationRequestId(request);
                 await page.goto(`/login/${requestId}`);
                 await expect(page.getByTestId('login-container')).toBeVisible();
-                await expect(page.locator('#email')).toBeVisible();
+                await expect(page.getByTestId('login-email')).toBeVisible();
                 return requestId;
             });
 
         await test.step('fill in the email address', async () => {
-            await page.locator('#email').fill(EMAIL);
+            await page.getByTestId('login-email').fill(EMAIL);
         });
 
         await test.step('submit the form', async () => {
@@ -38,7 +38,7 @@ test.describe('login-app-nudge', () => {
             waitForCode(request, EMAIL));
 
         await test.step('enter the code', async () => {
-            await page.getByRole('textbox').fill(code);
+            await page.getByTestId('code-input').fill(code);
             await expect(page).toHaveURL(/\/confirm\?h=/);
         });
 

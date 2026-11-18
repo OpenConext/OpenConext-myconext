@@ -136,6 +136,7 @@ export default function Request() {
                     </FieldLabel>
                     <Input
                         id="email"
+                        data-testid="request-email"
                         ref={emailInputRef}
                         type="email"
                         autoComplete="email"
@@ -152,6 +153,7 @@ export default function Request() {
                     </FieldLabel>
                     <Input
                         id="givenName"
+                        data-testid="request-given-name"
                         type="text"
                         autoComplete="given-name"
                         required
@@ -166,6 +168,7 @@ export default function Request() {
                     </FieldLabel>
                     <Input
                         id="familyName"
+                        data-testid="request-family-name"
                         type="text"
                         autoComplete="family-name"
                         required
@@ -176,6 +179,7 @@ export default function Request() {
                 </Field>
                 <label className={styles.terms}>
                     <Checkbox
+                        data-testid="request-agree"
                         checked={agreed}
                         disabled={isSubmitting}
                         onCheckedChange={(checked) =>
