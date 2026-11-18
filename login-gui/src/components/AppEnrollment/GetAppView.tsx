@@ -27,6 +27,7 @@ export const GetAppView = ({ onBack, onNext }: GetAppViewProps) => (
                 type="button"
                 className={styles.primary}
                 onClick={onNext}
+                data-testid="getapp-next"
                 autoFocus
             >
                 {I18n.t('getApp.next')}
