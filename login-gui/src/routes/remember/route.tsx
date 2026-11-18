@@ -68,6 +68,7 @@ export default function Remember() {
                     className={styles.primary}
                     loading={isSubmitting}
                     autoFocus
+                    data-testid="remember-yes"
                     onClick={() => remember(hash, { onSuccess: proceed })}
                 >
                     {I18n.t('remember.yes')}

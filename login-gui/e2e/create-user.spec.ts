@@ -6,7 +6,6 @@ import { expect, test } from '@playwright/test';
 import { createAuthenticationRequestId } from './utils/authnRequest';
 import { deleteUserByEmail } from './utils/e2eServer';
 import { findEduIdByEmail } from './utils/remoteCreation';
-import { getTranslation } from './utils/translations';
 
 const ACS_URL_PATTERN =
     'https://engine.test.surfconext.nl/authentication/sp/consume-assertion';
@@ -61,19 +60,18 @@ test.describe('create user', () => {
 
         await test.step('request success page is shown and can be continued', async () => {
             await expect(
-                page.getByText(getTranslation('requestSuccess.title')),
+                page.getByTestId('request-success-info'),
             ).toBeVisible();
             await expect(
-                page.getByText(getTranslation('requestSuccess.info')),
+                page.getByTestId('request-success-next'),
             ).toBeVisible();
             await page.getByTestId('request-success-next').click();
         });
 
         await test.step('decline "stay signed in" and receive the SAML assertion', async () => {
             await expect(page).toHaveURL(/\/remember\?h=/);
-            await expect(
-                page.getByText(getTranslation('remember.title')),
-            ).toBeVisible();
+            await expect(page.getByTestId('remember-yes')).toBeVisible();
+            await expect(page.getByTestId('remember-no')).toBeVisible();
 
             // The server answers with an auto-submitted SAML POST form to the ACS URL of the
             // AuthnRequest, which is an external host that the test must not call

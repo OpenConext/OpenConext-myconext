@@ -2,7 +2,6 @@ import { waitForCode } from '@myconext/shared-gui/e2e';
 import { expect, test } from '@playwright/test';
 
 import { createAuthenticationRequestId } from './utils/authnRequest';
-import { getTranslation } from './utils/translations';
 
 const EMAIL = 'e2e-email-code@example.com';
 const ACS_URL_PATTERN =
@@ -46,9 +45,8 @@ test.describe('login-email-code', () => {
         });
 
         await test.step('decline "stay signed in" and receive the SAML assertion', async () => {
-            await expect(
-                page.getByText(getTranslation('remember.title')),
-            ).toBeVisible();
+            await expect(page.getByTestId('remember-yes')).toBeVisible();
+            await expect(page.getByTestId('remember-no')).toBeVisible();
 
             // The server answers with an auto-submitted SAML POST form to the ACS URL of the
             // AuthnRequest, which is an external host that the test must not call
