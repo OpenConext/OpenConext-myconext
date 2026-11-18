@@ -56,6 +56,7 @@ export const PhoneVerificationView = ({
                     </FieldLabel>
                     <Input
                         id="phone-number"
+                        data-testid="phone-verification-input"
                         ref={phoneInputRef}
                         type="tel"
                         autoComplete="tel"
@@ -87,6 +88,7 @@ export const PhoneVerificationView = ({
                 )}
                 <LoadingButton
                     type="submit"
+                    data-testid="phone-verification-submit"
                     loading={isSubmitting}
                     disabled={phoneNumber === '' || sendError === 'rateLimited'}
                 >

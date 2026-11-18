@@ -155,5 +155,25 @@
     "created": 1583337392,
     "lastSeenAppNudge": 1,
     "rateLimited": false
+  },
+  {
+    "uid": "e2e-app-enrol-backup-code",
+    "email": "e2e-app-enrol-backup-code@example.com",
+    "givenName": "App",
+    "familyName": "Enrol",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 1,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-app-enrol-phone",
+    "email": "e2e-app-enrol-phone@example.com",
+    "givenName": "App",
+    "familyName": "Enrol",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 1,
+    "rateLimited": false
   }
 ]
