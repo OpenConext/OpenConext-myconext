@@ -19,11 +19,17 @@ export const NudgeAppView = ({ onDownload, onSkip }: NudgeAppViewProps) => (
     >
         <img className={styles.image} src={mobileApp} alt="" />
         <div className={styles.actions} onKeyDown={handleArrowKeyNavigation}>
-            <Button type="button" variant="outline" onClick={onSkip}>
+            <Button
+                type="button"
+                variant="outline"
+                onClick={onSkip}
+                data-testid="nudge-app-skip"
+            >
                 {I18n.t('nudgeApp.skip')}
             </Button>
             <Button
                 type="button"
+                data-testid="nudge-app-download"
                 className={styles.download}
                 onClick={onDownload}
                 autoFocus

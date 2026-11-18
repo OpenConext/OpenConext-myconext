@@ -132,6 +132,7 @@
     "familyName": "Code",
     "schacHomeOrganization": "surfguest.nl",
     "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
     "rateLimited": false
   },
   {
@@ -142,6 +143,17 @@
     "familyName": "User",
     "schacHomeOrganization": "surfguest.nl",
     "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-app-nudge",
+    "email": "e2e-app-nudge@example.com",
+    "givenName": "App",
+    "familyName": "Nudge",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 1,
     "rateLimited": false
   }
 ]
