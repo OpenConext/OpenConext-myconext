@@ -30,6 +30,7 @@ export default function RequestSuccess() {
                     window.location.href = proceedUrl;
                 }}
                 autoFocus
+                data-testid="request-success-next"
             >
                 {I18n.t('requestSuccess.next')}
             </Button>

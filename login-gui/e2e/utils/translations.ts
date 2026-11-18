@@ -7,7 +7,7 @@ export type Language = keyof typeof translations;
 
 /**
  * Resolves a dot-separated translation key (e.g. `landing.title`) from the
- * app's locale files. Does not apply app overrides or interpolation.
+ * app's locale files. Only `{{productName}}` is interpolated
  */
 export const getTranslation = (
     translationKey: string,
@@ -34,5 +34,7 @@ export const getTranslation = (
         );
     }
 
-    return current;
+    // Mirrors createI18n, which makes productName available in every translation
+    const { productName } = translations[language].globalVariables;
+    return current.replaceAll('{{productName}}', productName);
 };

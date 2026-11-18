@@ -2,6 +2,7 @@ import { waitForCode } from '@myconext/shared-gui/e2e';
 import { expect, test } from '@playwright/test';
 
 import { createAuthenticationRequestId } from './utils/authnRequest';
+import { getTranslation } from './utils/translations';
 
 const EMAIL = 'e2e-email-code@example.com';
 const ACS_URL_PATTERN =
@@ -28,7 +29,9 @@ test.describe('login-email-code', () => {
         await test.step('submit the form', async () => {
             await page.getByTestId('login-submit').click();
             await expect(page).toHaveURL(new RegExp(`/code/${id}`));
-            await expect(page.getByTestId('login-container-title')).toBeVisible();
+            await expect(
+                page.getByTestId('login-container-title'),
+            ).toBeVisible();
             await expect(
                 page.getByTestId('login-container-description'),
             ).toContainText(EMAIL);
@@ -43,7 +46,9 @@ test.describe('login-email-code', () => {
         });
 
         await test.step('decline "stay signed in" and receive the SAML assertion', async () => {
-            await expect(page.getByText('Stay signed in?')).toBeVisible();
+            await expect(
+                page.getByText(getTranslation('remember.title')),
+            ).toBeVisible();
 
             // The server answers with an auto-submitted SAML POST form to the ACS URL of the
             // AuthnRequest, which is an external host that the test must not call
@@ -51,7 +56,7 @@ test.describe('login-email-code', () => {
                 route.fulfill({ status: 200, body: 'ACS stub' }),
             );
             const acsRequest = page.waitForRequest(ACS_URL_PATTERN);
-            await page.getByRole('button', { name: 'No, not needed' }).click();
+            await page.getByTestId('remember-no').click();
 
             const assertion = await acsRequest;
             expect(assertion.method()).toBe('POST');
