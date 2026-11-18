@@ -66,6 +66,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+        //Binding a user is not enough, the user must have authenticated
+        authenticateMagicLink(new ClientAuthenticationResponse(authenticationRequestId, null));
 
         String location = given().redirects().follow(false)
                 .when()
@@ -77,6 +79,34 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
                 "state="));
+    }
+
+    @Test
+    public void linkAccountRedirectNotAuthenticated() throws IOException {
+        Response response = samlAuthnRequestResponseWithLoa(null, null, "");
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        //Attacker binds the victim to the request without verifying any code / password
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false, "response");
+        oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT).response.statusCode(HttpStatus.CREATED.value());
+
+        String location = given().redirects().follow(false)
+                .when()
+                .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
+                .getHeader("Location");
+        assertTrue(location.endsWith("expired"));
+    }
+
+    @Test
+    public void idpVerifyLinkNotAuthenticated() throws IOException {
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("idpScoping", IdpScoping.eherkenning)
+                .pathParam("id", magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/verify/link/{id}")
+                .header("Location");
+        assertTrue(location.endsWith("expired"));
     }
 
     @Test
@@ -146,6 +176,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+        markUserAuthenticated(authenticationRequestId);
         given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
@@ -262,6 +293,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+        markUserAuthenticated(authenticationRequestId);
         stubForTokenUserInfo(userInfo);
         String location = given().redirects().follow(false)
                 .when()
@@ -273,6 +305,30 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertTrue(location, location.startsWith(expectedLocation));
 
         return userRepository.findOneUserByEmail("mdoe@example.com");
+    }
+
+    private void markUserAuthenticated(String authenticationRequestId) {
+        //Simulates a completed login (code / password / passkey / app) of the bound user
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        samlAuthenticationRequest.markUserAuthenticated();
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+    }
+
+    @Test
+    public void redirectNotAuthenticatedAuthnRequest() throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false, "response");
+        oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT).response.statusCode(HttpStatus.CREATED.value());
+        stubForTokenUserInfo(new HashMap<Object, Object>(Map.of("eduperson_principal_name", "some@institute.nl", "schac_home_organization", "mock.idp")));
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", stateParameterIdP(authenticationRequestId))
+                .get("/myconext/api/idp/oidc/redirect")
+                .getHeader("Location");
+        assertEquals("http://localhost:3000/expired", location);
+        assertEquals(0, userRepository.findOneUserByEmail("mdoe@example.com").getLinkedAccounts().size());
     }
 
     @Test
@@ -988,6 +1044,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     @Test
     public void idpVerifyIDFlow() throws IOException {
         ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        authenticateMagicLink(magicLinkResponse);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()
@@ -1041,6 +1098,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     @Test
     public void idpVerifyIDErrorFlow() throws IOException {
         ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        authenticateMagicLink(magicLinkResponse);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()

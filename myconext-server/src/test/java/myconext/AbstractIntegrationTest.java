@@ -362,6 +362,19 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         return response;
     }
 
+    /**
+     * Completes the authentication of the user bound to the authentication request (like clicking the magic link /
+     * redirect after a successful code verification) without following the subsequent redirects.
+     */
+    protected Response authenticateMagicLink(ClientAuthenticationResponse magicLinkResponse) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        return given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+    }
+
     protected String samlResponse(ClientAuthenticationResponse magicLinkResponse) throws IOException {
         Response response = magicResponse(magicLinkResponse);
         return samlAuthnResponse(response, Optional.empty());

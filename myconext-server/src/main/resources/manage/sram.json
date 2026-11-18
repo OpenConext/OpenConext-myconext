@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "002231f8-40c3-4fa0-9b8a-fbda1a4ae65c",
+    "version": 102,
+    "type": "sram",
+    "data": {
+      "entityid": "https://sram.test",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "name:en": "OpenConext SRAM DEMO",
+        "name:nl": "OpenConext SRAM DEMO",
+        "OrganizationName:en": "SURF bv EN",
+        "OrganizationName:nl": "SURF bv NL"
+      }
+    }
+  }
+]

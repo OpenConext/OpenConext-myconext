@@ -274,6 +274,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
                 samlAuthenticationRequest.setUserId(previousAuthenticatedUser.getId());
+                //The user is already authenticated by an existing session or remember-me cookie
+                samlAuthenticationRequest.markUserAuthenticated();
                 samlAuthenticationRequest.setHash(hash());
                 authenticationRequestRepository.save(samlAuthenticationRequest);
                 addBrowserIdentificationCookie(response);
@@ -468,6 +470,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        //The hash is only handed out after successful verification of a code, password, passkey or the app
+        if (!samlAuthenticationRequest.isUserAuthenticated()) {
+            samlAuthenticationRequest.markUserAuthenticated();
+            samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
+        }
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&

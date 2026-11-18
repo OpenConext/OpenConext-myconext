@@ -20,6 +20,8 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_RE
 import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.REGISTRATION_ID_MY_CONEXT;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
 public class LoginControllerTest extends AbstractIntegrationTest {
@@ -276,6 +278,43 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/servicedesk/" + authenticationRequestId)
                 .header("Location");
         assertEquals("http://localhost:3001/personal?servicedesk=start", location);
+    }
+
+    @Test
+    public void redirectToSPServiceDeskHookNotAuthenticated() throws IOException {
+        //Attacker starts a login and binds the victim to it without verifying any code / password
+        String authenticationRequestId = samlAuthnRequest();
+        ClientAuthenticationRequest clientAuthenticationRequest =
+                new ClientAuthenticationRequest(authenticationRequestId, user("jdoe@example.com"), false, "response");
+        oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT).response.statusCode(201);
+
+        Response response = given().redirects().follow(false)
+                .when()
+                .get("/servicedesk/" + authenticationRequestId);
+        assertEquals("http://localhost:3000/expired", response.header("Location"));
+        assertNull(response.cookie("SESSION"));
+    }
+
+    @Test
+    public void redirectToSPServiceDeskHookReboundToOtherUser() throws IOException {
+        //Attacker authenticates as themselves, then re-binds the authenticated request to the victim
+        String authenticationRequestId = samlAuthnRequest();
+        ClientAuthenticationRequest attackerRequest =
+                new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false, "response");
+        ClientAuthenticationResponse attackerResponse = oneTimeLoginCodeRequest(attackerRequest, HttpMethod.PUT);
+        authenticateMagicLink(attackerResponse);
+        assertTrue(authenticationRequestRepository.findById(authenticationRequestId).get().isUserAuthenticated());
+
+        ClientAuthenticationRequest victimRequest =
+                new ClientAuthenticationRequest(authenticationRequestId, user("jdoe@example.com"), false, "response");
+        oneTimeLoginCodeRequest(victimRequest, HttpMethod.PUT).response.statusCode(201);
+        assertFalse(authenticationRequestRepository.findById(authenticationRequestId).get().isUserAuthenticated());
+
+        Response response = given().redirects().follow(false)
+                .when()
+                .get("/servicedesk/" + authenticationRequestId);
+        assertEquals("http://localhost:3000/expired", response.header("Location"));
+        assertNull(response.cookie("SESSION"));
     }
 
     @Test

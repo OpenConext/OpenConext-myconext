@@ -96,7 +96,9 @@ public class RemoteManage implements Manage {
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
             Map<String, ServiceProvider> newServiceProviders = exchangeAndParse(requestEntity, "saml20_sp");
             Map<String, ServiceProvider> relyingParties = exchangeAndParse(requestEntity, "oidc10_rp");
+            Map<String, ServiceProvider> sramServices = exchangeAndParse(requestEntity, "sram");
             newServiceProviders.putAll(relyingParties);
+            newServiceProviders.putAll(sramServices);
 
             if (optionalEntityId.isPresent()) {
                 serviceProviders.putAll(newServiceProviders);

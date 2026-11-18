@@ -26,6 +26,7 @@ public class RemoteManageTest {
     public void findServiceProviderByEntityIdLocally() {
         stubForTokens("oidc10_rp");
         stubForTokens("saml20_sp");
+        stubForTokens("sram");
 
         ServiceProvider serviceProvider = manage.findServiceProviderByEntityId("https://beta.surfnet.nl/SURFdropjesSP").get();
 
@@ -40,6 +41,7 @@ public class RemoteManageTest {
     @Test
     public void refresh() {
         stubForTokens("oidc10_rp");
+        stubForTokens("sram");
         stubForTokens("saml20_sp");
         stubForTokens("saml20_idp");
 

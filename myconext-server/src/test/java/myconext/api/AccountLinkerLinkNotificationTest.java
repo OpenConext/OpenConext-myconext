@@ -6,6 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.ClientAuthenticationRequest;
+import myconext.model.SamlAuthenticationRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -132,6 +133,10 @@ public class AccountLinkerLinkNotificationTest extends AbstractMailBoxTest {
         //wait for it to land before purging, otherwise the purge can race the async send and leave it behind
         await().atMost(TIMEOUT_SECONDS, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length >= 1);
         purgeEmailFromAllMailboxes();
+        //Simulates a completed login (code / password / passkey / app) of the bound user
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        samlAuthenticationRequest.markUserAuthenticated();
+        authenticationRequestRepository.save(samlAuthenticationRequest);
         stubForTokenUserInfo(userInfo);
         String state = String.format("id=%s&user_uid=%s", authenticationRequestId, passwordEncoder.encode("mdoe"));
         given().redirects().follow(false)

@@ -231,7 +231,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                   @PathVariable("id") String id,
                                                   @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) {
 
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(accountRedirectResolver.resolve(request) + "/expired")).build();
         }
@@ -669,7 +669,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                                             @PathVariable("id") String id,
                                                                             @RequestParam("idpScoping") IdpScoping idpScoping,
                                                                             @RequestParam(value = "bankId", required = false) String bankId) {
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(accountRedirectResolver.resolve(httpRequest) + "/expired")).build();
         }
@@ -729,7 +729,7 @@ public class AccountLinkerController implements UserAuthentication {
         String encodedUserUid = params.getFirst("user_uid");
         String guiMarker = params.getFirst("gui");
 
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(accountRedirectResolver.resolveMarker(guiMarker) + "/expired")).build();
         }
@@ -898,7 +898,7 @@ public class AccountLinkerController implements UserAuthentication {
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(accountRedirectResolver.resolveMarker(params.getFirst("gui")) + "/expired")).build();
         }
