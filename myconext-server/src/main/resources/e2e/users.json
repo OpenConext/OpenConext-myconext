@@ -133,5 +133,15 @@
     "schacHomeOrganization": "surfguest.nl",
     "created": 1583337392,
     "rateLimited": false
+  },
+  {
+    "uid": "e2e-password",
+    "email": "e2e-password@example.com",
+    "password": "$2a$10$BYXjea4ygLA9LCMB5Vbz3u3TmBKNOS48lGG2Aw6jsKb87gYR.K3W6",
+    "givenName": "Password",
+    "familyName": "User",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "rateLimited": false
   }
 ]

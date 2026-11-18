@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { deflateRawSync } from 'node:zlib';
 
-import { type APIRequestContext } from '@playwright/test';
+import { type APIRequestContext, type BrowserContext } from '@playwright/test';
 
 // Mirrors myconext-server/src/test/resources/authn_request.xml. The issuer must be listed in `sp_entity_id`.
 const buildAuthnRequest = (): string => `<?xml version="1.0" encoding="UTF-8"?>
@@ -39,4 +39,15 @@ export const createAuthenticationRequestId = async (
         );
     }
     return match[1];
+};
+
+// The server sets this cookie when the browser itself starts the SSO. Without it a password login is
+// treated as a login on a different device and ends on /success instead of continuing the flow.
+export const addBrowserSessionCookie = async (
+    context: BrowserContext,
+    baseURL = 'http://localhost:8081',
+): Promise<void> => {
+    await context.addCookies([
+        { name: 'BROWSER_SESSION', value: 'true', url: baseURL },
+    ]);
 };
