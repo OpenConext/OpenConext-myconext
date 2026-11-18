@@ -3,7 +3,6 @@ import { expect, test } from '@playwright/test';
 
 import { createAuthenticationRequestId } from './utils/authnRequest';
 import { resetSeededUsers } from './utils/e2eServer';
-import { getTranslation } from './utils/translations';
 
 const EMAIL = 'e2e-app-nudge@example.com';
 
@@ -54,9 +53,8 @@ test.describe('login-app-nudge', () => {
         await test.step('skip the nudge and continue the login', async () => {
             await page.getByTestId('nudge-app-skip').click();
             await expect(page).toHaveURL(/\/remember\?h=/);
-            await expect(
-                page.getByText(getTranslation('remember.title')),
-            ).toBeVisible();
+            await expect(page.getByTestId('remember-yes')).toBeVisible();
+            await expect(page.getByTestId('remember-no')).toBeVisible();
         });
     });
 });

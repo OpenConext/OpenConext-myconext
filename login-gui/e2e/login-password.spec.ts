@@ -4,7 +4,6 @@ import {
     addBrowserSessionCookie,
     createAuthenticationRequestId,
 } from './utils/authnRequest';
-import { getTranslation } from './utils/translations';
 
 const EMAIL = 'e2e-password@example.com';
 const PASSWORD = 'Zebra-Quartz-Violin-95';
@@ -43,9 +42,8 @@ test.describe('login-password', () => {
         });
 
         await test.step('decline "stay signed in" and receive the SAML assertion', async () => {
-            await expect(
-                page.getByText(getTranslation('remember.title')),
-            ).toBeVisible();
+            await expect(page.getByTestId('remember-yes')).toBeVisible();
+            await expect(page.getByTestId('remember-no')).toBeVisible();
 
             await page.route(ACS_URL_PATTERN, (route) =>
                 route.fulfill({ status: 200, body: 'ACS stub' }),

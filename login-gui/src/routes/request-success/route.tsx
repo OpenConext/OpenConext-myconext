@@ -23,7 +23,9 @@ export default function RequestSuccess() {
 
     return (
         <LoginContainer title={I18n.t('requestSuccess.title')}>
-            <p>{I18n.t('requestSuccess.info')}</p>
+            <p data-testid="request-success-info">
+                {I18n.t('requestSuccess.info')}
+            </p>
             <Button
                 type="button"
                 onClick={() => {
