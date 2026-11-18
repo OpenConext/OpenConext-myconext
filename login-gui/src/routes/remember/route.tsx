@@ -59,6 +59,7 @@ export default function Remember() {
                     className={styles.secondary}
                     disabled={isSubmitting}
                     onClick={proceed}
+                    data-testid="remember-no"
                 >
                     {I18n.t('remember.no')}
                 </Button>

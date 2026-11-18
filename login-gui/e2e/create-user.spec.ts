@@ -6,6 +6,7 @@ import { expect, test } from '@playwright/test';
 import { createAuthenticationRequestId } from './utils/authnRequest';
 import { deleteUserByEmail } from './utils/e2eServer';
 import { findEduIdByEmail } from './utils/remoteCreation';
+import { getTranslation } from './utils/translations';
 
 const ACS_URL_PATTERN =
     'https://engine.test.surfconext.nl/authentication/sp/consume-assertion';
@@ -59,16 +60,20 @@ test.describe('create user', () => {
         });
 
         await test.step('request success page is shown and can be continued', async () => {
-            await expect(page.getByText(/has been created/i)).toBeVisible();
             await expect(
-                page.getByText('We have also sent you a confirmation email.'),
+                page.getByText(getTranslation('requestSuccess.title')),
             ).toBeVisible();
-            await page.getByRole('button', { name: 'Next' }).click();
+            await expect(
+                page.getByText(getTranslation('requestSuccess.info')),
+            ).toBeVisible();
+            await page.getByTestId('request-success-next').click();
         });
 
         await test.step('decline "stay signed in" and receive the SAML assertion', async () => {
             await expect(page).toHaveURL(/\/remember\?h=/);
-            await expect(page.getByText('Stay signed in?')).toBeVisible();
+            await expect(
+                page.getByText(getTranslation('remember.title')),
+            ).toBeVisible();
 
             // The server answers with an auto-submitted SAML POST form to the ACS URL of the
             // AuthnRequest, which is an external host that the test must not call
@@ -76,7 +81,7 @@ test.describe('create user', () => {
                 route.fulfill({ status: 200, body: 'ACS stub' }),
             );
             const acsRequest = page.waitForRequest(ACS_URL_PATTERN);
-            await page.getByRole('button', { name: 'No, not needed' }).click();
+            await page.getByTestId('remember-no').click();
 
             const assertion = await acsRequest;
             expect(assertion.method()).toBe('POST');
