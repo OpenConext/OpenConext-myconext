@@ -2,7 +2,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { configQueryOptions, fetchServiceNameByHash } from '../../api';
+import { configQueryOptions, useServiceNameByHash } from '../../api';
 import { AppRequiredView, LoadingLoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { getProceedUrl } from '../../utils/sso';
@@ -19,11 +19,7 @@ export default function AppRequired() {
         data: service,
         isPending: isServicePending,
         isError,
-    } = useQuery({
-        queryKey: ['serviceNameByHash', hash],
-        queryFn: () => fetchServiceNameByHash(hash),
-        enabled: !!hash,
-    });
+    } = useServiceNameByHash(hash);
 
     if (!hash || isError) {
         return <Navigate to="/expired" replace />;

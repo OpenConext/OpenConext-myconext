@@ -14,8 +14,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
     configQueryOptions,
-    fetchServiceName,
     generateCodeNewUser,
+    useServiceName,
 } from '../../api';
 import {
     Captcha,
@@ -61,11 +61,7 @@ export default function Request() {
     const captchaSiteKey = config?.captchaEnabled
         ? config.captchaSiteKey
         : undefined;
-    const { data: service } = useQuery({
-        queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id),
-        enabled: !!id,
-    });
+    const { data: service } = useServiceName(id);
 
     const {
         mutate: submit,

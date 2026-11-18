@@ -2,10 +2,10 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
 import { get } from '@github/webauthn-json';
 import { Button } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import {
-    fetchServiceName,
+    useServiceName,
     webAuthnFinishAuthentication,
     webAuthnStartAuthentication,
 } from '../../api';
@@ -20,11 +20,7 @@ export default function UseWebAuthn() {
     const navigate = useNavigate();
     const email: string = state?.email ?? '';
 
-    const { data: service } = useQuery({
-        queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id),
-        enabled: id !== '',
-    });
+    const { data: service } = useServiceName(id);
 
     const {
         mutate: startAuthentication,
