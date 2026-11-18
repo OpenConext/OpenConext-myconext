@@ -7,7 +7,6 @@ import { createAuthenticationRequestId } from './utils/authnRequest';
 import { deleteUserByEmail } from './utils/e2eServer';
 import { findEduIdByEmail } from './utils/remoteCreation';
 
-// AssertionConsumerServiceURL in the AuthnRequest of ./utils/authnRequest.ts
 const ACS_URL_PATTERN =
     'https://engine.test.surfconext.nl/authentication/sp/consume-assertion';
 

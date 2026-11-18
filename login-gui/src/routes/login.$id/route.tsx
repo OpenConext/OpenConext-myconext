@@ -187,7 +187,11 @@ export default function Login() {
                 {accountNotFound && (
                     <ErrorAlert>{I18n.t('login.accountNotFound')}</ErrorAlert>
                 )}
-                <LoadingButton type="submit" loading={isSubmitting}>
+                <LoadingButton
+                    type="submit"
+                    data-testid="login-submit"
+                    loading={isSubmitting}
+                >
                     {I18n.t('login.submit')}
                 </LoadingButton>
             </form>

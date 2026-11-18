@@ -93,7 +93,7 @@ jobs:
           git push
         fi
 
-  # One runner with its own stack per gui, so the suites run in parallel and cannot affect each other's data
+  # Two parallel e2e jobs: "e2e my-gui", "e2e login-gui"
   e2e:
     name: e2e (${{ matrix.gui }})
     needs: jars
