@@ -124,5 +124,14 @@
         "schacHomeOrganization": "institution.example"
       }
     ]
+  },
+  {
+    "uid": "e2e-email-code",
+    "email": "e2e-email-code@example.com",
+    "givenName": "Email",
+    "familyName": "Code",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "rateLimited": false
   }
 ]
