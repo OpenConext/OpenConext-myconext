@@ -1,6 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 
-import { SERVER_URL } from './e2eServer';
+import { SERVER_URL } from '../constants';
 
 // `remote-users` in application.yml, the studielink user has the remote-creation scope
 const REMOTE_CREATION_AUTH =

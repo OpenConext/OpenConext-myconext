@@ -3,6 +3,8 @@ import { deflateRawSync } from 'node:zlib';
 
 import { type APIRequestContext, type BrowserContext } from '@playwright/test';
 
+import { SERVER_URL } from '../constants';
+
 // Mirrors myconext-server/src/test/resources/authn_request.xml. The issuer must be listed in `sp_entity_id`.
 const buildAuthnRequest = (): string => `<?xml version="1.0" encoding="UTF-8"?>
 <samlp:AuthnRequest
@@ -22,7 +24,7 @@ const buildAuthnRequest = (): string => `<?xml version="1.0" encoding="UTF-8"?>
  */
 export const createAuthenticationRequestId = async (
     request: APIRequestContext,
-    baseURL = 'http://localhost:8081',
+    baseURL = SERVER_URL,
 ): Promise<string> => {
     const samlRequest = deflateRawSync(
         Buffer.from(buildAuthnRequest()),
@@ -45,7 +47,7 @@ export const createAuthenticationRequestId = async (
 // treated as a login on a different device and ends on /success instead of continuing the flow.
 export const addBrowserSessionCookie = async (
     context: BrowserContext,
-    baseURL = 'http://localhost:8081',
+    baseURL = SERVER_URL,
 ): Promise<void> => {
     await context.addCookies([
         { name: 'BROWSER_SESSION', value: 'true', url: baseURL },

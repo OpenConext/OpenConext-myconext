@@ -1,6 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 
-export const SERVER_URL = process.env.E2E_SERVER_URL ?? 'http://localhost:8081';
+import { SERVER_URL } from '../constants';
 
 /**
  * Deletes a user created by a test through the e2e profile controller of the server.
