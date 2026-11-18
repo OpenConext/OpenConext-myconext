@@ -9,9 +9,9 @@ import {
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 
 import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { fetchServiceName, passwordLoginRequest } from '../../api';
+import { passwordLoginRequest, useServiceName } from '../../api';
 import { ErrorAlert, LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import { rememberLoginMethod } from '../../utils/loginMethods';
@@ -49,11 +49,7 @@ export default function UsePassword() {
     const [incorrect, setIncorrect] = useState(false);
     const passwordInputRef = useRef<HTMLInputElement>(null);
 
-    const { data: service } = useQuery({
-        queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id),
-        enabled: id !== '',
-    });
+    const { data: service } = useServiceName(id);
 
     const {
         mutate: submitPassword,

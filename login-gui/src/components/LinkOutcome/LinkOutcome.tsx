@@ -4,7 +4,7 @@ import { handleArrowKeyNavigation } from '@myconext/shared-gui';
 import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
-import { configQueryOptions, fetchServiceName } from '../../api';
+import { configQueryOptions, useServiceName } from '../../api';
 import I18n, { tArray } from '../../locale/I18n';
 import { getProceedUrl } from '../../utils/sso';
 import { LoadingLoginContainer } from '../Loading/LoadingLoginContainer.tsx';
@@ -41,11 +41,7 @@ export const LinkOutcome = ({
         data: service,
         isPending: isServicePending,
         isError,
-    } = useQuery({
-        queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id),
-        enabled: !!id,
-    });
+    } = useServiceName(id);
 
     if (!id || isError) {
         return <Navigate to="/expired" replace />;

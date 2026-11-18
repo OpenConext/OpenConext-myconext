@@ -3,9 +3,9 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 
 import { UserCircleIcon, UserSwitchIcon } from '@phosphor-icons/react';
 import { Field, FieldLabel, Input } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { fetchLoginMethods, fetchServiceName } from '../../api';
+import { fetchLoginMethods, useServiceName } from '../../api';
 import {
     ErrorAlert,
     ItemList,
@@ -70,11 +70,7 @@ export default function Login() {
         }
     }, [isSubmitting]);
 
-    const { data: service, isLoading } = useQuery({
-        queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id),
-        enabled: Boolean(id),
-    });
+    const { data: service, isLoading } = useServiceName(id);
 
     const { mutate } = useMutation({
         mutationFn: (email: string) => fetchLoginMethods(email),

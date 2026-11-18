@@ -3,7 +3,7 @@ import { Navigate, useParams, useSearchParams } from 'react-router';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { configQueryOptions, fetchServiceName } from '../../api';
+import { configQueryOptions, useServiceName } from '../../api';
 import { LoadingLoginContainer } from '../../components/Loading/LoadingLoginContainer';
 import { StepupExplanation } from '../../components/Stepup/StepupExplanation';
 import {
@@ -43,15 +43,7 @@ export default function Stepup() {
     // A retry skips the explanation, so (e.g. from the *-already-linked pages) it needs no explanation param.
     const canRender = isRetry || explanation !== null;
 
-    const {
-        data: service,
-        isPending,
-        isError,
-    } = useQuery({
-        queryKey: ['serviceName', id],
-        queryFn: () => fetchServiceName(id),
-        enabled: !!id && canRender,
-    });
+    const { data: service, isPending, isError } = useServiceName(id, canRender);
 
     if (isError || !canRender) {
         return <Navigate to="/expired" replace />;

@@ -4,7 +4,7 @@ import { CheckCircleIcon } from '@phosphor-icons/react';
 import { Alert, AlertDescription, Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
-import { configQueryOptions, fetchServiceNameByHash } from '../../api';
+import { configQueryOptions, useServiceNameByHash } from '../../api';
 import { LoadingLoginContainer, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n.ts';
 import { getProceedUrl } from '../../utils/sso.ts';
@@ -38,11 +38,7 @@ export default function ConfirmStepup() {
         data: service,
         isPending: isServicePending,
         isError,
-    } = useQuery({
-        queryKey: ['serviceNameByHash', hash],
-        queryFn: () => fetchServiceNameByHash(hash),
-        enabled: !!hash,
-    });
+    } = useServiceNameByHash(hash);
 
     if (!hash || isError) {
         return <Navigate to="/expired" replace />;
