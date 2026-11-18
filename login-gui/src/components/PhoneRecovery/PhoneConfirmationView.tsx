@@ -71,6 +71,7 @@ export const PhoneConfirmationView = ({
         <form className={styles.form} onSubmit={onSubmit}>
             <OtpInput
                 ref={inputRef}
+                testId="phone-confirmation-code"
                 ariaLabel={I18n.t('phoneConfirmation.inputLabel')}
                 value={code}
                 onChange={onCodeChange}
