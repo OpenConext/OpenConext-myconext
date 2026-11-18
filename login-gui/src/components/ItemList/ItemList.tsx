@@ -34,6 +34,7 @@ export const ItemList = ({ items }: ItemListProps) => (
                     <button
                         type="button"
                         onClick={onClick}
+                        data-testid={`item-list-${key}`}
                         autoFocus={index === 0}
                     />
                 }

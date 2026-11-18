@@ -26,6 +26,7 @@ export const EnrollAppView = ({ state, onResume }: EnrollAppViewProps) => {
             const qr = (
                 <img
                     className={styles.qr}
+                    data-testid="enrollapp-qr"
                     src={state.start.qrcode}
                     alt={I18n.t('enrollApp.qrAlt')}
                 />

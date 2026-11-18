@@ -49,7 +49,12 @@ export const RecoveryCodeView = ({
                 className={styles.content}
                 onKeyDown={handleArrowKeyNavigation}
             >
-                <p className={styles.recoveryCode}>{recoveryCode}</p>
+                <p
+                    className={styles.recoveryCode}
+                    data-testid="recovery-code-value"
+                >
+                    {recoveryCode}
+                </p>
                 <Button type="button" onClick={() => void copy()}>
                     {I18n.t(copied ? 'recovery.copied' : 'recovery.copy')}
                 </Button>
@@ -61,6 +66,7 @@ export const RecoveryCodeView = ({
                     variant="outline"
                     loading={leaving}
                     onClick={next}
+                    data-testid="recovery-code-next"
                     autoFocus
                 >
                     {I18n.t('recovery.next')}
