@@ -217,8 +217,10 @@ public class LoginController {
     public ResponseEntity redirectToSPServiceDeskHook(@PathVariable("id") String id,
                                                       HttpServletRequest request,
                                                       HttpServletResponse response) {
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        //Only hand out a session if the user bound to the request has actually authenticated
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
+            LOG.warn(String.format("Servicedesk hook called for authentication request %s that is unknown, expired or not authenticated", id));
             String accountBaseUrl = (String) this.config.get("accountBaseUrl");
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(accountBaseUrl + "/expired")).build();
         }

@@ -32,4 +32,12 @@ public interface AuthenticationRequestRepository extends MongoRepository<SamlAut
         }
         return authenticationRequestOptional;
     }
+
+    /**
+     * Only returns the request if it is not expired AND the bound user has actually authenticated. Use this for every
+     * endpoint that acts on behalf of the bound user based on the id of the request, as that id is not a secret.
+     */
+    default Optional<SamlAuthenticationRequest> findByIdAndNotExpiredAndUserAuthenticated(String id) {
+        return findByIdAndNotExpired(id).filter(SamlAuthenticationRequest::isUserAuthenticated);
+    }
 }

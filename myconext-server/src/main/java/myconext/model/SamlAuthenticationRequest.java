@@ -42,8 +42,13 @@ public class SamlAuthenticationRequest implements Serializable {
     @Indexed(name = "expiresIn_ttl_idx", expireAfter = "0s", partialFilter = "{ 'rememberMe': false }")
     private Date expiresIn;
 
-    @Setter
+    //The user this request is (or will be) bound to. Set as soon as the user identifies themselves (e.g. enters an email)
+    //and therefore NOT proof of authentication. Use userAuthenticated for that.
     private String userId;
+
+    //True only after the user bound in userId has actually authenticated (code, password, passkey, app or existing
+    //SSO session). Endpoints that act on behalf of userId based on the (non-secret) id of this request must check this.
+    private boolean userAuthenticated;
 
     private String requesterEntityId;
 
@@ -116,6 +121,26 @@ public class SamlAuthenticationRequest implements Serializable {
         this.mfaProfileRequired = mfaProfileRequired;
         this.authenticationContextClassReferences = authenticationContextClassReferences;
         invariant();
+    }
+
+    /**
+     * Bind a (candidate) user to this request. Always revokes any previous proof of authentication, so an
+     * authenticated request can never be re-bound to another user while keeping its authenticated state.
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
+        this.userAuthenticated = false;
+    }
+
+    /**
+     * Mark the currently bound user as authenticated. Only call this after the user has proven possession of a
+     * credential (or has an existing authenticated session).
+     */
+    public void markUserAuthenticated() {
+        if (this.userId == null) {
+            throw new IllegalStateException("Can not mark a SamlAuthenticationRequest authenticated without a user");
+        }
+        this.userAuthenticated = true;
     }
 
     @Transient
