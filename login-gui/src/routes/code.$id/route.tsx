@@ -139,6 +139,7 @@ export default function Code() {
             <form className={styles.form} onSubmit={handleSubmit}>
                 <OtpInput
                     ariaLabel={I18n.t('codeScreen.inputLabel')}
+                    testId="code-input"
                     ref={otpInputRef}
                     value={code}
                     onChange={setCode}

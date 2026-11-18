@@ -128,6 +128,7 @@ export default function UsePassword() {
                     </FieldLabel>
                     <Input
                         id="password"
+                        data-testid="password-input"
                         ref={passwordInputRef}
                         type="password"
                         autoComplete="current-password"

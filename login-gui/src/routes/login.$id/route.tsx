@@ -169,6 +169,7 @@ export default function Login() {
                     </FieldLabel>
                     <Input
                         id="email"
+                        data-testid="login-email"
                         ref={emailInputRef}
                         type="email"
                         autoFocus
