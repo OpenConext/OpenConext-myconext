@@ -149,6 +149,7 @@ export default function UsePassword() {
                 )}
                 <LoadingButton
                     type="submit"
+                    data-testid="password-submit"
                     loading={isSubmitting}
                     disabled={!isValidForm}
                 >
