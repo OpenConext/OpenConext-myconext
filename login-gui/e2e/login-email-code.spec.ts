@@ -1,11 +1,10 @@
 import { waitForCode } from '@myconext/shared-gui/e2e';
 import { expect, test } from '@playwright/test';
 
+import { ACS_URL_PATTERN } from './constants';
 import { createAuthenticationRequestId } from './utils/authnRequest';
 
 const EMAIL = 'e2e-email-code@example.com';
-const ACS_URL_PATTERN =
-    'https://engine.test.surfconext.nl/authentication/sp/consume-assertion';
 
 test.describe('login-email-code', () => {
     test('logs in an existing user with the one-time code', async ({

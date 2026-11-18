@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { ACS_URL_PATTERN } from './constants';
 import {
     addBrowserSessionCookie,
     createAuthenticationRequestId,
@@ -7,8 +8,6 @@ import {
 
 const EMAIL = 'e2e-password@example.com';
 const PASSWORD = 'Zebra-Quartz-Violin-95';
-const ACS_URL_PATTERN =
-    'https://engine.test.surfconext.nl/authentication/sp/consume-assertion';
 
 test.describe('login-password', () => {
     test('logs in an existing user with the password', async ({
