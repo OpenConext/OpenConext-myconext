@@ -17,13 +17,18 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 | Helper | From | Use |
 |---|---|---|
 | `createAuthenticationRequestId(request)` | `utils/authnRequest` | Start a SAML request, returns the id for `/login/:id` or `/request/:id` |
+| `createAuthenticationRequest(request, { acrValues })` | `utils/authnRequest` | Like the above, with requested ACRs. Returns `{ id, path }`: `page.goto(path)`, the query (`stepup`, `mfa`) steers the GUI |
+| `enrollAppForUser(request, email)` | `utils/tiqrApp` | Gives a seeded user a working eduID app without a browser, returns the device |
+| `authenticateWithApp(request, device, url)` | `utils/tiqrApp` | Plays the app answering a login QR (`url` from the `/tiqr/start-authentication` response) |
+| `readSamlResponse(acsRequest)` | `utils/samlResponse` | Status codes and AuthnContextClassRef of the response posted to the ACS stub |
 | `addBrowserSessionCookie(context)` | `utils/authnRequest` | Needed for password or passkey logins (see Test data) |
 | `waitForCode(request, email, { since? })` | `@myconext/shared-gui/e2e` | One-time code from mailpit. `since` = epoch ms, use it if the address got mail in earlier runs |
 | `deleteUserByEmail(request, email)` | `utils/e2eServer` | Remove a user the test created. `resetSeededUsers(request)` also lives here, but the global setup already calls it, don't use it in specs |
 | `enrollAppDevice(request, enrollmentKey)` | `utils/tiqrApp` | Plays the eduID app: registers a device for an enrollment, so the page moves on to `/recovery` |
 | `expectSmsCode(request)` | `utils/smsCode` | Call before the action that sends the SMS, the returned function waits for the new code from the mocked SMS service |
 | `findEduIdByEmail(request, email)` | `utils/remoteCreation` | Check a user exists (`/sp/me` always returns the seeded `test` user, don't use it) |
-| `getTranslation(key, lang)` | `utils/translations` | Expected copy from the locale files |
+| `getTranslation(key, lang, params)` | `utils/translations` | Expected copy from the locale files, `params` fills `{{serviceName}}` |
+| `fetchServiceName(request, id)` | `utils/serviceName` | The service name the server shows for an authentication request |
 
 ## Steps
 - Every phase is a `test.step('<what the user does or sees>', ...)`. No loose actions or assertions.
@@ -44,7 +49,7 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 - A flow that ends in SAML stubs `ACS_URL_PATTERN` (from `constants.ts`) and asserts a `POST` with `SAMLResponse=`, see `login-email-code.spec.ts`. Never call the real ACS host.
 
 ## Test data
-- Users live in `myconext-server/src/main/resources/e2e/users.json` (seeded on server start): `e2e-email-code` (code only), `e2e-password` (password), `e2e-app-nudge` (app nudge), `e2e-app-enrol-backup-code` and `e2e-app-enrol-phone` (app enrolment), `e2e-other` (linked account). Never use `jdoe@example.com` (my-gui user).
+- Users live in `myconext-server/src/main/resources/e2e/users.json` (seeded on server start): `e2e-email-code` (code only), `e2e-password` (password), `e2e-app-nudge` (app nudge), `e2e-app-enrol-backup-code` and `e2e-app-enrol-phone` (app enrolment), `e2e-other` (linked account), `e2e-acr-<acr>-<satisfied|missing>` (plain ACR), `e2e-acr-mfa-<acr|profile>-<satisfied|missing>` (ACR with the app, the spec enrols the app) and `e2e-acr-mfa-no-app-<refuse|download>`. Linked accounts of ACR users are created in 2099, because those not validating names expire 180 days after `createdAt`. Never use `jdoe@example.com` (my-gui user).
 - One seeded user per scenario (uid `e2e-<scenario>`, email `e2e-<scenario>@example.com`), never shared between specs or variants of a loop, so parallel runs can't conflict. Adding one needs a server restart.
 - `e2e/global-setup.ts` resets the seeded users once per `playwright test` run. Specs don't reset, so a test must not need its user in a fresh state more than once per run (hence one user per scenario).
 - Tests that create users use a unique email and call `deleteUserByEmail` in `afterEach`.

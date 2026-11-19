@@ -23,20 +23,25 @@ export const StepupExplanation = ({
         })}
         headerAlign="start"
         footer={
-            <p>
+            <p data-testid="stepup-footer">
                 {I18n.t(`stepup.${explanation}.footer`, {
                     serviceName,
                 })}
             </p>
         }
     >
-        <Alert>
+        <Alert data-testid="stepup-alert">
             <BuildingOfficeIcon aria-hidden />
             <AlertDescription>
                 {I18n.t(`stepup.${explanation}.alert`)}
             </AlertDescription>
         </Alert>
-        <Button type="button" onClick={onContinue} autoFocus>
+        <Button
+            type="button"
+            data-testid="stepup-continue"
+            onClick={onContinue}
+            autoFocus
+        >
             {I18n.t('stepup.submit')}
         </Button>
     </LoginContainer>

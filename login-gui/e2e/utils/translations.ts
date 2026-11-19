@@ -7,11 +7,12 @@ export type Language = keyof typeof translations;
 
 /**
  * Resolves a dot-separated translation key (e.g. `landing.title`) from the
- * app's locale files. Only `{{productName}}` is interpolated
+ * app's locale files. `{{productName}}` and the given `params` (e.g. `serviceName`) are interpolated
  */
 export const getTranslation = (
     translationKey: string,
     language: Language = 'en',
+    params: Record<string, string> = {},
 ): string => {
     let current: unknown = translations[language];
 
@@ -36,5 +37,8 @@ export const getTranslation = (
 
     // Mirrors createI18n, which makes productName available in every translation
     const { productName } = translations[language].globalVariables;
-    return current.replaceAll('{{productName}}', productName);
+    return Object.entries({ productName, ...params }).reduce(
+        (text, [name, value]) => text.replaceAll(`{{${name}}}`, value),
+        current,
+    );
 };

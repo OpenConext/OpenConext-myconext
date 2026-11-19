@@ -175,5 +175,453 @@
     "created": 1583337392,
     "lastSeenAppNudge": 1,
     "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-linked-institution-satisfied",
+    "email": "e2e-acr-linked-institution-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-linked-institution-satisfied@institution.example",
+        "subjectId": "e2e-acr-linked-institution-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-linked-institution-satisfied",
+    "email": "e2e-acr-mfa-linked-institution-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-linked-institution-satisfied@institution.example",
+        "subjectId": "e2e-acr-mfa-linked-institution-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-linked-institution-missing",
+    "email": "e2e-acr-linked-institution-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-mfa-linked-institution-missing",
+    "email": "e2e-acr-mfa-linked-institution-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-validate-names-satisfied",
+    "email": "e2e-acr-validate-names-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-validate-names-satisfied@institution.example",
+        "subjectId": "e2e-acr-validate-names-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-validate-names-satisfied",
+    "email": "e2e-acr-mfa-validate-names-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-validate-names-satisfied@institution.example",
+        "subjectId": "e2e-acr-mfa-validate-names-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-validate-names-missing",
+    "email": "e2e-acr-validate-names-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-validate-names-missing@institution.example",
+        "subjectId": "e2e-acr-validate-names-missing@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-validate-names-missing",
+    "email": "e2e-acr-mfa-validate-names-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-validate-names-missing@institution.example",
+        "subjectId": "e2e-acr-mfa-validate-names-missing@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-validate-names-external-satisfied",
+    "email": "e2e-acr-validate-names-external-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "externalLinkedAccounts": [
+      {
+        "subjectId": "e2e-acr-validate-names-external-satisfied-external",
+        "idpScoping": "serviceDesk",
+        "firstName": "External",
+        "legalLastName": "Person",
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "external": true
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-validate-names-external-satisfied",
+    "email": "e2e-acr-mfa-validate-names-external-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "externalLinkedAccounts": [
+      {
+        "subjectId": "e2e-acr-mfa-validate-names-external-satisfied-external",
+        "idpScoping": "serviceDesk",
+        "firstName": "External",
+        "legalLastName": "Person",
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "external": true
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-validate-names-external-missing",
+    "email": "e2e-acr-validate-names-external-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-validate-names-external-missing@institution.example",
+        "subjectId": "e2e-acr-validate-names-external-missing@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-validate-names-external-missing",
+    "email": "e2e-acr-mfa-validate-names-external-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-validate-names-external-missing@institution.example",
+        "subjectId": "e2e-acr-mfa-validate-names-external-missing@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-iap-medium-satisfied",
+    "email": "e2e-acr-iap-medium-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-iap-medium-satisfied@institution.example",
+        "subjectId": "e2e-acr-iap-medium-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-iap-medium-satisfied",
+    "email": "e2e-acr-mfa-iap-medium-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-iap-medium-satisfied@institution.example",
+        "subjectId": "e2e-acr-mfa-iap-medium-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-iap-medium-missing",
+    "email": "e2e-acr-iap-medium-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-mfa-iap-medium-missing",
+    "email": "e2e-acr-mfa-iap-medium-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-iap-high-satisfied",
+    "email": "e2e-acr-iap-high-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-iap-high-satisfied@institution.example",
+        "subjectId": "e2e-acr-iap-high-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": [
+          "https://refeds.org/assurance/IAP/high"
+        ]
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-iap-high-satisfied",
+    "email": "e2e-acr-mfa-iap-high-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-iap-high-satisfied@institution.example",
+        "subjectId": "e2e-acr-mfa-iap-high-satisfied@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": [
+          "https://refeds.org/assurance/IAP/high"
+        ]
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-iap-high-missing",
+    "email": "e2e-acr-iap-high-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-iap-high-missing@institution.example",
+        "subjectId": "e2e-acr-iap-high-missing@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-iap-high-missing",
+    "email": "e2e-acr-mfa-iap-high-missing@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2099-01-01T00:00:00.000Z",
+        "expiresAt": "2100-01-01T00:00:00.000Z",
+        "eduPersonPrincipalName": "e2e-acr-mfa-iap-high-missing@institution.example",
+        "subjectId": "e2e-acr-mfa-iap-high-missing@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example",
+        "givenName": "Linked",
+        "familyName": "Person",
+        "eduPersonAffiliations": [],
+        "eduPersonAssurances": []
+      }
+    ]
+  },
+  {
+    "uid": "e2e-acr-mfa-profile-satisfied",
+    "email": "e2e-acr-mfa-profile-satisfied@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-mfa-no-app-refuse",
+    "email": "e2e-acr-mfa-no-app-refuse@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-acr-mfa-no-app-download",
+    "email": "e2e-acr-mfa-no-app-download@example.com",
+    "givenName": "Acr",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
   }
 ]
