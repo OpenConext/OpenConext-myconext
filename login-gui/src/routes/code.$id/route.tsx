@@ -111,6 +111,7 @@ export default function Code() {
             <Button
                 variant="link"
                 className={styles.link}
+                data-testid="code-other-method"
                 onClick={goToOptions}
             >
                 {I18n.t('codeScreen.otherMethod')}

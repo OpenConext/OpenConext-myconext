@@ -157,7 +157,6 @@ test.describe('acr-mfa-app', () => {
                             const assertion = readSamlResponse(
                                 await acsRequest,
                             );
-                            // Non-mfa flow this test case passes
                             expect(assertion.statusCodes).toEqual([
                                 SAML_SUCCESS,
                             ]);
