@@ -6,7 +6,16 @@ import { type APIRequestContext, type BrowserContext } from '@playwright/test';
 import { SERVER_URL } from '../constants';
 
 // Mirrors myconext-server/src/test/resources/authn_request.xml. The issuer must be listed in `sp_entity_id`.
-const buildAuthnRequest = (): string => `<?xml version="1.0" encoding="UTF-8"?>
+const buildAuthnRequest = (acrValues: readonly string[]): string => {
+    const requestedAuthnContext = acrValues.length
+        ? `<samlp:RequestedAuthnContext>${acrValues
+              .map(
+                  (acr) =>
+                      `<saml:AuthnContextClassRef>${acr}</saml:AuthnContextClassRef>`,
+              )
+              .join('')}</samlp:RequestedAuthnContext>`
+        : '';
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <samlp:AuthnRequest
         AssertionConsumerServiceURL="https://engine.test.surfconext.nl/authentication/sp/consume-assertion"
         Destination="https://mujina-idp.test.surfconext.nl/SingleSignOnService"
@@ -16,18 +25,30 @@ const buildAuthnRequest = (): string => `<?xml version="1.0" encoding="UTF-8"?>
         xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
     <saml:Issuer>https://engine.test.surfconext.nl/authentication/sp/metadata</saml:Issuer>
     <samlp:NameIDPolicy AllowCreate="true" Format="urn:mace:dir:attribute-def:eduPersonPrincipalName"/>
+    ${requestedAuthnContext}
 </samlp:AuthnRequest>`;
+};
+
+interface AuthenticationRequestOptions {
+    acrValues?: readonly string[];
+    baseURL?: string;
+}
+
+interface AuthenticationRequest {
+    id: string;
+    path: string;
+}
 
 /**
  * Calls the backend SSO endpoint directly (HTTP-Redirect binding, unsigned) and returns the
- * SamlAuthenticationRequest id from the Location header (`<gui>/login/<id>` or `<gui>/request/<id>`).
+ * SamlAuthenticationRequest id and the GUI path from the Location header (`<gui>/login/<id>` or `<gui>/request/<id>`).
  */
-export const createAuthenticationRequestId = async (
+export const createAuthenticationRequest = async (
     request: APIRequestContext,
-    baseURL = SERVER_URL,
-): Promise<string> => {
+    { acrValues = [], baseURL = SERVER_URL }: AuthenticationRequestOptions = {},
+): Promise<AuthenticationRequest> => {
     const samlRequest = deflateRawSync(
-        Buffer.from(buildAuthnRequest()),
+        Buffer.from(buildAuthnRequest(acrValues)),
     ).toString('base64');
     const response = await request.get(`${baseURL}/saml/guest-idp/SSO`, {
         params: { SAMLRequest: samlRequest },
@@ -40,8 +61,15 @@ export const createAuthenticationRequestId = async (
             `Unexpected SSO response ${response.status()}, location: ${location}`,
         );
     }
-    return match[1];
+    const { pathname, search } = new URL(location);
+    return { id: match[1], path: `${pathname}${search}` };
 };
+
+export const createAuthenticationRequestId = async (
+    request: APIRequestContext,
+    baseURL = SERVER_URL,
+): Promise<string> =>
+    (await createAuthenticationRequest(request, { baseURL })).id;
 
 // The server sets this cookie when the browser itself starts the SSO. Without it a password login is
 // treated as a login on a different device and ends on /success instead of continuing the flow.

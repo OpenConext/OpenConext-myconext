@@ -55,6 +55,7 @@ export const AppRequiredView = ({
                 <Button
                     type="button"
                     variant="outline"
+                    data-testid="app-required-refuse"
                     onClick={() => setConfirmingRefuse(true)}
                 >
                     {I18n.t('appRequired.refuse')}
@@ -62,6 +63,7 @@ export const AppRequiredView = ({
                 <Button
                     type="button"
                     className={styles.download}
+                    data-testid="app-required-download"
                     onClick={onDownload}
                     autoFocus
                 >
@@ -85,6 +87,7 @@ export const AppRequiredView = ({
                         <Button
                             type="button"
                             variant="outline"
+                            data-testid="app-required-confirm-refuse"
                             onClick={onRefuse}
                         >
                             {I18n.t('appRequired.confirmRefuse')}
