@@ -2,6 +2,7 @@ package myconext.e2e;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import myconext.model.Challenge;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Seeds the user the LocalDevelopmentAuthenticationFilter (profile test or local) authenticates as, so that
@@ -54,6 +56,10 @@ public class E2eSeed {
                 .remove(Query.query(Criteria.where("uid").in(users.stream().map(user -> user.get("uid")).toList())))
                 .insert(users)
                 .execute();
+        // Registration challenges are looked up by the fixed seeded token and a second one breaks the registration
+        // silently, so a run that stopped half way must not leave one behind
+        List<Object> tokens = users.stream().map(user -> user.get("webAuthnIdentifier")).filter(Objects::nonNull).toList();
+        mongoTemplate.remove(Query.query(Criteria.where("token").in(tokens)), Challenge.class);
         LOG.info(String.format("Seeded %s users for the e2e tests", users.size()));
     }
 }
