@@ -169,6 +169,28 @@
     "rateLimited": false
   },
   {
+    "uid": "e2e-passkey-login",
+    "email": "e2e-passkey-login@example.com",
+    "givenName": "Passkey",
+    "familyName": "Login",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "webAuthnIdentifier": "e2e-passkey-login-token",
+    "rateLimited": false
+  },
+  {
+    "uid": "e2e-passkey-register",
+    "email": "e2e-passkey-register@example.com",
+    "givenName": "Passkey",
+    "familyName": "Register",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "webAuthnIdentifier": "e2e-passkey-register-token",
+    "rateLimited": false
+  },
+  {
     "uid": "e2e-app-nudge",
     "email": "e2e-app-nudge@example.com",
     "givenName": "App",

@@ -67,6 +67,7 @@ export default function UseWebAuthn() {
                     variant="link"
                     type="button"
                     className={styles.link}
+                    data-testid="usewebauthn-other-method"
                     onClick={goToOptions}
                 >
                     {I18n.t('webAuthn.otherMethod')}
@@ -82,6 +83,7 @@ export default function UseWebAuthn() {
                     type="button"
                     loading={isPending || isSuccess}
                     autoFocus
+                    data-testid="usewebauthn-submit"
                     onClick={() => startAuthentication()}
                 >
                     {I18n.t('webAuthn.submit')}
