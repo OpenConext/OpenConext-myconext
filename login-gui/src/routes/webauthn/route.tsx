@@ -32,6 +32,7 @@ export default function WebAuthn() {
                     type="button"
                     loading={isPending || isSuccess}
                     autoFocus
+                    data-testid="webauthn-submit"
                     onClick={() => startRegistration()}
                 >
                     {I18n.t('addWebAuthn.submit')}
