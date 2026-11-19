@@ -147,6 +147,17 @@
     "rateLimited": false
   },
   {
+    "uid": "e2e-remember-login",
+    "email": "e2e-remember-login@example.com",
+    "password": "$2a$10$BYXjea4ygLA9LCMB5Vbz3u3TmBKNOS48lGG2Aw6jsKb87gYR.K3W6",
+    "givenName": "Remember",
+    "familyName": "Login",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "lastSeenAppNudge": 4102444800000,
+    "rateLimited": false
+  },
+  {
     "uid": "e2e-app-nudge",
     "email": "e2e-app-nudge@example.com",
     "givenName": "App",
