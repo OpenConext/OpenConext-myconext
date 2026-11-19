@@ -101,6 +101,7 @@ export default function UsePassword() {
             variant="link"
             type="button"
             className={styles.link}
+            data-testid="password-other-method"
             onClick={goToOptions}
         >
             {I18n.t('password.otherMethod')}
