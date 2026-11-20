@@ -4,6 +4,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [next]
+- Rate-limit resend-code endpoints per request id, IP and user
+
+
 ## [8.5.2] unreleased
 - Support an optional `login_hint` on the create-from-institution flow to bypass the WAYF when the institution already knows the IdP ([#1318](https://github.com/OpenConext/OpenConext-myconext/issues/1318))
 - Upgraded to Spring Boot 4 ([#1263](https://github.com/OpenConext/OpenConext-myconext/issues/1263))
