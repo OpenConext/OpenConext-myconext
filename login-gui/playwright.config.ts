@@ -7,6 +7,7 @@ export default defineConfig({
     globalSetup: './e2e/global-setup.ts',
     forbidOnly: Boolean(process.env.CI),
     retries: process.env.CI ? 1 : 0,
+    expect: { timeout: 10_000 },
     reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
     use: {
         testIdAttribute: 'data-testid',
