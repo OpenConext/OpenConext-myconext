@@ -114,6 +114,13 @@ const en: AppTranslation = {
         error: "You can't use the passkey at this moment",
         otherMethod: 'Use another login method',
     },
+    webAuthnTest: {
+        title: 'Test security key',
+        explanation:
+            'Click the button below to test a security key. Please follow the instructions given by your browser.',
+        submit: 'Test',
+        error: "You can't use the security key at this moment",
+    },
     addWebAuthn: {
         title: 'Add security key',
         explanation:
