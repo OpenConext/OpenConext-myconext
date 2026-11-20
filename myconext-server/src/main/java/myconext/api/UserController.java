@@ -427,11 +427,12 @@ public class UserController implements UserAuthentication {
     @Hidden
     @GetMapping("/idp/resend_code_request")
     public ResponseEntity resendCodeMail(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
-        resendRateLimiter.checkAllowed("resend:id:" + authenticationRequestId, "resend:ip:" + MDCContext.resolve(request));
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        // Only count requests that refer to an existing, outstanding authentication request
+        resendRateLimiter.checkAllowed("resend:id:" + authenticationRequestId, MDCContext.resolve(request));
         return doResendCodeMail(user);
     }
 
@@ -586,8 +587,8 @@ public class UserController implements UserAuthentication {
             })
     @GetMapping("/idp/v2/resend_code_request")
     public ResponseEntity resendCodeMailMobile(HttpServletRequest request, @RequestParam("hash") String hash) {
-        resendRateLimiter.checkAllowed("resend:ip:" + MDCContext.resolve(request));
         User user = userRepository.findUserByCreateFromInstitutionKey(hash).orElseThrow(() -> new UserNotFoundException(hash));
+        resendRateLimiter.checkAllowed("resend:hash:" + hash, MDCContext.resolve(request));
         return doResendCodeMail(user);
     }
 
@@ -748,11 +749,11 @@ public class UserController implements UserAuthentication {
             description = "Resend the one-time verification code in verification email")
     @GetMapping("/sp/resend-email-code")
     public ResponseEntity resendSpCodeMail(Authentication authentication, HttpServletRequest request) {
-        resendRateLimiter.checkAllowed("resend:ip:" + MDCContext.resolve(request));
         User user = userFromAuthentication(authentication);
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream().findFirst()
                 .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
         OneTimeLoginCode oneTimeLoginCode = changeEmailHash.getOneTimeLoginCode();
+        resendRateLimiter.checkAllowed("resend:user:" + user.getId(), MDCContext.resolve(request));
         oneTimeLoginCode.checkResendRateLimit(resendRateLimiter.getMinIntervalMillis());
         oneTimeLoginCode.isCodeAlmostExpired();
         oneTimeLoginCode.markResent();
@@ -944,11 +945,11 @@ public class UserController implements UserAuthentication {
             description = "Resend the one-time verification code in password change email")
     @GetMapping("/sp/resend-password-code")
     public ResponseEntity resendSpCodePassword(Authentication authentication, HttpServletRequest request) {
-        resendRateLimiter.checkAllowed("resend:ip:" + MDCContext.resolve(request));
         User user = userFromAuthentication(authentication);
         PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).stream().findFirst()
                 .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
         OneTimeLoginCode oneTimeLoginCode = passwordResetHash.getOneTimeLoginCode();
+        resendRateLimiter.checkAllowed("resend:user:" + user.getId(), MDCContext.resolve(request));
         oneTimeLoginCode.checkResendRateLimit(resendRateLimiter.getMinIntervalMillis());
         oneTimeLoginCode.isCodeAlmostExpired();
         oneTimeLoginCode.markResent();

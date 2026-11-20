@@ -77,7 +77,9 @@
                 allowedToResend = true;
                 mailHasBeenResend = false;
             }, resendMailAllowedTimeOut);
-
+        }).catch(() => {
+            // e.g. rate limited by the server (403), allow another attempt later
+            setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
         });
     }
 
