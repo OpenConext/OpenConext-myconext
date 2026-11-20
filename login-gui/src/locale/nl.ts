@@ -298,6 +298,19 @@ const nl: AppTranslation = {
                 'Je eduID-account is gekoppeld aan een vertrouwde partij.',
         },
     },
+    confirmExternalStepup: {
+        title: '{{institution}} is nu gekoppeld',
+        description: 'De volgende gegevens zijn toegevoegd aan je eduID.',
+        givenName: 'Bevestigde voornaam',
+        familyName: 'Bevestigde achternaam',
+        dateOfBirth: 'Bevestigde geboortedatum',
+        issuers: {
+            idin: 'iDIN',
+            eherkenning: 'eIDAS',
+            studielink: 'Studielink',
+            servicedesk: 'Servicedesk',
+        },
+    },
     nudgeApp: {
         title: 'Wil je de volgende keer sneller en veiliger inloggen?',
         description:

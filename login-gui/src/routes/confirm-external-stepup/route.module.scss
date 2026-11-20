@@ -1,0 +1,25 @@
+@use '../../styles/spacing' as *;
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(4);
+    margin: 0;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(1);
+}
+
+.label {
+    color: var(--muted-foreground);
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+}
+
+.value {
+    margin: 0;
+    font-weight: 600;
+}
