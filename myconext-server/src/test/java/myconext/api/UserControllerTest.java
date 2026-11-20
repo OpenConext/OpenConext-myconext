@@ -11,6 +11,7 @@ import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
 import myconext.AbstractMailBoxTest;
+import myconext.security.ResendRateLimiter;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
@@ -59,6 +60,9 @@ public class UserControllerTest extends AbstractMailBoxTest {
     @Autowired
     private MongoIndexedSessionRepository mongoSessionRepository;
 
+    @Autowired
+    private ResendRateLimiter resendRateLimiter;
+
     @Test
     public void existingUser() throws IOException {
         ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
@@ -97,6 +101,21 @@ public class UserControllerTest extends AbstractMailBoxTest {
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         assertNotEquals(user.getOneTimeLoginCode().getCode(), userFromDB.getOneTimeLoginCode().getCode());
+    }
+
+    @Test
+    public void resendOneTimeCodeRateLimited() throws IOException {
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        long original = resendRateLimiter.getMinIntervalMillis();
+        // the test profile disables the limiter
+        ReflectionTestUtils.setField(resendRateLimiter, "minIntervalMillis", 60_000L);
+        try {
+            String url = "/myconext/api/idp/resend_code_request?id=" + authenticationResponse.authenticationRequestId;
+            when().get(url).then().statusCode(HttpStatus.OK.value());
+            when().get(url).then().statusCode(HttpStatus.FORBIDDEN.value());
+        } finally {
+            ReflectionTestUtils.setField(resendRateLimiter, "minIntervalMillis", original);
+        }
     }
 
     @Test

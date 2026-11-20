@@ -25,6 +25,8 @@ public class OneTimeLoginCode implements Serializable {
 
     private long delay;
 
+    private long lastResendAt;
+
     public OneTimeLoginCode(String code) {
         this.code = code;
         this.createdAt = System.currentTimeMillis();
@@ -44,6 +46,17 @@ public class OneTimeLoginCode implements Serializable {
         }
         this.delay = this.delay * 2;
         return false;
+    }
+
+    public void checkResendRateLimit(long minIntervalMillis) {
+        long now = System.currentTimeMillis();
+        if (this.lastResendAt > 0 && now < this.lastResendAt + minIntervalMillis) {
+            throw new ForbiddenException("Resend forbidden due to rate limit");
+        }
+    }
+
+    public void markResent() {
+        this.lastResendAt = System.currentTimeMillis();
     }
 
     public boolean isExpired() {
