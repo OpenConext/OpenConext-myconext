@@ -205,6 +205,8 @@ nudge_eduid_app_pause_days: 7
 remember_me_question_asked_days: 30
 email_guessing_sleep_millis: 500
 email_spam_threshold_seconds: 15
+# Minimum interval between resend-code mails per authentication-request id, per source IP and per target user
+resend_rate_limit_seconds: 60
 
 sms:
   # true sends real SMS messages, false uses the mock
