@@ -114,6 +114,13 @@ const nl: AppTranslation = {
         error: 'Je kunt de passkey op dit moment niet gebruiken',
         otherMethod: 'Gebruik een andere inlogmethode',
     },
+    webAuthnTest: {
+        title: 'Test een beveiligingssleutel',
+        explanation:
+            'Klik op de onderstaande knop om een beveiligingssleutel te testen. Volg daarbij de instructies van je browser op.',
+        submit: 'Test',
+        error: 'Je kunt de beveiligingssleutel op dit moment niet gebruiken',
+    },
     addWebAuthn: {
         title: 'Voeg een beveiligingssleutel toe',
         explanation:

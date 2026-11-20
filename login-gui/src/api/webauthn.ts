@@ -15,12 +15,13 @@ export type WebAuthnFinishResponse = {
 export const webAuthnStartAuthentication = (
     email: string,
     authenticationRequestId: string,
+    test = false,
 ) =>
     apiFetch<WebAuthnStartResponse>(
         '/myconext/api/idp/security/webauthn/authentication',
         {
             method: 'POST',
-            body: { email, authenticationRequestId, test: false },
+            body: { email, authenticationRequestId, test },
         },
     );
 
