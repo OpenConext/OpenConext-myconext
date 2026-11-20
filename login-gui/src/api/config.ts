@@ -6,6 +6,7 @@ export type Config = {
     isAuthenticated: boolean;
     loginUrl: string;
     magicLinkUrl: string;
+    mobileAppRedirect: string;
     baseDomain: string;
     captchaEnabled: boolean;
     captchaSiteKey: string;

@@ -114,6 +114,82 @@ const nl: AppTranslation = {
         error: 'Je kunt de passkey op dit moment niet gebruiken',
         otherMethod: 'Gebruik een andere inlogmethode',
     },
+    redirectMobileApp: {
+        'account-linked': {
+            title: 'Account gekoppeld!',
+            info: 'Je instellingsaccount is gekoppeld, klik op de knop hieronder om je nieuwe account te openen in de eduID app.',
+            infoDesktop:
+                'Je instellingsaccount is gekoppeld, scan de code hieronder om je nieuwe account te openen in de eduID app.',
+        },
+        'add-password': {
+            title: 'Nieuw wachtwoord!',
+            info: 'Om een nieuw wachtwoord te kiezen, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Om een nieuw wachtwoord te kiezen, scan de code hieronder om de eduID app te openen.',
+        },
+        created: {
+            title: 'Account aangemaakt!',
+            info: 'Je account is gemaakt, klik op de knop hieronder om je nieuwe account te openen in de eduID app.',
+            infoDesktop:
+                'Je account is gemaakt, scan de code hieronder om je nieuwe account te openen in de eduID app.',
+        },
+        'eppn-already-linked': {
+            title: 'EPPN is al gekoppeld!',
+            info: 'Je account is niet gekoppeld, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Je account is niet gekoppeld, scan de code hieronder om de eduID app te openen.',
+        },
+        'subject-already-linked': {
+            title: 'Subject is al gekoppeld!',
+            info: 'Je account is niet geverifieerd, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Je account is niet geverifieerd, scan de code hieronder om de eduID app te openen.',
+        },
+        expired: {
+            title: 'Sessie verlopen!',
+            info: 'Je account is niet gekoppeld, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Je account is niet gekoppeld, scan de code hieronder om de eduID app te openen.',
+        },
+        fallback: {
+            title: 'eduID app!',
+            info: 'Je hebt een link naar de eduID app geopend in de browser, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Je hebt een link naar de eduID app geopend in de browser, scan de code hieronder om de eduID app te openen.',
+        },
+        'reset-password': {
+            title: 'Wijzig wachtwoord!',
+            info: 'Om je wachtwoord te wijzigen, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Om je wachtwoord te wijzigen, scan de code hieronder om de eduID app te openen.',
+        },
+        security: {
+            title: 'Beveiliging!',
+            info: 'Om je beveiligingsinstellingen te bekijken, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Om je beveiligingsinstellingen te bekijken, scan de code hieronder om de eduID app te openen.',
+        },
+        'update-email': {
+            title: 'Nieuwe e-mail bevestigd!',
+            info: 'Om je e-mail te wijzigen, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Om je e-mail te wijzigen, scan de code hieronder om de eduID app te openen.',
+        },
+        'external-account-linked': {
+            title: 'Externe account gekoppeld!',
+            info: 'Je externe account is gekoppeld, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Je externe account is gekoppeld, scan de code hieronder om de eduID app te openen.',
+        },
+        'external-account-linked-error': {
+            title: 'Externe account error!',
+            info: 'Je externe account kon niet worden gekoppeld, klik op de knop hieronder om de eduID app te openen.',
+            infoDesktop:
+                'Je externe account kon niet worden gekoppeld, scan de code hieronder om de eduID app te openen.',
+        },
+        proceed: 'Open de eduID app',
+        qr: 'Scan om de eduID app te openen',
+    },
     webAuthnTest: {
         title: 'Test een beveiligingssleutel',
         explanation:
