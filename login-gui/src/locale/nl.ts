@@ -72,6 +72,10 @@ const nl: AppTranslation = {
         info: 'De code die je hebt gebruikt, is verlopen of al een keer gebruikt.',
         back: 'Ga naar eduid.nl',
     },
+    rateLimited: {
+        title: 'Maximale pogingen bereikt',
+        info: 'Je hebt het maximale aantal pogingen bereikt en je account is voor 15 minuten geschorst.',
+    },
     codeScreen: {
         sending: 'Code wordt verzonden...',
         sendFailed: 'De code kon niet worden verzonden. Probeer het opnieuw.',

@@ -72,6 +72,10 @@ const en: AppTranslation = {
         info: 'The code you used is either expired or has already been used.',
         back: 'Go to eduid.nl',
     },
+    rateLimited: {
+        title: 'Maximum attempts reached',
+        info: "You've reached the maximum attempts and your account is suspended for 15 minutes.",
+    },
     codeScreen: {
         sending: 'Sending code...',
         sendFailed: 'The code could not be sent. Please try again.',

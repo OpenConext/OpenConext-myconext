@@ -84,7 +84,16 @@ export default function Code() {
             rememberLoginMethod('useCode');
             window.location.href = url;
         },
-        onError: () => setCode(''),
+        onError: (error) => {
+            // 403: attempts exhausted, 400: authentication request expired
+            if (error instanceof Response && error.status === 403) {
+                navigate('/rate-limited', { replace: true });
+            } else if (error instanceof Response && error.status === 400) {
+                navigate('/expired', { replace: true });
+            } else {
+                setCode('');
+            }
+        },
     });
 
     const isSubmitting = isVerifying || isVerified;
