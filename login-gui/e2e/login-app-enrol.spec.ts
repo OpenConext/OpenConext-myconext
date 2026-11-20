@@ -1,9 +1,8 @@
-import { waitForCode } from '@myconext/shared-gui/e2e';
+import { expectSmsCode, waitForCode } from '@myconext/shared-gui/e2e';
 import { expect, test } from '@playwright/test';
 
-import { ACS_URL_PATTERN } from './constants';
+import { ACS_URL_PATTERN, SERVER_URL } from './constants';
 import { createAuthenticationRequestId } from './utils/authnRequest';
-import { expectSmsCode } from './utils/smsCode';
 import { enrollAppDevice } from './utils/tiqrApp';
 
 const PHONE_NUMBER = '0612345678';
@@ -94,7 +93,7 @@ test.describe('login-app-enrol', () => {
 
                 const readSmsCode =
                     await test.step('request the SMS code', async () => {
-                        const smsCode = await expectSmsCode(request);
+                        const smsCode = await expectSmsCode(request, SERVER_URL);
                         await page
                             .getByTestId('phone-verification-input')
                             .fill(PHONE_NUMBER);

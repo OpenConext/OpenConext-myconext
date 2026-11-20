@@ -22,8 +22,6 @@ export const waitForCode = async (
     to: string,
     { subject, since }: { subject?: RegExp; since?: number } = {},
 ): Promise<string> => {
-    console.log('STARTING WAIT FOR CODE');
-    
     let code = '';
     await expect
         .poll(

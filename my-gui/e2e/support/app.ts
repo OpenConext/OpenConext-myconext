@@ -1,7 +1,9 @@
 import { expect } from '@playwright/test';
 import type { APIRequestContext, Page } from '@playwright/test';
 
-import { expectSmsCode } from './sms';
+import { expectSmsCode } from '@myconext/shared-gui/e2e';
+
+import { SERVER_URL } from './server';
 import { completeEnrollment } from './tiqr';
 
 type Recovery = 'backup' | 'phone';
@@ -51,7 +53,7 @@ export const enrollApp = async (
     } else {
         await page.getByTestId('recovery-phone-option').click();
         await page.getByTestId('recovery-phone-input').fill('0612345678');
-        const smsCode = await expectSmsCode(request);
+        const smsCode = await expectSmsCode(request, SERVER_URL);
         await page.getByTestId('recovery-phone-send').click();
         await page.getByTestId('recovery-sms-code').fill(await smsCode());
         // the code is submitted when complete

@@ -1,6 +1,8 @@
+import { expectSmsCode } from '@myconext/shared-gui/e2e';
+
 import { enrollApp } from './support/app';
 import { expect, test } from './support/fixtures';
-import { expectSmsCode } from './support/sms';
+import { SERVER_URL } from './support/server';
 
 test('deactivate the eduID app with an sms code', async ({
     page,
@@ -13,7 +15,7 @@ test('deactivate the eduID app with an sms code', async ({
     await page.getByTestId('security-app-toggle').click();
     await page.getByTestId('security-app-deactivate').click();
 
-    const smsCode = await expectSmsCode(request);
+    const smsCode = await expectSmsCode(request, SERVER_URL);
     await page.getByTestId('deactivate-app-next').click();
     await page.getByTestId('deactivate-app-code').fill(await smsCode());
     // the code is submitted when complete
