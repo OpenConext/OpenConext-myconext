@@ -1,0 +1,143 @@
+# Guards against new occurrences of "eduid" (any capitalisation) creeping into
+# login-gui, my-gui, servicedesk-gui and myconext-server.
+#
+# Each subproject has its own repository-scoped GitHub variable:
+#   EDUID_COUNTS_LOGIN_GUI / _MY_GUI / _SERVICEDESK_GUI / _MYCONEXT_SERVER
+# holding JSON { "<branch>": <count>, ... }.
+#
+# Logic per subproject (only checked if files in that directory changed):
+#   1. Previous run on this branch (variable) -> fail if increased.
+#   2. First run on this branch -> compare against the parent branch via
+#      git grep, fail if increased, store the new baseline.
+#   3. No reference available at all -> print a warning and store a baseline.
+#
+# Note: PRs from forks run with a read-only GITHUB_TOKEN, so saving is
+# skipped there and the job degrades to step 2/3.
+name: eduID count guard
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+  variables: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find changed subprojects and parent ref
+        id: setup
+        run: |
+          set -euo pipefail
+          SUBDIRS=(login-gui my-gui servicedesk-gui myconext-server)
+
+          case "${{ github.event_name }}" in
+            pull_request)
+              parent="${{ github.event.pull_request.base.ref }}"
+              git fetch --depth=1 origin "$parent"
+              parent_ref="origin/$parent"
+              mapfile -t changed < <(git diff --name-only "$parent_ref"...HEAD)
+              ;;
+            push)
+              if git rev-parse --verify -q HEAD~1 >/dev/null; then
+                parent_ref="HEAD~1"
+                mapfile -t changed < <(git diff --name-only HEAD~1 HEAD)
+              else
+                parent="${{ github.event.repository.default_branch }}"
+                git fetch --depth=1 origin "$parent"
+                parent_ref="origin/$parent"
+                mapfile -t changed < <(git diff --name-only "$parent_ref"...HEAD)
+              fi
+              ;;
+          esac
+
+          changed_dirs=()
+          for d in "${SUBDIRS[@]}"; do
+            if [ "${#changed[@]}" -gt 0 ] && printf '%s\n' "${changed[@]}" | grep -q "^$d/"; then
+              changed_dirs+=("$d")
+            fi
+          done
+
+          {
+            echo "parent_ref=$parent_ref"
+            echo "changed_dirs=${changed_dirs[*]}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Count, compare and store per subproject
+        run: |
+          set -uo pipefail
+
+          branch="${GITHUB_REF_NAME}"
+          parent_ref="${{ steps.setup.outputs.parent_ref }}"
+          changed_dirs="${{ steps.setup.outputs.changed_dirs }}"
+
+          count_dir() {
+            grep -rhoIi 'eduid' \
+              --exclude-dir=node_modules --exclude-dir=target --exclude-dir=.git "$1" \
+              | wc -l | tr -d ' '
+          }
+          count_at_ref() {
+            # tracked files only, so node_modules/target are naturally excluded
+            git grep -io 'eduid' "$1" -- "$2" | wc -l | tr -d ' '
+          }
+          var_name() {
+            echo "EDUID_COUNTS_$(echo "$1" | tr '[:lower:]-' '[:upper:]_')"
+          }
+
+          if [ -z "$changed_dirs" ]; then
+            echo "No changes in the tracked subprojects, exiting."
+            exit 0
+          fi
+          echo "Changed subprojects: $changed_dirs"
+
+          fails=0
+          for d in $changed_dirs; do
+            current=$(count_dir "$d")
+            var=$(var_name "$d")
+            stored=$(gh api "repos/$REPO/actions/variables/$var" --jq '.value' 2>/dev/null) || stored=""
+            if [ -z "$stored" ] || [ "$stored" = "null" ]; then
+              stored='{}'
+            fi
+            prev=$(jq -r --arg b "$branch" '.[$b] // empty' <<<"$stored")
+
+            if [ -n "$prev" ]; then
+              if [ "$current" -gt "$prev" ]; then
+                echo "::error title=eduID count increased in $d ($prev -> $current)::'eduid' occurrences in $d increased since the last run on $branch ($prev -> $current). Remove the new occurrences."
+                fails=1
+              else
+                echo "OK: $d has $current occurrences (previous run on $branch: $prev)"
+              fi
+            elif ! git cat-file -e "$parent_ref:$d" 2>/dev/null; then
+              echo "::warning title=No baseline for $d::$d has $current 'eduid' occurrences (no such dir in $parent_ref, no stored value). Stored as baseline for $branch."
+            else
+              parent_count=$(count_at_ref "$parent_ref" "$d")
+              if [ "$current" -gt "$parent_count" ]; then
+                echo "::error title=eduID count increased vs parent in $d ($parent_count -> $current)::'eduid' occurrences in $d are higher than in $parent_ref ($parent_count -> $current)."
+                fails=1
+              else
+                echo "OK: $d has $current occurrences (parent $parent_ref: $parent_count)"
+              fi
+            fi
+
+            # keep only the current branch and the default branch in the variable
+            new_stored=$(jq --arg b "$branch" --arg db "$DEFAULT_BRANCH" --argjson c "$current" \
+              '. + {($b): $c} | with_entries(select(.key == $b or .key == $db))' <<<"$stored")
+            if gh api -X PATCH "repos/$REPO/actions/variables/$var" -f value="$new_stored" >/dev/null 2>&1 \
+              || gh api -X POST "repos/$REPO/actions/variables" -f name="$var" -f value="$new_stored" >/dev/null 2>&1; then
+              echo "Stored baseline for $d: $new_stored"
+            else
+              echo "::warning title=Could not store baseline for $d::Could not update repository variable $var (fork PR or missing permissions). Would store: $new_stored"
+            fi
+          done
+
+          exit $fails
