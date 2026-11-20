@@ -6,5 +6,6 @@ export * from './password';
 export * from './request';
 export * from './service';
 export * from './tiqr';
+export * from './userInfo';
 export * from './webauthn';
 export * from './webauthn-registration';

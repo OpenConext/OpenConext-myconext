@@ -296,6 +296,19 @@ const en: AppTranslation = {
             any_link: 'Your eduID account is linked to a trusted party.',
         },
     },
+    confirmExternalStepup: {
+        title: '{{institution}} was connected successfully',
+        description: 'The following information has been added to your eduID.',
+        givenName: 'Verified given name',
+        familyName: 'Verified family name',
+        dateOfBirth: 'Verified date of birth',
+        issuers: {
+            idin: 'iDIN',
+            eherkenning: 'eIDAS',
+            studielink: 'Studielink',
+            servicedesk: 'Service desk',
+        },
+    },
     nudgeApp: {
         title: 'Want to sign in quicker and more securely next time?',
         description:
