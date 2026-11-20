@@ -1,12 +1,11 @@
 import { expect } from '@playwright/test';
 import type { APIRequestContext } from '@playwright/test';
 
-import { SERVER_URL } from '../constants';
-
 const lastSmsCode = async (
     request: APIRequestContext,
+    serverUrl: string,
 ): Promise<string | undefined> => {
-    const response = await request.get(`${SERVER_URL}/e2e/sms-code`);
+    const response = await request.get(`${serverUrl}/e2e/sms-code`);
     return response.ok()
         ? ((await response.json()) as { code: string }).code
         : undefined;
@@ -18,14 +17,17 @@ const lastSmsCode = async (
  */
 export const expectSmsCode = async (
     request: APIRequestContext,
+    serverUrl: string,
 ): Promise<() => Promise<string>> => {
-    const before = await lastSmsCode(request);
+    const before = await lastSmsCode(request, serverUrl);
     return async () => {
         let code = '';
         await expect
-            .poll(async () => (code = (await lastSmsCode(request)) ?? ''), {
-                message: 'no new sms code',
-            })
+            .poll(
+                async () =>
+                    (code = (await lastSmsCode(request, serverUrl)) ?? ''),
+                { message: 'no new sms code' },
+            )
             .not.toBe(before ?? '');
         return code;
     };

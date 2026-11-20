@@ -2,8 +2,8 @@ import type { Page } from '@playwright/test';
 
 import { expectNoA11yViolations } from './support/a11y';
 import { expect, test } from './support/fixtures';
-import { waitForCode } from '@myconext/shared-gui/e2e';
-import { expectSmsCode } from './support/sms';
+import { expectSmsCode, waitForCode } from '@myconext/shared-gui/e2e';
+import { SERVER_URL } from './support/server';
 import { completeEnrollment } from './support/tiqr';
 
 // Scans the steps and modals of the flows. The flows are walked up to the point
@@ -149,7 +149,7 @@ test('recovery with a phone number', async ({ page, request }) => {
     await scan(page, 'recovery phone number');
 
     await page.getByTestId('recovery-phone-input').fill('0612345678');
-    const smsCode = await expectSmsCode(request);
+    const smsCode = await expectSmsCode(request, SERVER_URL);
     await page.getByTestId('recovery-phone-send').click();
     await expect(page.getByTestId('recovery-sms-code')).toBeVisible();
     await scan(page, 'recovery sms code');

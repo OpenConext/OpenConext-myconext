@@ -25,7 +25,7 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 | `waitForCode(request, email, { since? })` | `@myconext/shared-gui/e2e` | One-time code from mailpit. `since` = epoch ms, use it if the address got mail in earlier runs |
 | `deleteUserByEmail(request, email)` | `utils/e2eServer` | Remove a user the test created. `resetSeededUsers(request)` also lives here, but the global setup already calls it, don't use it in specs |
 | `enrollAppDevice(request, enrollmentKey)` | `utils/tiqrApp` | Plays the eduID app: registers a device for an enrollment, so the page moves on to `/recovery` |
-| `expectSmsCode(request)` | `utils/smsCode` | Call before the action that sends the SMS, the returned function waits for the new code from the mocked SMS service |
+| `expectSmsCode(request, SERVER_URL)` | `@myconext/shared-gui/e2e` | Call before the action that sends the SMS, the returned function waits for the new code from the mocked SMS service |
 | `findEduIdByEmail(request, email)` | `utils/remoteCreation` | Check a user exists (`/sp/me` always returns the seeded `test` user, don't use it) |
 | `getTranslation(key, lang, params)` | `utils/translations` | Expected copy from the locale files, `params` fills `{{serviceName}}` |
 | `fetchServiceName(request, id)` | `utils/serviceName` | The service name the server shows for an authentication request |
