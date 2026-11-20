@@ -2,9 +2,12 @@ import type { Page } from '@playwright/test';
 
 import { expectNoA11yViolations } from './support/a11y';
 import { expect, test } from './support/fixtures';
-import { expectSmsCode, waitForCode } from '@myconext/shared-gui/e2e';
+import {
+    completeEnrollment,
+    expectSmsCode,
+    waitForCode,
+} from '@myconext/shared-gui/e2e';
 import { SERVER_URL } from './support/server';
-import { completeEnrollment } from './support/tiqr';
 
 // Scans the steps and modals of the flows. The flows are walked up to the point
 // that the step is shown, the functional outcome is asserted in the other specs.

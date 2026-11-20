@@ -5,7 +5,7 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 **Never start, stop or restart the server (or mongo, mailpit) yourself.** If a change needs a server restart (e.g. `users.json`, any `myconext-server` change), tell the user a restart is needed.
 
 ## Run
-`yarn e2e` in `login-gui` (one spec: `yarn e2e e2e/<file>.spec.ts`, UI: `yarn e2e:ui`). It only starts the Vite dev server (`:3004`). The stack must already run: server on `:8081`, mongo, mailpit. Overrides: `E2E_BASE_URL`, `E2E_SERVER_URL`. If the stack is down, ask the user.
+`yarn e2e` in `login-gui` (one spec: `yarn e2e e2e/<file>.spec.ts`, UI: `yarn e2e:ui`). It only starts the Vite dev server (`:3004`). The stack must already run: server on `:8081`, mongo, mailpit, tiqr-mock on `:8088`. Overrides: `E2E_BASE_URL`, `E2E_SERVER_URL`, `TIQR_MOCK_URL`. If the stack is down, ask the user.
 
 ## Structure
 - One spec per flow, named `<flow>.spec.ts`, with `test.describe('<flow>')` using the same name.
@@ -18,13 +18,13 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 |---|---|---|
 | `createAuthenticationRequestId(request)` | `utils/authnRequest` | Start a SAML request, returns the id for `/login/:id` or `/request/:id` |
 | `createAuthenticationRequest(request, { acrValues })` | `utils/authnRequest` | Like the above, with requested ACRs. Returns `{ id, path }`: `page.goto(path)`, the query (`stepup`, `mfa`) steers the GUI |
-| `enrollAppForUser(request, email)` | `utils/tiqrApp` | Gives a seeded user a working eduID app without a browser, returns the device |
-| `authenticateWithApp(request, device, url)` | `utils/tiqrApp` | Plays the app answering a login QR (`url` from the `/tiqr/start-authentication` response) |
+| `enrollAppForUser(request, email)` | `utils/tiqrApp` | Gives a seeded user a working eduID app without a browser (tiqr-mock plays the app) |
+| `authenticateWithApp(request, url)` | `utils/tiqrApp` | The tiqr-mock answers a login QR (`url` from the `/tiqr/start-authentication` response), by session key so parallel tests don't clash |
 | `readSamlResponse(acsRequest)` | `utils/samlResponse` | Status codes and AuthnContextClassRef of the response posted to the ACS stub |
 | `addBrowserSessionCookie(context)` | `utils/authnRequest` | Needed for password or passkey logins (see Test data) |
 | `waitForCode(request, email, { since? })` | `@myconext/shared-gui/e2e` | One-time code from mailpit. `since` = epoch ms, use it if the address got mail in earlier runs |
 | `deleteUserByEmail(request, email)` | `utils/e2eServer` | Remove a user the test created. `resetSeededUsers(request)` also lives here, but the global setup already calls it, don't use it in specs |
-| `enrollAppDevice(request, enrollmentKey)` | `utils/tiqrApp` | Plays the eduID app: registers a device for an enrollment, so the page moves on to `/recovery` |
+| `completeEnrollment(request, enrollmentKey)` | `@myconext/shared-gui/e2e` | The tiqr-mock plays the eduID app: registers a device for an enrollment, so the page moves on to `/recovery` |
 | `expectSmsCode(request, SERVER_URL)` | `@myconext/shared-gui/e2e` | Call before the action that sends the SMS, the returned function waits for the new code from the mocked SMS service |
 | `findEduIdByEmail(request, email)` | `utils/remoteCreation` | Check a user exists (`/sp/me` always returns the seeded `test` user, don't use it) |
 | `getTranslation(key, lang, params)` | `utils/translations` | Expected copy from the locale files, `params` fills `{{serviceName}}` |

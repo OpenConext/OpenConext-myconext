@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test';
 import type { APIRequestContext, Page } from '@playwright/test';
 
-import { expectSmsCode } from '@myconext/shared-gui/e2e';
+import { completeEnrollment, expectSmsCode } from '@myconext/shared-gui/e2e';
 
 import { SERVER_URL } from './server';
-import { completeEnrollment } from './tiqr';
 
 type Recovery = 'backup' | 'phone';
 

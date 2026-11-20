@@ -1,8 +1,8 @@
 import { test as base, expect } from '@playwright/test';
+import { deleteRegistration } from '@myconext/shared-gui/e2e';
 import type { APIRequestContext } from '@playwright/test';
 
 import { SERVER_URL } from './server';
-import { deleteRegistration } from './tiqr';
 
 type Me = {
     id: string;

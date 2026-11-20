@@ -10,7 +10,7 @@ export const TIQR_MOCK_URL =
 export const completeEnrollment = async (
     request: APIRequestContext,
     enrollmentKey: string,
-) => {
+): Promise<void> => {
     const metadata = await request.get(
         `${TIQR_MOCK_URL}/enrollment/${enrollmentKey}`,
     );
@@ -22,22 +22,34 @@ export const completeEnrollment = async (
 };
 
 // Pending authentications are only listed as html, a link per sessionKey
-const pendingSessionKeys = async (request: APIRequestContext) => {
+const pendingSessionKeys = async (
+    request: APIRequestContext,
+): Promise<string[]> => {
     const response = await request.get(`${TIQR_MOCK_URL}/authentications`);
     const html = await response.text();
     return [...html.matchAll(/\/authentication\/([\w-]+)/g)].map((m) => m[1]);
 };
 
+/**
+ * Answers a pending login of the app. Without `sessionKey` it takes the first pending authentication of the
+ * mock, which is only safe when tests run one at a time. Tests in parallel must pass their own `sessionKey`
+ * (the `s` parameter of the url in the `/tiqr/start-authentication` response).
+ */
 export const completeAuthentication = async (
     request: APIRequestContext,
-    { fail = false }: { fail?: boolean } = {},
-) => {
-    let sessionKey = '';
-    await expect
-        .poll(async () => (sessionKey = (await pendingSessionKeys(request))[0]))
-        .toBeTruthy();
+    {
+        fail = false,
+        sessionKey,
+    }: { fail?: boolean; sessionKey?: string } = {},
+): Promise<void> => {
+    let key = sessionKey ?? '';
+    if (!key) {
+        await expect
+            .poll(async () => (key = (await pendingSessionKeys(request))[0]))
+            .toBeTruthy();
+    }
     const response = await request.get(
-        `${TIQR_MOCK_URL}/authenticated/${sessionKey}${fail ? '?fail=true' : ''}`,
+        `${TIQR_MOCK_URL}/authenticated/${key}${fail ? '?fail=true' : ''}`,
     );
     expect(response.ok()).toBeTruthy();
 };
@@ -46,6 +58,6 @@ export const completeAuthentication = async (
 export const deleteRegistration = async (
     request: APIRequestContext,
     userId: string,
-) => {
+): Promise<void> => {
     await request.get(`${TIQR_MOCK_URL}/delete-registration/${userId}`);
 };
