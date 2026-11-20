@@ -104,7 +104,7 @@ Environment overrides: `E2E_BASE_URL`, `SERVER_URL`, `TIQR_MOCK_URL`, `MAILPIT_U
 
 ## Helpers (`support/`)
 
-- `tiqr.ts`: `completeEnrollment`, `completeAuthentication`, `deleteRegistration` call the tiqr-mock GET endpoints.
+- `@myconext/shared-gui/e2e` (`shared-gui/src/e2e/tiqr.ts`): `completeEnrollment`, `completeAuthentication`, `deleteRegistration` call the tiqr-mock GET endpoints.
 - `@myconext/shared-gui/e2e` (`shared-gui/src/e2e/mailpit.ts`): `waitForCode` polls the Mailpit REST API for a mail to an address and returns the code.
 - `@myconext/shared-gui/e2e` (`shared-gui/src/e2e/smsCode.ts`): `expectSmsCode(request, SERVER_URL)` reads the last SMS code from the e2e hook of the server.
 - `app.ts`: `enrollApp` activates the app with a backup code or an SMS code.

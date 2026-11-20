@@ -1,10 +1,12 @@
-import { expectSmsCode, waitForCode } from '@myconext/shared-gui/e2e';
+import {
+    completeEnrollment,
+    expectSmsCode,
+    waitForCode,
+} from '@myconext/shared-gui/e2e';
 import { expect, test } from '@playwright/test';
 
 import { ACS_URL_PATTERN, SERVER_URL } from './constants';
 import { createAuthenticationRequestId } from './utils/authnRequest';
-import { enrollAppDevice } from './utils/tiqrApp';
-
 const PHONE_NUMBER = '0612345678';
 
 test.describe('login-app-enrol', () => {
@@ -68,7 +70,7 @@ test.describe('login-app-enrol', () => {
                 });
 
             await test.step('scan the QR code with the app', async () => {
-                await enrollAppDevice(request, enrollmentKey);
+                await completeEnrollment(request, enrollmentKey);
                 await expect(page).toHaveURL(/\/recovery\?h=/);
             });
 

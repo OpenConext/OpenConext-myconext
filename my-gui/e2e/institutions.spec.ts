@@ -1,8 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { expect, test } from './support/fixtures';
-import { waitForCode } from '@myconext/shared-gui/e2e';
-import { TIQR_MOCK_URL } from './support/tiqr';
+import { TIQR_MOCK_URL, waitForCode } from '@myconext/shared-gui/e2e';
 
 // The server runs with oidc.base-url pointing at the OIDC mock in the tiqr-mock,
 // that offers a persona per scenario on its authorize page.

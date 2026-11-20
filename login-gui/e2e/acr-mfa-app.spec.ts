@@ -47,9 +47,8 @@ test.describe('acr-mfa-app', () => {
                 const email = `e2e-acr-mfa-${name}-${outcome}@example.com`;
 
                 test(`${name}`, async ({ page, request }) => {
-                    const device =
-                        await test.step('enrol the eduID app for the user', () =>
-                            enrollAppForUser(request, email));
+                    await test.step('enrol the eduID app for the user', () =>
+                        enrollAppForUser(request, email));
 
                     const id =
                         await test.step('create authentication request', async () => {
@@ -91,11 +90,7 @@ test.describe('acr-mfa-app', () => {
                         });
 
                     await test.step('scan the QR code with the app', () =>
-                        authenticateWithApp(
-                            request,
-                            device,
-                            authenticationUrl,
-                        ));
+                        authenticateWithApp(request, authenticationUrl));
 
                     if (outcome === 'missing') {
                         await test.step('is sent to the stepup page that explains the requirement', async () => {
