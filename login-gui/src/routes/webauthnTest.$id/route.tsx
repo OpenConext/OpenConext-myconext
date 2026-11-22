@@ -11,8 +11,6 @@ import { ErrorAlert, LoadingButton, LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
 import styles from './route.module.scss';
 
-// Entered from the "test security key" action in the profile. It must not
-// remember the login method, as it is not a real login.
 export default function WebAuthnTest() {
     const { id = '' } = useParams();
     const [searchParams] = useSearchParams();

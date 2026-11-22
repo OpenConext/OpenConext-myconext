@@ -31,7 +31,10 @@ test.describe('acr-mfa-app-required', () => {
                     await page.getByTestId('login-email').fill(email);
                 });
 
-                const codeRequestedAt = Date.now();
+                const codeRequestedAt = await test.step(
+                    'note the time before requesting the code',
+                    () => Date.now(),
+                );
                 await test.step('submit the form', async () => {
                     await page.getByTestId('login-submit').click();
                     await expect(page).toHaveURL(new RegExp(`/code/${id}`));

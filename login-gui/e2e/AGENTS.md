@@ -23,7 +23,7 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 | `readSamlResponse(acsRequest)` | `utils/samlResponse` | Status codes and AuthnContextClassRef of the response posted to the ACS stub |
 | `addBrowserSessionCookie(context)` | `utils/authnRequest` | Needed for password or passkey logins (see Test data) |
 | `waitForCode(request, email, { since? })` | `@myconext/shared-gui/e2e` | One-time code from mailpit. `since` = epoch ms, use it if the address got mail in earlier runs |
-| `deleteUserByEmail(request, email)` | `utils/e2eServer` | Remove a user the test created. `resetSeededUsers(request)` also lives here, but the global setup already calls it, don't use it in specs |
+| `deleteUserByEmail(request, email)` | `utils/e2eServer` | Remove a user the test created. `resetSeededUsers(request)` also lives here, but the global setup already calls it, don't use it in specs. `resetSeededUser(request, email)` restores one seeded user (needs a server restart after changes to `/e2e/reset`) |
 | `completeEnrollment(request, enrollmentKey)` | `@myconext/shared-gui/e2e` | The tiqr-mock plays the eduID app: registers a device for an enrollment, so the page moves on to `/recovery` |
 | `expectSmsCode(request, SERVER_URL)` | `@myconext/shared-gui/e2e` | Call before the action that sends the SMS, the returned function waits for the new code from the mocked SMS service |
 | `findEduIdByEmail(request, email)` | `utils/remoteCreation` | Check a user exists (`/sp/me` always returns the seeded `test` user, don't use it) |
@@ -51,7 +51,7 @@ Playwright tests against the real server (`--spring.profiles.active=test,e2e`), 
 ## Test data
 - Users live in `myconext-server/src/main/resources/e2e/users.json` (seeded on server start): `e2e-email-code` (code only), `e2e-password` (password), `e2e-app-nudge` (app nudge), `e2e-app-enrol-backup-code` and `e2e-app-enrol-phone` (app enrolment), `e2e-passkey-login` and `e2e-passkey-register` (seeded passkey registration token, the spec registers a virtual passkey), `e2e-other` (linked account), `e2e-acr-<acr>-<satisfied|missing>` (plain ACR), `e2e-acr-mfa-<acr|profile>-<satisfied|missing>` (ACR with the app, the spec enrols the app) and `e2e-acr-mfa-no-app-<refuse|download>`. Linked accounts of ACR users are created in 2099, because those not validating names expire 180 days after `createdAt`. Never use `jdoe@example.com` (my-gui user).
 - One seeded user per scenario (uid `e2e-<scenario>`, email `e2e-<scenario>@example.com`), never shared between specs or variants of a loop, so parallel runs can't conflict. Adding one needs a server restart.
-- `e2e/global-setup.ts` resets the seeded users once per `playwright test` run. Specs don't reset, so a test must not need its user in a fresh state more than once per run (hence one user per scenario).
+- `e2e/global-setup.ts` resets the seeded users once per `playwright test` run. Specs never call `resetSeededUsers`. A test that changes its seeded user (enrols the app, sets a password) restores only that user with `resetSeededUser(request, email)` as its first step, so CI retries and reruns from the IDE or UI mode work. This is safe in parallel because every scenario has its own user.
 - Tests that create users use a unique email and call `deleteUserByEmail` in `afterEach`.
 - Password or passkey logins need `addBrowserSessionCookie(page.context())` before `page.goto`, otherwise the server ends on `/success`. The one-time-code flow doesn't.
 - Tests must not depend on each other.

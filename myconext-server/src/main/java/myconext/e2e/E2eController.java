@@ -34,8 +34,10 @@ public class E2eController {
      * Restores the seeded users, the tests change and delete them. A GET, so no CSRF token is needed.
      */
     @GetMapping("/e2e/reset")
-    public ResponseEntity<Void> reset() throws IOException {
-        e2eSeed.seed();
+    public ResponseEntity<Void> reset(@RequestParam(value = "email", required = false) String email) throws IOException {
+        if (!e2eSeed.seed(email)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.noContent().build();
     }
 

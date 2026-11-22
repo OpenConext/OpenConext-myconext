@@ -12,6 +12,22 @@ export const resetSeededUsers = async (
 };
 
 /**
+ * Restores one seeded user, for a spec that changes its user and must survive a retry or a rerun
+ * within the same `playwright test` run. Other users are left alone, so parallel specs don't clash.
+ */
+export const resetSeededUser = async (
+    request: APIRequestContext,
+    email: string,
+): Promise<void> => {
+    const response = await request.get(`${SERVER_URL}/e2e/reset`, {
+        params: { email },
+    });
+    if (!response.ok()) {
+        throw new Error(`e2e/reset for ${email} failed with ${response.status()}`);
+    }
+};
+
+/**
  * Deletes a user created by a test through the e2e profile controller of the server.
  * Returns false when the user does not exist, so it is safe to call it as a cleanup.
  */

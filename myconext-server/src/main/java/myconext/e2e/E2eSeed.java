@@ -48,9 +48,23 @@ public class E2eSeed {
     }
 
     public void seed() throws IOException {
-        List<Map<String, Object>> users = objectMapper.readValue(
+        seed(null);
+    }
+
+    /**
+     * Seeds all users, or only the one with the given email, so a spec can restore its own user while
+     * other specs run in parallel.
+     */
+    public boolean seed(String email) throws IOException {
+        List<Map<String, Object>> allUsers = objectMapper.readValue(
                 new ClassPathResource("e2e/users.json").getInputStream(), new TypeReference<>() {
                 });
+        List<Map<String, Object>> users = email == null ? allUsers : allUsers.stream()
+                .filter(user -> email.equals(user.get("email")))
+                .toList();
+        if (users.isEmpty()) {
+            return false;
+        }
         // Same approach as the integration tests: the maps are converted by the User mapping
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, User.class)
                 .remove(Query.query(Criteria.where("uid").in(users.stream().map(user -> user.get("uid")).toList())))
@@ -61,5 +75,6 @@ public class E2eSeed {
         List<Object> tokens = users.stream().map(user -> user.get("webAuthnIdentifier")).filter(Objects::nonNull).toList();
         mongoTemplate.remove(Query.query(Criteria.where("token").in(tokens)), Challenge.class);
         LOG.info(String.format("Seeded %s users for the e2e tests", users.size()));
+        return true;
     }
 }
