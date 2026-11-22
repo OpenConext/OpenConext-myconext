@@ -24,6 +24,10 @@ test.describe('login-email-code', () => {
             await page.getByTestId('login-email').fill(EMAIL);
         });
 
+        const codeRequestedAt = await test.step(
+            'note the time before requesting the code',
+            () => Date.now(),
+        );
         await test.step('submit the form', async () => {
             await page.getByTestId('login-submit').click();
             await expect(page).toHaveURL(new RegExp(`/code/${id}`));
@@ -36,7 +40,7 @@ test.describe('login-email-code', () => {
         });
 
         const code = await test.step('read one-time code from mailpit', () =>
-            waitForCode(request, EMAIL));
+            waitForCode(request, EMAIL, { since: codeRequestedAt }));
 
         await test.step('enter the code', async () => {
             await page.getByTestId('code-input').fill(code);

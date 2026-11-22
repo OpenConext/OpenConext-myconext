@@ -7,6 +7,8 @@ import { expect, test } from '@playwright/test';
 
 import { ACS_URL_PATTERN, SERVER_URL } from './constants';
 import { createAuthenticationRequestId } from './utils/authnRequest';
+import { resetSeededUser } from './utils/e2eServer';
+
 const PHONE_NUMBER = '0612345678';
 
 test.describe('login-app-enrol', () => {
@@ -18,6 +20,9 @@ test.describe('login-app-enrol', () => {
             page,
             request,
         }) => {
+            await test.step('restore the seeded user', () =>
+                resetSeededUser(request, email));
+
             const id =
                 await test.step('create authentication request', async () => {
                     const requestId =
@@ -31,6 +36,10 @@ test.describe('login-app-enrol', () => {
                 await page.getByTestId('login-email').fill(email);
             });
 
+            const codeRequestedAt = await test.step(
+                'note the time before requesting the code',
+                () => Date.now(),
+            );
             await test.step('submit the form', async () => {
                 await page.getByTestId('login-submit').click();
                 await expect(page).toHaveURL(new RegExp(`/code/${id}`));
@@ -38,7 +47,7 @@ test.describe('login-app-enrol', () => {
 
             const code =
                 await test.step('read one-time code from mailpit', () =>
-                    waitForCode(request, email));
+                    waitForCode(request, email, { since: codeRequestedAt }));
 
             await test.step('enter the code', async () => {
                 await page.getByTestId('code-input').fill(code);
@@ -95,7 +104,10 @@ test.describe('login-app-enrol', () => {
 
                 const readSmsCode =
                     await test.step('request the SMS code', async () => {
-                        const smsCode = await expectSmsCode(request, SERVER_URL);
+                        const smsCode = await expectSmsCode(
+                            request,
+                            SERVER_URL,
+                        );
                         await page
                             .getByTestId('phone-verification-input')
                             .fill(PHONE_NUMBER);
