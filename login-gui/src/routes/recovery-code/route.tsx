@@ -50,7 +50,7 @@ export default function RecoveryCode() {
     const hasFired = useRef(false);
     const [storedCode] = useState(() => readStoredCode(hash));
 
-    const { data: config } = useQuery(configQueryOptions);
+    const { data: config, isPending } = useQuery(configQueryOptions);
     const [proceedFailed, setProceedFailed] = useState(false);
 
     const {
@@ -92,7 +92,7 @@ export default function RecoveryCode() {
         );
     }
 
-    if (!code) {
+    if (!code || isPending) {
         return <LoadingLoginContainer title={I18n.t('recovery.backupTitle')} />;
     }
 
