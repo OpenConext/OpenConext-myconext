@@ -157,6 +157,14 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
 
+    /**
+     * Creates a server-stored, single-use account-link state token for the user with the given email
+     */
+    protected String linkState(String email) {
+        return mobileLinkAccountRequestRepository.save(
+                new MobileLinkAccountRequest(myconext.crypto.HashGenerator.hash(), userRepository.findOneUserByEmail(email).getId())).getHash();
+    }
+
     protected final Filter noopFilter = new NoopFilter();
 
     protected SecretCipher secretCipher;

@@ -138,7 +138,7 @@ public class AccountLinkerLinkNotificationTest extends AbstractMailBoxTest {
         samlAuthenticationRequest.markUserAuthenticated();
         authenticationRequestRepository.save(samlAuthenticationRequest);
         stubForTokenUserInfo(userInfo);
-        String state = String.format("id=%s&user_uid=%s", authenticationRequestId, passwordEncoder.encode("mdoe"));
+        String state = String.format("id=%s&state=%s", authenticationRequestId, linkState("mdoe@example.com"));
         given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")

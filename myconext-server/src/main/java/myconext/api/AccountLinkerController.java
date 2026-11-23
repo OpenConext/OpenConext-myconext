@@ -47,7 +47,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -121,7 +120,6 @@ public class AccountLinkerController implements UserAuthentication {
     private final List<String> createFromInstitutionAllowedReturnDomains;
     private final ActivityRecorder activityRecorder;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
     private final RestTemplate restTemplate = new RestTemplate();
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final DisposableEmailProviders disposableEmailProviders;
@@ -242,7 +240,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("Start IdP link account flow for user %s", user.getEmail()));
 
-        String state = String.format("id=%s&user_uid=%s&gui=%s", id, passwordEncoder.encode(user.getUid()), accountRedirectResolver.marker(request));
+        String linkState = newLinkState(user);
+        String state = String.format("id=%s&state=%s&gui=%s", id, linkState, accountRedirectResolver.marker(request));
         UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, samlAuthenticationRequest.getRequesterEntityId(), null);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
@@ -478,7 +477,7 @@ public class AccountLinkerController implements UserAuthentication {
             state = mobileLinkAccountRequest.getHash();
             redirectUri = this.mobileFlowRedirectUri;
         } else {
-            state = passwordEncoder.encode(user.getUid());
+            state = newLinkState(user);
             redirectUri = guiRedirectResolver.select(spFlowRedirectUri, myGuiSpFlowRedirectUri);
         }
         UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, myConextSpEntityId, null);
@@ -522,7 +521,7 @@ public class AccountLinkerController implements UserAuthentication {
             stateIdentifier = mobileLinkAccountRequest.getHash();
             redirectUri = this.mobileVerifyRedirectUri;
         } else {
-            stateIdentifier = passwordEncoder.encode(user.getUid());
+            stateIdentifier = newLinkState(user);
             redirectUri = guiRedirectResolver.select(spVerifyRedirectUri, myGuiSpVerifyRedirectUri);
         }
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
@@ -573,6 +572,7 @@ public class AccountLinkerController implements UserAuthentication {
         MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
         String userId = mobileLinkAccountRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
 
         return doVerifyIDRedirect(code, state, error, errorDescription, true, user);
     }
@@ -602,8 +602,8 @@ public class AccountLinkerController implements UserAuthentication {
                 user.getEmail(),
                 verifyState.getIdpScoping()));
 
-        if (!isMobileFlow && !passwordEncoder.matches(user.getUid(), verifyState.getStateIdentifier())) {
-            throw new ForbiddenException("Non matching user");
+        if (!isMobileFlow) {
+            consumeLinkState(verifyState.getStateIdentifier(), user.getId());
         }
         HttpHeaders headers = getHttpHeaders();
 
@@ -683,7 +683,7 @@ public class AccountLinkerController implements UserAuthentication {
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
                 .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
                 new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name(), null);
-        String stateIdentifier = String.format("id=%s&user_uid=%s&gui=%s", id, passwordEncoder.encode(user.getUid()), accountRedirectResolver.marker(httpRequest));
+        String stateIdentifier = String.format("id=%s&state=%s&gui=%s", id, newLinkState(user), accountRedirectResolver.marker(httpRequest));
         VerifyState verifyState = new VerifyState(stateIdentifier, idpScoping, verifyIssuer);
         String state = attributeMapper.serializeToBase64(verifyState);
 
@@ -726,7 +726,7 @@ public class AccountLinkerController implements UserAuthentication {
         String httpUrl = "http://localhost?" + verifyState.getStateIdentifier();
         MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString(httpUrl).build().getQueryParams();
         String id = params.getFirst("id");
-        String encodedUserUid = params.getFirst("user_uid");
+        String linkState = params.getFirst("state");
         String guiMarker = params.getFirst("gui");
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
@@ -740,9 +740,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("In IDP verify ID redirect link account for user %s and party %s", user.getEmail(), verifyState.getIdpScoping()));
 
-        if (!passwordEncoder.matches(user.getUid(), encodedUserUid)) {
-            throw new ForbiddenException("Non matching user");
-        }
+        consumeLinkState(linkState, user.getId());
         HttpHeaders headers = getHttpHeaders();
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -795,6 +793,25 @@ public class AccountLinkerController implements UserAuthentication {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(location)).build();
+    }
+
+    /**
+     * Creates a random, server-stored, single-use state token bound to the given user.
+     */
+    private String newLinkState(User user) {
+        return this.mobileLinkAccountRequestRepository.save(new MobileLinkAccountRequest(hash(), user.getId())).getHash();
+    }
+
+    /**
+     * Validates that the state token exists and belongs to the expected user, and invalidates it (single use).
+     */
+    private void consumeLinkState(String hash, String expectedUserId) {
+        MobileLinkAccountRequest request = StringUtils.hasText(hash) ?
+                this.mobileLinkAccountRequestRepository.findByHash(hash).orElse(null) : null;
+        if (request == null || request.getExpiresIn().before(new Date()) || !request.getUserId().equals(expectedUserId)) {
+            throw new ForbiddenException("Non matching user");
+        }
+        this.mobileLinkAccountRequestRepository.delete(request);
     }
 
     private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, String requesterEntityId, String loginHint) {
@@ -856,9 +873,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("In SP redirect link account for user %s", user.getEmail()));
 
-        if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, StandardCharsets.UTF_8))) {
-            throw new ForbiddenException("Non matching user");
-        }
+        consumeLinkState(URLDecoder.decode(state, StandardCharsets.UTF_8), user.getId());
 
         return doRedirect(code, user, guiRedirectResolver.select(spFlowRedirectUri, myGuiSpFlowRedirectUri), guiRedirectResolver.myconextRedirectUrl() + "/personal",
                 false, false, true, null, null,
@@ -896,7 +911,7 @@ public class AccountLinkerController implements UserAuthentication {
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
         MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString("http://localhost?" + decodedState).build().getQueryParams();
         String id = params.getFirst("id");
-        String encodedUserUid = params.getFirst("user_uid");
+        String linkState = params.getFirst("state");
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpiredAndUserAuthenticated(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
@@ -908,9 +923,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("In IdP oidc redirect link account for user %s", user.getEmail()));
 
-        if (!passwordEncoder.matches(user.getUid(), encodedUserUid)) {
-            throw new ForbiddenException("Non matching user");
-        }
+        consumeLinkState(linkState, user.getId());
 
         boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES);
         boolean studentAffiliationRequired = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.AFFILIATION_STUDENT);
