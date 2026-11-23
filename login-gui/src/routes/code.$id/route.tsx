@@ -71,7 +71,7 @@ export default function Code() {
         if (!codeSent) {
             generateCode();
         }
-    }, []);
+    }, [codeSent, generateCode]);
 
     const {
         mutate: submitCode,
