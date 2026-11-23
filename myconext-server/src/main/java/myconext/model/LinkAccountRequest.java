@@ -13,8 +13,9 @@ import java.util.Date;
 
 @NoArgsConstructor
 @Getter
+// Collection name kept for backwards compatibility; shared by all account link flows (mobile, SP and IdP)
 @Document(collection = "mobile_link_account_request")
-public class MobileLinkAccountRequest implements Serializable {
+public class LinkAccountRequest implements Serializable {
 
     @Id
     private String id;
@@ -26,7 +27,7 @@ public class MobileLinkAccountRequest implements Serializable {
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;
 
-    public MobileLinkAccountRequest(String hash, String userId) {
+    public LinkAccountRequest(String hash, String userId) {
         this.hash = hash;
         this.userId = userId;
         this.expiresIn = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());

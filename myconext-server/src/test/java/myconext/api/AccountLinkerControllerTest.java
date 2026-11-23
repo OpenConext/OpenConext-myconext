@@ -179,7 +179,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
-                .queryParam("state", String.format("id=%s&user_uid=%s", authenticationRequestId, "nope"))
+                .queryParam("state", String.format("id=%s&state=%s", authenticationRequestId, "nope"))
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/idp/oidc/redirect")
                 .then()
@@ -366,6 +366,53 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void spFlowRedirectForgedUidHash() throws IOException {
+        //The old scheme: an unkeyed BCrypt hash of the (learnable) uid must no longer be accepted
+        given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", passwordEncoder.encode("1234567890"))
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/oidc/redirect")
+                .then().statusCode(403);
+    }
+
+    @Test
+    public void spFlowRedirectStateOfOtherUser() throws IOException {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", linkState("mdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/oidc/redirect")
+                .then().statusCode(403);
+    }
+
+    @Test
+    public void spFlowRedirectReplay() throws IOException {
+        Map<Object, Object> userInfo = new HashMap<>();
+        userInfo.put("eduperson_principal_name", "some@institute.nl");
+        userInfo.put("schac_home_organization", "mock.idp");
+        stubForTokenUserInfo(userInfo);
+
+        String state = linkState("jdoe@example.com");
+        given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/oidc/redirect")
+                .then().statusCode(302);
+        given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/oidc/redirect")
+                .then().statusCode(403);
+    }
+
+    @Test
     public void spFlowRedirect() throws IOException {
         String eppn = "some@institute.nl";
 
@@ -378,7 +425,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String location = given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
-                .queryParam("state", passwordEncoder.encode("1234567890"))
+                .queryParam("state", linkState("jdoe@example.com"))
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/sp/oidc/redirect")
                 .getHeader("Location");
@@ -1069,10 +1116,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     private String stateParameterSp() {
-        return passwordEncoder.encode("mdoe");
+        return linkState("mdoe@example.com");
     }
 
     private String stateParameterIdP(String authenticationRequestId) {
-        return String.format("id=%s&user_uid=%s", authenticationRequestId, stateParameterSp());
+        return String.format("id=%s&state=%s", authenticationRequestId, stateParameterSp());
     }
 }

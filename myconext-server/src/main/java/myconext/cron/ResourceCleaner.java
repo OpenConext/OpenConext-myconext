@@ -31,7 +31,7 @@ public class ResourceCleaner extends AbstractNodeLeader {
     private final ChangeEmailHashRepository changeEmailHashRepository;
     private final EmailsSendRepository emailsSendRepository;
     private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
-    private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
+    private final LinkAccountRequestRepository linkAccountRequestRepository;
 
     @Autowired
     public ResourceCleaner(UserRepository userRepository,
@@ -39,7 +39,7 @@ public class ResourceCleaner extends AbstractNodeLeader {
                            ChangeEmailHashRepository changeEmailHashRepository,
                            EmailsSendRepository emailsSendRepository,
                            RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
-                           MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
+                           LinkAccountRequestRepository linkAccountRequestRepository,
                            MongoClient mongoClient,
                            @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                            @Value("${mongodb_db}") String databaseName) {
@@ -50,7 +50,7 @@ public class ResourceCleaner extends AbstractNodeLeader {
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.emailsSendRepository = emailsSendRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
-        this.mobileLinkAccountRequestRepository = mobileLinkAccountRequestRepository;
+        this.linkAccountRequestRepository = linkAccountRequestRepository;
     }
 
     @Scheduled(cron = "${cron.token-cleaner-expression}")
@@ -65,7 +65,7 @@ public class ResourceCleaner extends AbstractNodeLeader {
         info(PasswordResetHash.class, passwordResetHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
         info(RequestInstitutionEduID.class, requestInstitutionEduIDRepository.deleteByExpiresInBefore(now));
-        info(MobileLinkAccountRequest.class, mobileLinkAccountRequestRepository.deleteByExpiresInBefore(now));
+        info(LinkAccountRequest.class, linkAccountRequestRepository.deleteByExpiresInBefore(now));
 
         Date seconds16Ago = Date.from(nowInstant.minus(16, ChronoUnit.SECONDS));
         info(EmailsSend.class, emailsSendRepository.deleteBySendAtBefore(seconds16Ago));

@@ -131,7 +131,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     protected PasswordResetHashRepository passwordResetHashRepository;
 
     @Autowired
-    protected MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
+    protected LinkAccountRequestRepository linkAccountRequestRepository;
 
     @Autowired
     protected ChangeEmailHashRepository changeEmailHashRepository;
@@ -155,6 +155,14 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
 
+    /**
+     * Creates a server-stored, single-use account-link state token for the user with the given email
+     */
+    protected String linkState(String email) {
+        return linkAccountRequestRepository.save(
+                new LinkAccountRequest(myconext.crypto.HashGenerator.hash(), userRepository.findOneUserByEmail(email).getId())).getHash();
+    }
+
     protected final Filter noopFilter = new NoopFilter();
 
     protected SecretCipher secretCipher;
@@ -173,7 +181,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
                             .insert(readFromFile(clazz))
                             .execute());
             Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
-                            Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
+                            Registration.class, Authentication.class, Enrollment.class, LinkAccountRequest.class)
                     .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                             .remove(new Query())
                             .execute());
