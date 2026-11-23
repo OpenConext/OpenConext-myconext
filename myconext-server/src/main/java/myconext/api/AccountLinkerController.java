@@ -27,7 +27,7 @@ import myconext.mail.MailBox;
 import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.MobileLinkAccountRequestRepository;
+import myconext.repository.LinkAccountRequestRepository;
 import myconext.repository.RequestInstitutionEduIDRepository;
 import myconext.repository.UserRepository;
 import myconext.security.ACR;
@@ -97,7 +97,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final String spCreateFromInstitutionRedirectUri;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
-    private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
+    private final LinkAccountRequestRepository linkAccountRequestRepository;
     private final UserRepository userRepository;
     private final MailBox mailBox;
     private final AttributeMapper attributeMapper;
@@ -138,7 +138,7 @@ public class AccountLinkerController implements UserAuthentication {
             AuthenticationRequestRepository authenticationRequestRepository,
             UserRepository userRepository,
             RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
-            MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
+            LinkAccountRequestRepository linkAccountRequestRepository,
             MailBox mailBox,
             AttributeMapper attributeMapper,
             Manage manage,
@@ -180,7 +180,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
-        this.mobileLinkAccountRequestRepository = mobileLinkAccountRequestRepository;
+        this.linkAccountRequestRepository = linkAccountRequestRepository;
         this.mailBox = mailBox;
         this.attributeMapper = attributeMapper;
         this.manage = manage;
@@ -473,8 +473,8 @@ public class AccountLinkerController implements UserAuthentication {
         String state;
         String redirectUri;
         if (isMobileRequest(authentication)) {
-            MobileLinkAccountRequest mobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.save(new MobileLinkAccountRequest(hash(), user.getId()));
-            state = mobileLinkAccountRequest.getHash();
+            LinkAccountRequest linkAccountRequest = this.linkAccountRequestRepository.save(new LinkAccountRequest(hash(), user.getId()));
+            state = linkAccountRequest.getHash();
             redirectUri = this.mobileFlowRedirectUri;
         } else {
             state = newLinkState(user);
@@ -517,8 +517,8 @@ public class AccountLinkerController implements UserAuthentication {
         String stateIdentifier;
         String redirectUri;
         if (isMobileRequest(authentication)) {
-            MobileLinkAccountRequest mobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.save(new MobileLinkAccountRequest(hash(), user.getId()));
-            stateIdentifier = mobileLinkAccountRequest.getHash();
+            LinkAccountRequest linkAccountRequest = this.linkAccountRequestRepository.save(new LinkAccountRequest(hash(), user.getId()));
+            stateIdentifier = linkAccountRequest.getHash();
             redirectUri = this.mobileVerifyRedirectUri;
         } else {
             stateIdentifier = newLinkState(user);
@@ -565,14 +565,14 @@ public class AccountLinkerController implements UserAuthentication {
                                                  @RequestParam(value = "error", required = false) String error,
                                                  @RequestParam(value = "error_description", required = false) String errorDescription) {
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
-        Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(verifyState.getStateIdentifier());
-        if (!optionalMobileLinkAccountRequest.isPresent()) {
+        Optional<LinkAccountRequest> optionalLinkAccountRequest = this.linkAccountRequestRepository.findByHash(verifyState.getStateIdentifier());
+        if (!optionalLinkAccountRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/client/mobile/expired")).build();
         }
-        MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
-        String userId = mobileLinkAccountRequest.getUserId();
+        LinkAccountRequest linkAccountRequest = optionalLinkAccountRequest.get();
+        String userId = linkAccountRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
+        this.linkAccountRequestRepository.delete(linkAccountRequest);
 
         return doVerifyIDRedirect(code, state, error, errorDescription, true, user);
     }
@@ -799,19 +799,19 @@ public class AccountLinkerController implements UserAuthentication {
      * Creates a random, server-stored, single-use state token bound to the given user.
      */
     private String newLinkState(User user) {
-        return this.mobileLinkAccountRequestRepository.save(new MobileLinkAccountRequest(hash(), user.getId())).getHash();
+        return this.linkAccountRequestRepository.save(new LinkAccountRequest(hash(), user.getId())).getHash();
     }
 
     /**
      * Validates that the state token exists and belongs to the expected user, and invalidates it (single use).
      */
     private void consumeLinkState(String hash, String expectedUserId) {
-        MobileLinkAccountRequest request = StringUtils.hasText(hash) ?
-                this.mobileLinkAccountRequestRepository.findByHash(hash).orElse(null) : null;
+        LinkAccountRequest request = StringUtils.hasText(hash) ?
+                this.linkAccountRequestRepository.findByHash(hash).orElse(null) : null;
         if (request == null || request.getExpiresIn().before(new Date()) || !request.getUserId().equals(expectedUserId)) {
             throw new ForbiddenException("Non matching user");
         }
-        this.mobileLinkAccountRequestRepository.delete(request);
+        this.linkAccountRequestRepository.delete(request);
     }
 
     private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, String requesterEntityId, String loginHint) {
@@ -886,18 +886,18 @@ public class AccountLinkerController implements UserAuthentication {
     public ResponseEntity mobileFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
 
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
-        Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(decodedState);
-        if (!optionalMobileLinkAccountRequest.isPresent()) {
+        Optional<LinkAccountRequest> optionalLinkAccountRequest = this.linkAccountRequestRepository.findByHash(decodedState);
+        if (!optionalLinkAccountRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/client/mobile/expired")).build();
         }
 
-        MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
-        String userId = mobileLinkAccountRequest.getUserId();
+        LinkAccountRequest linkAccountRequest = optionalLinkAccountRequest.get();
+        String userId = linkAccountRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         LOG.info(String.format("In Mobile redirect link account for user %s", user.getEmail()));
 
-        this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
+        this.linkAccountRequestRepository.delete(linkAccountRequest);
 
         return doRedirect(code, user, this.mobileFlowRedirectUri, this.accountRedirectUrl + "/client/mobile/account-linked",
                 false, false, true, null, null,

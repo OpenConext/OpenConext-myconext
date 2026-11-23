@@ -44,7 +44,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/mobile/oidc/redirect"));
 
-        String hash = mobileLinkAccountRequestRepository.findAll().get(0).getHash();
+        String hash = linkAccountRequestRepository.findAll().get(0).getHash();
 
         Map<Object, Object> userInfo = new HashMap<>();
         userInfo.put("eduperson_principal_name", "eppn@ex.com");
@@ -105,7 +105,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
     @Test
     @SuppressWarnings("unchecked")
     public void spOidcLinkMobileEppnAlreadyExists() throws IOException {
-        //Need to call this, otherwise no MobileLinkAccountRequest is created
+        //Need to call this, otherwise no LinkAccountRequest is created
         given()
                 .when()
                 .contentType(ContentType.JSON)
@@ -113,7 +113,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .get("/mobile/api/sp/oidc/link")
                 .as(Map.class);
 
-        String hash = mobileLinkAccountRequestRepository.findAll().get(0).getHash();
+        String hash = linkAccountRequestRepository.findAll().get(0).getHash();
 
         Map<Object, Object> userInfo = new HashMap<>();
         userInfo.put("eduperson_principal_name", "1234567890@surfguest.nl");
@@ -128,14 +128,14 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/mobile/oidc/redirect")
                 .getHeader("Location");
 
-        assertEquals(0, mobileLinkAccountRequestRepository.count());
+        assertEquals(0, linkAccountRequestRepository.count());
         assertEquals(location, "http://localhost:3000/client/mobile/account-linked?institution=1234567890%40surfguest.nl");
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void spOidcLinkMobileEppnMissing() throws IOException {
-        //Need to call this, otherwise no MobileLinkAccountRequest is created
+        //Need to call this, otherwise no LinkAccountRequest is created
         given()
                 .when()
                 .contentType(ContentType.JSON)
@@ -143,7 +143,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .get("/mobile/api/sp/oidc/link")
                 .as(Map.class);
 
-        String hash = mobileLinkAccountRequestRepository.findAll().get(0).getHash();
+        String hash = linkAccountRequestRepository.findAll().get(0).getHash();
 
         Map<Object, Object> userInfo = new HashMap<>();
         userInfo.put("schac_home_organization", "mock.idp");
@@ -157,7 +157,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/mobile/oidc/redirect")
                 .getHeader("Location");
 
-        assertEquals(0, mobileLinkAccountRequestRepository.count());
+        assertEquals(0, linkAccountRequestRepository.count());
         assertEquals(location, "http://localhost:3000/client/mobile/attribute-missing");
     }
 
