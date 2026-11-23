@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { OverridableComponent } from '@myconext/shared-gui';
 import { CaretDownIcon, GlobeIcon } from '@phosphor-icons/react';
 import {
     Button,
@@ -77,7 +78,9 @@ export const Header = () => {
             </div>
 
             <div className={styles.logo} data-testid="logo">
-                <img src={logo} alt="eduID" />
+                <OverridableComponent appCustomizationReactNodeKey="appLogo">
+                    <img src={logo} alt="eduID" />
+                </OverridableComponent>
             </div>
         </header>
     );

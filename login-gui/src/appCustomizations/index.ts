@@ -1,4 +1,5 @@
-import type { AppCustomization } from '../contexts/CustomizationContext';
+import type { AppCustomization } from '@myconext/shared-gui';
+
 import type { AppTranslationOverride } from '../locale/translationType';
 import { appCustomization as defaultAppCustomization } from './defaultCustomApp';
 
