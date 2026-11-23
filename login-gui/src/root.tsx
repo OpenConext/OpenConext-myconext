@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 />
                 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
                 <EnvironmentRibbon />
-                <title>login-gui!</title>
+                <title>eduID</title>
                 <Meta />
                 <Links />
             </head>
