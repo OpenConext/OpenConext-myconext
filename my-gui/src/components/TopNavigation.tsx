@@ -30,12 +30,12 @@ import {
 import { useMutation } from '@tanstack/react-query';
 
 import { logout } from '../api';
-import eduidLogo from '../assets/eduid-logo.svg';
 import { useBadgeCounts } from '../hooks/useBadgeCounts';
 import I18n from '../locale/I18n';
 import { navigationItems } from '../navigation';
 import { useConfigStore } from '../store/config';
 import { useAppStore } from '../store/store';
+import { AppLogo } from './AppLogo';
 import { CountBadge } from './CountBadge';
 import { DeleteAccountDialog } from './DeleteAccountDialog';
 import { DownloadDataDialog } from './DownloadDataDialog';
@@ -73,12 +73,7 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
         <header className="top-navigation">
             <div className="top-navigation__content">
                 <NavLink to="/" className="top-navigation__logo">
-                    <img
-                        src={eduidLogo}
-                        alt={I18n.t('logo.eduid')}
-                        width={71}
-                        height={30}
-                    />
+                    <AppLogo width={71} height={30} />
                 </NavLink>
                 <NavigationMenu className="top-navigation__desktop">
                     <NavigationMenuList>

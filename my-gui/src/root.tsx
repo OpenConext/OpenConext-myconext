@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-import { EnvironmentRibbon } from '@myconext/shared-gui';
+import {
+    CustomizationContextProvider,
+    EnvironmentRibbon,
+} from '@myconext/shared-gui';
 import { Button, Toaster } from '@surfnet/curve-react';
 import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { appCustomization } from './appCustomizations';
 import './index.scss';
 import I18n from './locale/I18n';
 import { useConfigStore } from './store/config';
@@ -52,11 +56,17 @@ export default function Root() {
     }, [dark]);
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <Outlet />
-            <Toaster position="bottom-right" offset={35} mobileOffset={35} />
-            <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <CustomizationContextProvider appCustomization={appCustomization}>
+            <QueryClientProvider client={queryClient}>
+                <Outlet />
+                <Toaster
+                    position="bottom-right"
+                    offset={35}
+                    mobileOffset={35}
+                />
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        </CustomizationContextProvider>
     );
 }
 
