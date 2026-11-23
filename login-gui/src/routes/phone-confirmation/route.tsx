@@ -15,7 +15,12 @@ import {
     toSendError,
     verifyPhoneCode,
 } from '../../api';
-import { type CodeError, PhoneConfirmationView } from '../../components';
+import {
+    type CodeError,
+    LoadingLoginContainer,
+    PhoneConfirmationView,
+} from '../../components';
+import I18n from '../../locale/I18n.ts';
 import { rememberLoginMethod } from '../../utils/loginMethods';
 import type { PhoneNavigationState } from '../../utils/phoneNumber';
 import { getProceedUrl } from '../../utils/sso';
@@ -34,7 +39,7 @@ export default function PhoneConfirmation() {
     const [resent, setResent] = useState(false);
     const [resendError, setResendError] = useState<SendError | null>(null);
 
-    const { data: config } = useQuery(configQueryOptions);
+    const { data: config, isPending } = useQuery(configQueryOptions);
 
     const {
         mutate: verify,
@@ -90,10 +95,10 @@ export default function PhoneConfirmation() {
     const isVerifying = isVerifyPending || isVerified;
 
     useEffect(() => {
-        if (!isVerifying) {
+        if (!isPending && !isVerifying) {
             inputRef.current?.focus();
         }
-    }, [isVerifying]);
+    }, [isPending, isVerifying]);
 
     if (!hash) {
         return <Navigate to="/expired" replace />;
@@ -102,6 +107,12 @@ export default function PhoneConfirmation() {
     // The number only lives in navigation state, so a fresh visit has to start over
     if (!phoneNumber) {
         return <Navigate to={`/phone-verification${query}`} replace />;
+    }
+
+    if (isPending) {
+        return (
+            <LoadingLoginContainer title={I18n.t('phoneConfirmation.title')} />
+        );
     }
 
     const goToPhoneVerification = () =>

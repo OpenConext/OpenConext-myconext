@@ -21,6 +21,7 @@ import {
     Captcha,
     ErrorAlert,
     LoadingButton,
+    LoadingLoginContainer,
     LoginContainer,
 } from '../../components';
 import I18n from '../../locale/I18n.ts';
@@ -104,13 +105,17 @@ export default function Request() {
     const isSubmitting = isMutating || isSuccess;
 
     useEffect(() => {
-        if (!isSubmitting) {
+        if (!isPending && !isSubmitting) {
             emailInputRef.current?.focus();
         }
-    }, [isSubmitting]);
+    }, [isPending, isSubmitting]);
+
+    if (isPending) {
+        return <LoadingLoginContainer title={I18n.t('request.title')} />;
+    }
 
     const errorStatus = error instanceof Response ? error.status : undefined;
-    const captchaPending = isPending || (!!captchaSiteKey && !captchaResponse);
+    const captchaPending = !!captchaSiteKey && !captchaResponse;
 
     const isValidForm =
         email.trim() !== '' &&
@@ -182,9 +187,7 @@ export default function Request() {
                         data-testid="request-agree"
                         checked={agreed}
                         disabled={isSubmitting}
-                        onCheckedChange={(checked) =>
-                            setAgreed(checked === true)
-                        }
+                        onCheckedChange={setAgreed}
                     />
                     <span
                         dangerouslySetInnerHTML={{
