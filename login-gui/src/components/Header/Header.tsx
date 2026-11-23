@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from '@surfnet/curve-react';
 
-import logo from '../../assets/logo_eduID.svg';
+import logo from '../../assets/logo-surf.svg';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../../locale/I18n';
 import styles from './Header.module.scss';
 
@@ -79,7 +79,7 @@ export const Header = () => {
 
             <div className={styles.logo} data-testid="logo">
                 <OverridableComponent appCustomizationReactNodeKey="appLogo">
-                    <img src={logo} alt="eduID" />
+                    <img src={logo} alt="SURF" />
                 </OverridableComponent>
             </div>
         </header>
