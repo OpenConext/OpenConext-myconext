@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-import { EnvironmentRibbon } from '@myconext/shared-gui';
+import {
+    CustomizationContextProvider,
+    EnvironmentRibbon,
+} from '@myconext/shared-gui';
 import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { appCustomization } from './appCustomizations';
 import { Footer, Header } from './components';
-import { CustomizationContextProvider } from './contexts/CustomizationContext.tsx';
 import styles from './root.module.scss';
 import { useAppStore } from './store/store';
 

@@ -58,3 +58,14 @@ export { formatRecoveryCode } from './utils/formatRecoveryCode';
 export { handleArrowKeyNavigation } from './utils/handleArrowKeyNavigation';
 export { useCopyToClipboard } from './hooks/useCopyToClipboard';
 export { useWarnBeforeUnload } from './hooks/useWarnBeforeUnload';
+export {
+    AppCustomizationContext,
+    CustomizationContextProvider,
+    OverridableComponent,
+    useCustomization,
+} from './contexts';
+export type {
+    AppCustomization,
+    CustomizationContextProps,
+    OverridableComponentProps,
+} from './contexts';
