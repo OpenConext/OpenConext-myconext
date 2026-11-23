@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 
-import eduidLogo from '../assets/eduid-logo.svg';
-import I18n from '../locale/I18n';
+import { AppLogo } from './AppLogo';
 import './AuthLayout.scss';
 import './GuestLayout.scss';
 import { PageFooter } from './PageFooter';
@@ -14,12 +13,7 @@ type GuestLayoutProps = {
 export const GuestLayout = ({ children }: GuestLayoutProps) => (
     <div className="auth-layout">
         <header className="guest-layout__header">
-            <img
-                src={eduidLogo}
-                alt={I18n.t('logo.eduid')}
-                width={72}
-                height={36}
-            />
+            <AppLogo width={72} height={36} />
         </header>
         <main className="auth-layout__main">{children}</main>
         <PageFooter />
