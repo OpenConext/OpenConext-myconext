@@ -90,7 +90,7 @@ const pt: AppTranslation = {
     },
     home: {
         title: 'Welcome {{name}}',
-        lead: 'Here you can view and edit your details, decide how you log in and manage which institutions and services your eduID is linked to.',
+        lead: 'Here you can view and edit your details, decide how you log in and manage which institutions and services your account is linked to.',
         serviceDesk: {
             title: 'Visit an eduID Service Desk',
             description:
