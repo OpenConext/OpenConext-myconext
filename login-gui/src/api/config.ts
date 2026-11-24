@@ -3,16 +3,15 @@ import { queryOptions } from '@tanstack/react-query';
 import { apiFetch } from '../utils/apiFetch.ts';
 
 export type Config = {
-    isAuthenticated: boolean;
-    loginUrl: string;
     magicLinkUrl: string;
     mobileAppRedirect: string;
     baseDomain: string;
+    supportedLanguages: string;
     captchaEnabled: boolean;
     captchaSiteKey: string;
     myconextWebAuthnRedirectUrl: string;
     featureIdVerify: boolean;
-    featureServiceDeskActive?: boolean;
+    featureServiceDeskActive: boolean;
     [key: string]: unknown;
 };
 

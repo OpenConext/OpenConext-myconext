@@ -32,7 +32,7 @@ export default function Stepup() {
     };
 
     const serviceDeskUrl =
-        config?.featureServiceDeskActive === true
+        config?.featureServiceDeskActive
             ? `/servicedesk/${encodeURIComponent(id)}`
             : undefined;
 
