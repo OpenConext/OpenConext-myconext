@@ -1,25 +1,9 @@
-type AppLanguage = {
-    language: string;
-    en: string;
-    nl: string;
-    pt: string;
-    [key: string]: string;
-};
+import type {
+    AppTranslation as SharedAppTranslation,
+    AppTranslationOverride as SharedAppTranslationOverride,
+} from '@myconext/shared-gui';
 
-type GlobalVariables = {
-    productName: string;
-};
+type Language = 'en' | 'nl' | 'pt';
 
-export type AppTranslation = {
-    globalVariables: GlobalVariables;
-    code: string;
-    languages: AppLanguage;
-    [key: string]: string | Record<string, unknown>;
-};
-
-export type AppTranslationOverride = {
-    globalVariables: Partial<GlobalVariables>;
-    code: string;
-    languages: Partial<AppLanguage>;
-    [key: string]: string | Record<string, unknown>;
-};
+export type AppTranslation = SharedAppTranslation<Language>;
+export type AppTranslationOverride = SharedAppTranslationOverride<Language>;
