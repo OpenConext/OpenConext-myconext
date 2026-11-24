@@ -89,7 +89,7 @@ const nl: AppTranslation = {
     },
     home: {
         title: 'Welkom {{name}}',
-        lead: 'Hier bekijk en wijzig je je gegevens, bepaal je hoe je inlogt en beheer je aan welke instellingen en diensten je eduID gekoppeld is.',
+        lead: 'Hier bekijk en wijzig je je gegevens, bepaal je hoe je inlogt en beheer je aan welke instellingen en diensten je account gekoppeld is.',
         serviceDesk: {
             title: 'Ga langs bij een eduID-servicedesk',
             description:

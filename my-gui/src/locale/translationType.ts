@@ -16,3 +16,10 @@ export type AppTranslation = {
     languages: AppLanguage;
     [key: string]: string | Record<string, unknown>;
 };
+
+export type AppTranslationOverride = {
+    globalVariables: Partial<GlobalVariables>;
+    code: string;
+    languages: Partial<AppLanguage>;
+    [key: string]: string | Record<string, unknown>;
+};
