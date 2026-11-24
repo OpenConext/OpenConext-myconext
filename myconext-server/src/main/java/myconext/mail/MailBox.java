@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
+import com.github.mustachejava.MustacheResolver;
+import com.github.mustachejava.resolver.ClasspathResolver;
+import com.github.mustachejava.resolver.FileSystemResolver;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.model.ControlCode;
@@ -23,6 +26,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Supplier;
@@ -33,6 +37,9 @@ public class MailBox {
     private static final Log LOG = LogFactory.getLog(MailBox.class);
     private static final String SANITIZE_NAME = "[^\\p{L} '-]";
     private static final List<String> supportedLanguages = List.of("en", "nl");
+
+    // Optional overlay (symlink to app-customizations/myconext-server), any file here wins over the default template
+    private static final String CUSTOMIZATIONS_TEMPLATES = "myCustomizations/mail_templates";
 
     private final JavaMailSender mailSender;
     private final Supplier<String> mySURFconextURL;
@@ -82,13 +89,15 @@ public class MailBox {
         this.emailSpamThresholdSeconds = emailSpamThresholdSeconds;
         if (mailTemplatesDirectory.isFile()) {
             LOG.info("Initializing mail templates from file system: " + mailTemplatesDirectory.getFile().getAbsolutePath());
-            mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFile());
         } else {
             LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
-            mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
-        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
-        });
+        mustacheFactory = new DefaultMustacheFactory(templateResolver(mailTemplatesDirectory));
+        ClassPathResource subjectsOverride = new ClassPathResource(CUSTOMIZATIONS_TEMPLATES + "/subjects.json");
+        try (InputStream subjectsStream = subjectsOverride.exists() ? subjectsOverride.getInputStream() : inputStream(mailTemplatesDirectory)) {
+            this.subjects = objectMapper.readValue(subjectsStream, new TypeReference<>() {
+            });
+        }
         this.objectMapper = objectMapper;
         this.environmentName = environmentName;
     }
@@ -365,6 +374,22 @@ public class MailBox {
         String preferredLanguage = user.getPreferredLanguage();
         String localeLanguage = StringUtils.hasText(preferredLanguage) ? preferredLanguage.toLowerCase(Locale.ROOT) : LocaleContextHolder.getLocale().getLanguage();
         return (StringUtils.hasText(localeLanguage) && supportedLanguages.contains(localeLanguage)) ? localeLanguage.toLowerCase(Locale.ROOT) : "en";
+    }
+
+    private static MustacheResolver templateResolver(Resource mailTemplatesDirectory) throws IOException {
+        MustacheResolver defaults = mailTemplatesDirectory.isFile() ?
+                new FileSystemResolver(mailTemplatesDirectory.getFile()) :
+                new ClasspathResolver(mailTemplatesDirectory.getFilename());
+        return resourceName -> templateReader(defaults, resourceName);
+    }
+
+    private static Reader templateReader(MustacheResolver defaults, String resourceName) {
+        InputStream override = MailBox.class.getClassLoader()
+                .getResourceAsStream(CUSTOMIZATIONS_TEMPLATES + "/" + resourceName);
+        if (override != null) {
+            return new InputStreamReader(override, StandardCharsets.UTF_8);
+        }
+        return defaults.getReader(resourceName);
     }
 
     @SneakyThrows
