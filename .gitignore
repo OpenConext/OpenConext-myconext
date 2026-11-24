@@ -42,3 +42,4 @@ PLAN-*
 app-customizations
 login-gui/src/appCustomizations/myCustomizations
 my-gui/src/appCustomizations/myCustomizations
+myconext-server/src/main/resources/myCustomizations

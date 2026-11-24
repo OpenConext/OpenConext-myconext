@@ -7,7 +7,7 @@ SURF version, it can be replaced with your own version of this repository with c
 git clone git@github.com:OpenConext/OpenConext-myconext-custom-surf.git app-customizations
 ```
 
-This `app-customizations` folder contains the login-gui and my-gui overrides. The example above is the actual implementation of the SURF version of the overrides, your own git
+This `app-customizations` folder contains the login-gui, my-gui and myconext-server overrides. The example above is the actual implementation of the SURF version of the overrides, your own git
 repo can be used here. The `login-gui` folder has a `translations` folder to override a translation per key, only the translations that need to be different from the default ones can
 be specified here. The `myCustomApp.tsx` contains an object that allows to override certain feature in the app, for example providing an alternative app logo. To apply the
 overrides a symlink needs to be applied, see below. Run the commands from the repository root. The symlink targets are relative to the
@@ -39,4 +39,22 @@ Removing symlink
 
 ```shell
 unlink my-gui/src/appCustomizations/myCustomizations
+```
+
+## myconext-server
+
+Overrides for the server. Currently only the mail templates are supported: any file in `app-customizations/myconext-server/mail_templates`
+(templates, partials and `subjects.json`) takes precedence over the default in `myconext-server/src/main/resources/mail_templates`. Files that are not
+present fall back to the default, except `subjects.json` which is replaced as a whole. Restart the server after creating or removing the symlink.
+
+Symlink to myconext-server
+
+```shell
+ln -sfn ../../../../app-customizations/myconext-server myconext-server/src/main/resources/myCustomizations
+```
+
+Removing symlink
+
+```shell
+unlink myconext-server/src/main/resources/myCustomizations
 ```
