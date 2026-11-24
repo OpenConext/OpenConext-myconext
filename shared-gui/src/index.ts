@@ -17,6 +17,10 @@ export {
 export { StoreBadges, type StoreBadgesProps } from './components/StoreBadges';
 
 export { createI18n, type CreateI18nOptions } from './utils/createI18n';
+export type {
+    AppTranslation,
+    AppTranslationOverride,
+} from './types/translation';
 export { sanitizeHtml } from './utils/sanitizeHtml';
 export {
     getParameterByName,

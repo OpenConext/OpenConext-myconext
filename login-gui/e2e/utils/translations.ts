@@ -1,7 +1,8 @@
 import en from '../../src/locale/en';
 import nl from '../../src/locale/nl';
+import pt from '../../src/locale/pt';
 
-const translations = { en, nl } as const;
+const translations = { en, nl, pt } as const;
 
 export type Language = keyof typeof translations;
 

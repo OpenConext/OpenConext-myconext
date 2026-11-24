@@ -9,6 +9,7 @@ const nl: AppTranslation = {
         language: 'Taal',
         en: 'Engels',
         nl: 'Nederlands',
+        pt: 'Portugees',
     },
     common: {
         loading: 'Laden...',
