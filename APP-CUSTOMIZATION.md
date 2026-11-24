@@ -18,7 +18,7 @@ location of the link itself (not the current directory), hence the `../` segment
 Symlink to login-gui
 
 ```shell
-ln -s ../../../app-customizations/login-gui login-gui/src/appCustomizations/myCustomizations
+ln -sfn ../../../app-customizations/login-gui login-gui/src/appCustomizations/myCustomizations
 ```
 
 Removing symlink
@@ -32,7 +32,7 @@ unlink login-gui/src/appCustomizations/myCustomizations
 Symlink to my-gui
 
 ```shell
-ln -s ../../../app-customizations/my-gui my-gui/src/appCustomizations/myCustomizations
+ln -sfn ../../../app-customizations/my-gui my-gui/src/appCustomizations/myCustomizations
 ```
 
 Removing symlink
