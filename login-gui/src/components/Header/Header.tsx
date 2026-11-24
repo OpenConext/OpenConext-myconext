@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { OverridableComponent } from '@myconext/shared-gui';
 import { CaretDownIcon, GlobeIcon } from '@phosphor-icons/react';
+import { useQuery } from '@tanstack/react-query';
 import {
     Button,
     DropdownMenu,
@@ -11,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '@surfnet/curve-react';
 
+import { configQueryOptions } from '../../api';
 import logo from '../../assets/logo-surf.svg';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../../locale/I18n';
 import styles from './Header.module.scss';
@@ -22,6 +24,10 @@ const isLanguage = (value: unknown): value is Language =>
 
 export const Header = () => {
     const [language, setLanguage] = useState<Language>(I18n.locale);
+    const { data: config } = useQuery(configQueryOptions);
+    const languages = AVAILABLE_LANGUAGES.filter((lang) =>
+        (config?.supportedLanguages ?? '').split(',').includes(lang),
+    );
 
     const handleLanguageChange = (updatedLanguage: string) => {
         if (isLanguage(updatedLanguage)) {
@@ -63,7 +69,7 @@ export const Header = () => {
                                 handleLanguageChange(value)
                             }
                         >
-                            {AVAILABLE_LANGUAGES.map((lang) => (
+                            {languages.map((lang) => (
                                 <DropdownMenuRadioItem
                                     key={lang}
                                     value={lang}
