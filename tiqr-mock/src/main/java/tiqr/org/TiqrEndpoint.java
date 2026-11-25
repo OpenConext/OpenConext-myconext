@@ -56,10 +56,8 @@ public class TiqrEndpoint {
     }
 
     @GetMapping("/")
-    public ModelAndView index() {
-        Map<String, Object> body = Map.of(
-                "environment", environment);
-        return new ModelAndView("index", body);
+    public View index() {
+        return new RedirectView("/enrollments");
     }
 
     @GetMapping("/enrollments")

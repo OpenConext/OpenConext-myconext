@@ -21,7 +21,7 @@
     </div>
     <div class="content-container">
         <div class="content">
-            <a class="home" th:href="@{/}">Home</a>
+            <nav th:replace="~{tabs :: tabs('authentications')}"></nav>
             <div th:if="${!authentications.empty}">
                 <p class="info">Click to see the authentication details</p>
             </div>
