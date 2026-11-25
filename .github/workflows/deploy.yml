@@ -29,6 +29,7 @@ jobs:
       run: |
         ln -s ../../../app-customizations/login-gui login-gui/src/appCustomizations/myCustomizations
         ln -s ../../../app-customizations/my-gui my-gui/src/appCustomizations/myCustomizations
+        ln -s ../../../../app-customizations/myconext-server myconext-server/src/main/resources/myCustomizations
 
     - uses: actions/setup-node@v7
       with:
