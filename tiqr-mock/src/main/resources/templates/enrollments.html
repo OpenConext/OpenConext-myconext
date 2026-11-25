@@ -21,7 +21,7 @@
     </div>
     <div class="content-container">
         <div class="content">
-            <a class="home" th:href="@{/}">Home</a>
+            <nav th:replace="~{tabs :: tabs('enrollments')}"></nav>
             <div th:if="${!enrollments.empty}">
                 <p class="info">Click to fetch the enrollment metadata</p>
             </div>
