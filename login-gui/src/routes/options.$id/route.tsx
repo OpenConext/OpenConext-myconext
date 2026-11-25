@@ -37,7 +37,6 @@ export default function Options() {
     const navigate = useNavigate();
     const email: string = state?.email ?? '';
     const [isRedirecting, setIsRedirecting] = useState(false);
-
     const {
         data: methods,
         isPending,
@@ -66,7 +65,7 @@ export default function Options() {
         <LoginContainer
             title={I18n.t('options.title')}
             description={I18n.t('options.description')}
-            onBack={() => navigate(`/login/${id}`)}
+            onBack={() => navigate(-1)}
             backLabel={email}
         >
             {isPending || isRedirecting ? (
