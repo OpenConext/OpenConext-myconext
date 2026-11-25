@@ -1,4 +1,4 @@
-import type { AppTranslation } from './translationType';
+import type { AppTranslation } from '@myconext/shared-gui';
 
 const pt: AppTranslation = {
     globalVariables: {
