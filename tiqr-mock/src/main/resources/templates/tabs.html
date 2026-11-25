@@ -1,8 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <nav th:fragment="tabs(active)" class="tabs">
-    <a th:href="@{/enrollments}" th:classappend="${active == 'enrollments'} ? 'active'">Enrollments</a>
     <a th:href="@{/authentications}" th:classappend="${active == 'authentications'} ? 'active'">Authentications</a>
+    <a th:href="@{/enrollments}" th:classappend="${active == 'enrollments'} ? 'active'">Enrollments</a>
     <a th:href="@{/registrations}" th:classappend="${active == 'registrations'} ? 'active'">Registrations</a>
 </nav>
 </body>

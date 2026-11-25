@@ -57,7 +57,7 @@ public class TiqrEndpoint {
 
     @GetMapping("/")
     public View index() {
-        return new RedirectView("/enrollments");
+        return new RedirectView("/authentications");
     }
 
     @GetMapping("/enrollments")
@@ -167,7 +167,7 @@ public class TiqrEndpoint {
 
         restTemplate.exchange(request, Void.class);
 
-        return new RedirectView(fail ? "/authentication/" + sessionKey : "/enrollments");
+        return new RedirectView(fail ? "/authentication/" + sessionKey : "/authentications");
     }
 
     @GetMapping("/registrations")
