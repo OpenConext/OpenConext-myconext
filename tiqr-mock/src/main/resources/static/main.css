@@ -170,3 +170,23 @@ div.actions {
 div.actions a.button {
     margin-left: auto;
 }
+
+nav.tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 16px;
+}
+
+nav.tabs a {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    text-decoration: none;
+    color: #333;
+}
+
+nav.tabs a.active {
+    font-weight: bold;
+    background: #eee;
+}
