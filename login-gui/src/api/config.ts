@@ -16,7 +16,7 @@ export type Config = {
 };
 
 export const fetchConfig = async (): Promise<Config> =>
-    apiFetch<Config>('/config');
+    apiFetch<Config>('/config?new=true');
 
 export const configQueryOptions = queryOptions({
     queryKey: ['config'],

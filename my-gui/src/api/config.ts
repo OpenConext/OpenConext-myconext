@@ -26,4 +26,4 @@ export type Config = {
     [key: string]: unknown;
 };
 
-export const fetchConfig = () => apiFetch<Config>('/config');
+export const fetchConfig = () => apiFetch<Config>('/config?new=true');
