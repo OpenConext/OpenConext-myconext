@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * HTTP session by {@link GuiRedirectFilter} and the login endpoint, so that redirects from external parties
  * (OIDC callbacks) end up in the client that started the flow. Defaults to the legacy myconext-gui.
  */
+// Todo: remove before PR
 @Component
 public class GuiRedirectResolver {
 

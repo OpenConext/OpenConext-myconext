@@ -21,6 +21,7 @@ import java.net.URI;
  * from the X-Forwarded-Host / X-Forwarded-Proto headers set by the load-balancer. Only the two configured hosts
  * can ever be returned, so a spoofed host header can not lead to an open redirect.
  */
+// Todo: remove before PR
 @Component
 public class AccountRedirectResolver {
 

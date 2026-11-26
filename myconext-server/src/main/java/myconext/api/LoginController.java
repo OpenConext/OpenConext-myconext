@@ -14,6 +14,7 @@ import myconext.security.AccountRedirectResolver;
 import myconext.security.GuiRedirectResolver;
 import myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter;
 import myconext.util.CreateFromInstitutionReturnUrlSupport;
+import myconext.util.SubdomainRewriter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -142,19 +143,41 @@ public class LoginController {
     }
 
     @GetMapping("/config")
-    public Map<String, Object> config(Authentication authentication, HttpServletRequest request) {
+    public Map<String, Object> config(
+            Authentication authentication,
+            HttpServletRequest request,
+            @RequestParam(value = "new", required = false, defaultValue = "false") boolean isNew) {
         Map<String, Object> result = new HashMap<>(this.config);
-        result.put("accountBaseUrl", accountRedirectResolver.resolve(request));
-        result.put("accountWebAuthUrl", String.format("%s/webauthn", accountRedirectResolver.resolve(request)));
-        result.put("continueAfterLoginUrl", accountRedirectResolver.rebase(request, (String) this.config.get("continueAfterLoginUrl")));
-        result.put("magicLinkUrl", accountRedirectResolver.rebase(request, (String) this.config.get("magicLinkUrl")));
+
         result.put("isAuthenticated", authentication != null);
-        String myconextBaseUrl = guiRedirectResolver.myconextRedirectUrl();
-        result.put("myconextBaseUrl", myconextBaseUrl);
-        String basePath = guiRedirectResolver.myconextBasePath();
-        result.put("myconextBasePath", basePath);
-        result.put("loginUrl", basePath + "/auth/login");
-        result.put("myconextWebAuthnRedirectUrl", String.format("%s/security", myconextBaseUrl));
+
+        if (isNew) {
+            result.put("new", "TRUE");
+
+            // Do rewrite
+            //<accountBaseUrl>https://login.test2.eduid.nl</accountBaseUrl>
+            //<accountWebAuthUrl>https://login.test2.eduid.nl/webauthn</accountWebAuthUrl>
+            //<continueAfterLoginUrl>https://login.test2.eduid.nl/saml/guest-idp/continue</continueAfterLoginUrl>
+            //<magicLinkUrl>https://login.test2.eduid.nl/saml/guest-idp/magic</magicLinkUrl>
+
+            //<myconextBaseUrl>https://mijn-nieuw.test2.eduid.nl</myconextBaseUrl>
+            //<myconextBasePath>https://mijn-nieuw.test2.eduid.nl</myconextBasePath>
+            //<loginUrl>https://mijn-nieuw.test2.eduid.nl/auth/login</loginUrl>
+            //<myconextWebAuthnRedirectUrl>https://mijn-nieuw.test2.eduid.nl/security</myconextWebAuthnRedirectUrl>
+
+            // servicedesk and baseDomain are intentionally not rewritten
+            List.of("accountBaseUrl", "accountWebAuthUrl", "continueAfterLoginUrl", "magicLinkUrl",
+                            "myconextBaseUrl", "myconextBasePath", "loginUrl", "myconextWebAuthnRedirectUrl")
+                    .forEach(key -> result.computeIfPresent(key, (k, v) -> SubdomainRewriter.appendNewToSubdomain((String) v)));
+
+            // ------
+
+            // Do NOT rewrite
+            //<baseDomain>test2.eduid.nl</baseDomain>
+            //<servicedeskBaseUrl>https://servicedesk.test2.eduid.nl</servicedeskBaseUrl>
+            //<loginUrlServiceDesk>https://servicedesk.test2.eduid.nl/auth/login</loginUrlServiceDesk>
+        }
+
         return result;
     }
 
