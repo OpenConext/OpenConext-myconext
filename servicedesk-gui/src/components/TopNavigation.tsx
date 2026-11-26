@@ -1,6 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { CaretDownIcon, MoonIcon, SunIcon } from '@phosphor-icons/react';
+import {
+    CaretDownIcon,
+    GlobeIcon,
+    MoonIcon,
+    SignOutIcon,
+    SunIcon,
+} from '@phosphor-icons/react';
 import {
     Button,
     DropdownMenu,
@@ -15,7 +21,7 @@ import {
 
 import { logout } from '../api';
 import eduidLogo from '../icons/eduid-logo.svg?url';
-import I18n from '../locale/I18n';
+import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
 import { useAppStore } from '../stores/AppStore';
 import './TopNavigation.scss';
 
@@ -23,6 +29,7 @@ const navigationItems = [
     { to: '/overview', labelKey: 'navigation.overview' },
     { to: '/users', labelKey: 'navigation.users' },
     { to: '/identity-check', labelKey: 'navigation.identityCheck' },
+    { to: '/stats', labelKey: 'navigation.stats' },
 ];
 
 export const TopNavigation = () => {
@@ -31,6 +38,9 @@ export const TopNavigation = () => {
     const toggleDark = useAppStore((state) => state.toggleDark);
     const navigate = useNavigate();
     const isMember = Boolean(user?.serviceDeskMember);
+    const otherLocale = AVAILABLE_LANGUAGES.find(
+        (locale) => locale !== I18n.locale,
+    )!;
 
     const logoutUser = async () => {
         await logout();
@@ -74,14 +84,6 @@ export const TopNavigation = () => {
                 )}
                 {isMember && (
                     <div className="top-navigation__actions">
-                        <Button
-                            variant="ghost"
-                            data-testid="theme-switch"
-                            onClick={toggleDark}
-                        >
-                            {dark ? <SunIcon /> : <MoonIcon />}
-                            {I18n.t(dark ? 'theme.light' : 'theme.dark')}
-                        </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger
                                 data-testid="user-menu"
@@ -102,8 +104,31 @@ export const TopNavigation = () => {
                                 className="top-navigation__menu"
                             >
                                 <DropdownMenuItem
+                                    data-testid="theme-switch"
+                                    onClick={toggleDark}
+                                >
+                                    {dark ? <SunIcon /> : <MoonIcon />}
+                                    {I18n.t(
+                                        dark ? 'theme.light' : 'theme.dark',
+                                    )}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    data-testid="language-switch"
+                                    lang={otherLocale}
+                                    onClick={() =>
+                                        void switchLocale(otherLocale)
+                                    }
+                                >
+                                    <GlobeIcon />
+                                    {
+                                        I18n.translations[otherLocale]
+                                            .name as string
+                                    }
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
                                     onClick={() => void logoutUser()}
                                 >
+                                    <SignOutIcon />
                                     {I18n.t('header.links.logout')}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

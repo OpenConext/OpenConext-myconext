@@ -53,10 +53,19 @@ const nl = {
     },
     navigation: {
         overview: 'Overzicht',
+        stats: 'Statistieken',
         users: 'Gebruikers',
         identityCheck: 'Identiteitscontrole',
     },
     overview: {
+        title: 'Overzicht',
+        description:
+            'Bekijk accounts van eduID-gebruikers, help ze weer toegang te krijgen en bevestig hun identiteit.',
+        findUser: 'Gebruiker opzoeken',
+        identityCheck: 'Identiteitscontrole uitvoeren',
+        stats: 'Statistieken bekijken',
+    },
+    stats: {
         accountsOverTime: 'Accounts in de tijd',
         total: 'Totaal aantal accounts',
         added: 'Nieuwe accounts',
@@ -67,7 +76,7 @@ const nl = {
         showMore: 'Toon meer (+%{count})',
         showLess: 'Toon minder',
         noData: 'Geen gegevens beschikbaar',
-        loadError: 'Het overzicht kon niet worden geladen',
+        loadError: 'De statistieken konden niet worden geladen',
     },
     users: {
         title: 'Gebruikers',

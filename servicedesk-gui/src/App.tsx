@@ -14,6 +14,7 @@ import { Login } from './pages/Login';
 import NotFound from './pages/NotFound';
 import { Overview } from './pages/Overview';
 import RefreshRoute from './pages/RefreshRoute';
+import { Stats } from './pages/Stats';
 import { UserDetail } from './pages/UserDetail';
 import { Users } from './pages/Users';
 import { useAppStore } from './stores/AppStore';
@@ -83,6 +84,7 @@ const App = () => {
                             path="/identity-check"
                             element={<IdentityCheck />}
                         />
+                        <Route path="/stats" element={<Stats />} />
                         <Route
                             path="/home/*"
                             element={<Navigate replace to="/overview" />}

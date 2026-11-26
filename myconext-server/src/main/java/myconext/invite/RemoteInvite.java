@@ -44,7 +44,7 @@ public class RemoteInvite implements Invite {
     }
 
     @Override
-    public Map<String, List<String>> rolesByEduPersonPrincipalName(String organizationGUID) {
+    public Map<String, List<String>> rolesByOrganizationGUID(String organizationGUID) {
         // compute is atomic per key, so concurrent requests for one organization lead to one remote call
         return cache.compute(organizationGUID, (key, current) -> {
             long now = clock.millis();

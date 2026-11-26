@@ -9,7 +9,7 @@ public class MockInvite implements Invite {
     private final Map<String, Map<String, List<String>>> roles = new HashMap<>();
 
     @Override
-    public Map<String, List<String>> rolesByEduPersonPrincipalName(String organizationGUID) {
+    public Map<String, List<String>> rolesByOrganizationGUID(String organizationGUID) {
         return roles.getOrDefault(organizationGUID, Map.of());
     }
 

@@ -53,10 +53,19 @@ const en = {
     },
     navigation: {
         overview: 'Overview',
+        stats: 'Stats',
         users: 'Users',
         identityCheck: 'Identity check',
     },
     overview: {
+        title: 'Overview',
+        description:
+            "View eduID users' accounts, help them regain access and confirm their identity.",
+        findUser: 'Find a user',
+        identityCheck: 'Perform an identity check',
+        stats: 'View statistics',
+    },
+    stats: {
         accountsOverTime: 'Accounts over time',
         total: 'Total accounts',
         added: 'New accounts',
@@ -67,7 +76,7 @@ const en = {
         showMore: 'Show more (+%{count})',
         showLess: 'Show less',
         noData: 'No data available',
-        loadError: 'The overview could not be loaded',
+        loadError: 'The stats could not be loaded',
     },
     users: {
         title: 'Users',

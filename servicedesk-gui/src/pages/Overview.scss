@@ -1,113 +1,47 @@
 .overview {
-    &__content {
-        display: flex;
-        flex-direction: column;
-        gap: calc(var(--spacing) * 6);
-        width: 100%;
-        max-width: 80rem;
-        padding: 0 calc(var(--spacing) * 6);
-    }
-
-    &__card {
-        padding: calc(var(--spacing) * 6);
-        border: 1px solid var(--border);
-        border-radius: 1rem;
-        background-color: var(--card);
-
-        h2 {
-            margin: 0 0 calc(var(--spacing) * 4);
-            font-size: 1.125rem;
-        }
-    }
-
-    &__heading {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        column-gap: calc(var(--spacing) * 6);
-
-        h2 {
-            margin-bottom: calc(var(--spacing) * 4);
-        }
-    }
-
-    &__legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: calc(var(--spacing) * 6);
-        margin: 0 0 calc(var(--spacing) * 4);
-        padding: 0;
-        list-style: none;
-
-        li {
-            display: flex;
-            align-items: center;
-            gap: calc(var(--spacing) * 2);
-        }
-    }
-
-    &__legend-marker {
-        display: inline-block;
-        width: 0.875rem;
-        height: 0.875rem;
-
-        &--circle {
-            border-radius: 50%;
-        }
-
-        &--square {
-            border-radius: 2px;
-        }
-    }
-
-    &__subtitle {
-        margin: calc(var(--spacing) * -3) 0 calc(var(--spacing) * 4);
-        color: var(--muted-foreground);
-    }
-
-    &__line {
-        height: 22rem;
-    }
-
-    &__empty {
-        color: var(--muted-foreground);
-    }
-
-    &__filters {
-        display: flex;
-        gap: calc(var(--spacing) * 3);
-        margin-bottom: calc(var(--spacing) * 3);
-    }
-
-    &__search {
-        flex: 1;
-        background-color: var(--card);
-    }
-
-    &__toggle {
-        display: flex;
-        padding: 2px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background-color: var(--muted);
-
-        button {
-            min-width: 3rem;
-            padding: 0 calc(var(--spacing) * 3);
-            border: 0;
-            border-radius: 999px;
-            background: transparent;
-            cursor: pointer;
-
-            &.active {
-                background-color: var(--card);
-                box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
-            }
-        }
-    }
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 3);
+    width: 100%;
+    max-width: 42rem;
+    padding: 0 calc(var(--spacing) * 6);
 
     &__link {
-        margin-bottom: calc(var(--spacing) * 3);
-        padding-left: 0;
+        flex-wrap: nowrap;
+        gap: calc(var(--spacing) * 3);
+        padding: calc(var(--spacing) * 3.5) calc(var(--spacing) * 4);
+        border-color: var(--border);
+        border-radius: 8px;
+        background-color: var(--card);
+        box-shadow:
+            0 1px 3px rgb(0 0 0 / 10%),
+            0 1px 2px -1px rgb(0 0 0 / 10%);
+        color: var(--foreground);
+        text-decoration: none;
+    }
+
+    &__icon {
+        color: var(--primary);
+    }
+
+    &__title {
+        font-size: 1rem;
+        font-weight: var(--font-weight-medium);
+        line-height: 1;
+    }
+
+    &__caret {
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        color: var(--primary);
+    }
+}
+
+// --primary is too faint on dark backgrounds
+.dark .overview {
+    .overview__icon,
+    .overview__caret {
+        color: var(--primary-strong);
     }
 }

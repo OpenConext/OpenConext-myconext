@@ -17,7 +17,6 @@ import myconext.repository.UserRepository;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,7 +103,7 @@ public class ServiceDeskController {
         return manage.findIdentityProviderByDomainName(schacHomeOrganization)
                 .map(IdentityProvider::getInstitutionGuid)
                 .filter(StringUtils::hasText)
-                .map(invite::rolesByEduPersonPrincipalName)
+                .map(invite::rolesByOrganizationGUID)
                 .orElse(Map.of());
     }
 
