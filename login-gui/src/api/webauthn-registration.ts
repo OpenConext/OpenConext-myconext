@@ -56,9 +56,15 @@ export const registerSecurityKey = async (
     let credentials: PublicKeyCredentialWithAttestationJSON;
     try {
         credentials = await create({ publicKey: request });
-    } catch {
-        // Browser rejects creation when the key is already registered
-        return { status: 'alreadyRegistered' };
+    } catch (error) {
+        if (
+            error instanceof DOMException &&
+            error.name === 'InvalidStateError'
+        ) {
+            return { status: 'alreadyRegistered' };
+        }
+        console.error('WebAuthn credential creation failed', error);
+        throw error;
     }
 
     const { location } = await webAuthnFinishRegistration(
