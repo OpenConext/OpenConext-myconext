@@ -22,7 +22,7 @@ export type SecurityKeyRegistration =
 
 export const webAuthnStartRegistration = (token: string) =>
     apiFetch<WebAuthnRegistrationOptions>(
-        '/myconext/api/idp/security/webauthn/registration',
+        '/myconext/api/idp/security/webauthn/registration?new=true',
         { method: 'POST', body: { token } },
     );
 
@@ -34,7 +34,7 @@ export const webAuthnFinishRegistration = (
     request: WebAuthnRegistrationOptions,
 ) =>
     apiFetch<WebAuthnRegistrationFinishResponse>(
-        '/myconext/api/idp/security/webauthn/registration',
+        '/myconext/api/idp/security/webauthn/registration?new=true',
         { method: 'PUT', body: { token, name, credentials, request } },
     );
 

@@ -165,6 +165,11 @@ public class LoginController {
             //<loginUrl>https://mijn-nieuw.test2.eduid.nl/auth/login</loginUrl>
             //<myconextWebAuthnRedirectUrl>https://mijn-nieuw.test2.eduid.nl/security</myconextWebAuthnRedirectUrl>
 
+            // The server redirects the browser to these on the host of the GUI, so they must share its origin
+            String accountBaseUrl = (String) result.get("accountBaseUrl");
+            List.of("magicLinkUrl", "continueAfterLoginUrl")
+                    .forEach(key -> result.computeIfPresent(key, (k, v) -> SubdomainRewriter.moveToBase((String) v, accountBaseUrl)));
+
             // servicedesk and baseDomain are intentionally not rewritten
             List.of("accountBaseUrl", "accountWebAuthUrl", "continueAfterLoginUrl", "magicLinkUrl",
                             "myconextBaseUrl", "myconextBasePath", "loginUrl", "myconextWebAuthnRedirectUrl")

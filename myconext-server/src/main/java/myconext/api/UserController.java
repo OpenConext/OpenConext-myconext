@@ -39,6 +39,7 @@ import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
 import myconext.security.*;
+import myconext.util.SubdomainRewriter;
 import myconext.validation.PasswordStrength;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
@@ -99,6 +100,7 @@ public class UserController implements UserAuthentication {
     private final String schacHomeOrganization;
     private final String accountRedirectUrl;
     private final RelyingParty relyingParty;
+    private final RelyingParty relyingPartyNew;
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
     private final PasswordResetHashRepository passwordResetHashRepository;
@@ -175,6 +177,9 @@ public class UserController implements UserAuthentication {
         this.guiRedirectResolver = guiRedirectResolver;
         this.servicesConfiguration = servicesConfiguration;
         this.relyingParty = relyingParty(accountId, accountOrigin);
+        this.relyingPartyNew = relyingParty(
+                SubdomainRewriter.appendNewToHost(accountId),
+                SubdomainRewriter.appendNewToSubdomain(accountOrigin));
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.sendJsExceptions = sendJsExceptions;
@@ -1194,7 +1199,8 @@ public class UserController implements UserAuthentication {
 
     @PostMapping("idp/security/webauthn/registration")
     @Hidden
-    public ResponseEntity idpWebAuthnRegistration(@RequestBody Map<String, String> body) throws Base64UrlException {
+    public ResponseEntity idpWebAuthnRegistration(@RequestBody Map<String, String> body,
+                                                  @RequestParam(value = "new", required = false, defaultValue = "false") boolean newUser) throws Base64UrlException {
         String token = body.get("token");
         Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
         if (!optionalUser.isPresent()) {
@@ -1206,7 +1212,8 @@ public class UserController implements UserAuthentication {
             user.setUserHandle(hash());
             userRepository.save(user);
         }
-        PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(this.relyingParty, user);
+        RelyingParty selectedRelyingParty = newUser ? this.relyingPartyNew : this.relyingParty;
+        PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(selectedRelyingParty, user);
         String challenge = request.getChallenge().getBase64Url();
         //we need to store the challenge to retrieve it later on the way back
         challengeRepository.save(new Challenge(token, challenge));
@@ -1218,9 +1225,11 @@ public class UserController implements UserAuthentication {
      */
     @PutMapping("idp/security/webauthn/registration")
     @Hidden
-    public ResponseEntity idpWebAuthn(HttpServletResponse response, @RequestBody Map<String, Object> body) {
+    public ResponseEntity idpWebAuthn(HttpServletResponse response,
+                                      @RequestBody Map<String, Object> body,
+                                      @RequestParam(value = "new", required = false, defaultValue = "false") boolean newUser) {
         try {
-            return doIdpWebAuthn(response, body);
+            return doIdpWebAuthn(response, body, newUser);
         } catch (Exception e) {
             //We always want to redirect back to the SP
             String redirectUrl = userRepository.findUserByWebAuthnIdentifier((String) body.get("token"))
@@ -1231,7 +1240,7 @@ public class UserController implements UserAuthentication {
         }
     }
 
-    private ResponseEntity doIdpWebAuthn(HttpServletResponse response, Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
+    private ResponseEntity doIdpWebAuthn(HttpServletResponse response, Map<String, Object> body, boolean newUser) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
         String token = (String) body.get("token");
         String name = (String) body.get("name");
 
@@ -1249,14 +1258,15 @@ public class UserController implements UserAuthentication {
         String redirectUrl = StringUtils.hasText(user.getGuiRedirectUrl()) ? user.getGuiRedirectUrl() : guiRedirectResolver.myconextRedirectUrl();
         user.setGuiRedirectUrl(null);
 
-        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(this.relyingParty, user);
+        RelyingParty selectedRelyingParty = newUser ? this.relyingPartyNew : this.relyingParty;
+        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(selectedRelyingParty, user);
         //Needed to succeed the validation
         Challenge challenge = challengeRepository.findByToken(token)
                 .orElseThrow(() -> new ForbiddenException("Invalid token: " + token));
         this.restoreChallenge(request, ByteArray.fromBase64Url(challenge.getChallenge()));
         challengeRepository.delete(challenge);
 
-        RegistrationResult result = this.relyingParty.finishRegistration(FinishRegistrationOptions.builder()
+        RegistrationResult result = selectedRelyingParty.finishRegistration(FinishRegistrationOptions.builder()
                 .request(request)
                 .response(pkc)
                 .build());
@@ -1280,7 +1290,8 @@ public class UserController implements UserAuthentication {
 
     @PostMapping("idp/security/webauthn/authentication")
     @Hidden
-    public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
+    public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body,
+                                                         @RequestParam(value = "new", required = false, defaultValue = "false") boolean newUser) {
         String email = body.get("email");
 
         Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(emailGuessingPreventor.sanitizeEmail(email));
@@ -1290,7 +1301,8 @@ public class UserController implements UserAuthentication {
         User user = optionalUser.get();
         verifyEmails(email, false);
 
-        AssertionRequest request = this.relyingParty.startAssertion(StartAssertionOptions.builder()
+        RelyingParty selectedRelyingParty = newUser ? this.relyingPartyNew : this.relyingParty;
+        AssertionRequest request = selectedRelyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(user.getEmail()))
                 .build());
 
@@ -1306,7 +1318,9 @@ public class UserController implements UserAuthentication {
 
     @PutMapping("idp/security/webauthn/authentication")
     @Hidden
-    public ResponseEntity idpWebAuthnTryAuthentication(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity idpWebAuthnTryAuthentication(HttpServletRequest request,
+                                                       @RequestBody Map<String, Object> body,
+                                                       @RequestParam(value = "new", required = false, defaultValue = "false") boolean newUser) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
         String authenticationRequestId = (String) body.get("authenticationRequestId");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired SamlAuthenticationRequest"));
@@ -1316,12 +1330,13 @@ public class UserController implements UserAuthentication {
 
         Challenge challenge = challengeRepository.findByToken(authenticationRequestId)
                 .orElseThrow(() -> new ForbiddenException("Challenge not found"));
-        AssertionRequest assertionRequest = this.relyingParty.startAssertion(StartAssertionOptions.builder()
+        RelyingParty selectedRelyingParty = newUser ? this.relyingPartyNew : this.relyingParty;
+        AssertionRequest assertionRequest = selectedRelyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(challenge.getEmail()))
                 .build());
         this.restoreChallenge(assertionRequest.getPublicKeyCredentialRequestOptions(), ByteArray.fromBase64Url(challenge.getChallenge()));
 
-        AssertionResult result = this.relyingParty.finishAssertion(FinishAssertionOptions.builder()
+        AssertionResult result = selectedRelyingParty.finishAssertion(FinishAssertionOptions.builder()
                 .request(assertionRequest)
                 .response(pkc)
                 .build());

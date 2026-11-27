@@ -18,7 +18,7 @@ export const webAuthnStartAuthentication = (
     test = false,
 ) =>
     apiFetch<WebAuthnStartResponse>(
-        '/myconext/api/idp/security/webauthn/authentication',
+        '/myconext/api/idp/security/webauthn/authentication?new=true',
         {
             method: 'POST',
             body: { email, authenticationRequestId, test },
@@ -31,7 +31,7 @@ export const webAuthnFinishAuthentication = (
     authenticationRequestId: string,
 ) =>
     apiFetch<WebAuthnFinishResponse>(
-        '/myconext/api/idp/security/webauthn/authentication',
+        '/myconext/api/idp/security/webauthn/authentication?new=true',
         {
             method: 'PUT',
             body: { credentials, authenticationRequestId },
