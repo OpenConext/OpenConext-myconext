@@ -21,7 +21,7 @@
         "@github/webauthn-json": "^2.1.1",
         "@myconext/shared-gui": "*",
         "@phosphor-icons/react": "^2.1.10",
-        "@surfnet/curve-react": "^0.10.0",
+        "@surfnet/curve-react": "^3.0.0",
         "@tanstack/react-query": "^5.105.0",
         "@tanstack/react-query-devtools": "^5.105.0",
         "i18n-js": "^4.5.4",
