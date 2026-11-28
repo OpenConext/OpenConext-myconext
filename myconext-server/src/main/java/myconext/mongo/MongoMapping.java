@@ -6,6 +6,7 @@ import io.mongock.runner.springboot.base.MongockApplicationRunner;
 import lombok.SneakyThrows;
 import myconext.model.EmailsSend;
 import myconext.model.User;
+import myconext.repository.ServiceDeskUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
@@ -98,6 +99,18 @@ public class MongoMapping {
                             .unique());
         }
 
+        //The service desk queries the users by the institution of their (external) linked accounts. No migration needed,
+        //the schacHomeOrganization is already stored in lowercase
+        List.of("linkedAccounts.schacHomeOrganization", "externalLinkedAccounts.schacHomeOrganization")
+                .forEach(field -> {
+                    IndexOperations institutionIndexes = mongoTemplate.indexOps(User.class);
+                    //For the user search, which needs the same (case-insensitive) collation as the query
+                    institutionIndexes.createIndex(
+                            new Index(field, Sort.Direction.ASC).collation(ServiceDeskUserRepository.CASE_INSENSITIVE));
+                    //For the stats: without a collation and with created, MongoDB counts from the index only
+                    institutionIndexes.createIndex(
+                            new Index(field, Sort.Direction.ASC).on("created", Sort.Direction.ASC));
+                });
         //tiqr
         mongoTemplate.indexOps(Enrollment.class).createIndex(
                 new Index("key", Sort.Direction.ASC));

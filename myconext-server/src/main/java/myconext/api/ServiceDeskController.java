@@ -107,15 +107,15 @@ public class ServiceDeskController {
                 .orElse(Map.of());
     }
 
-    @GetMapping("/overview")
-    @Operation(summary = "Overview",
+    @GetMapping("/stats")
+    @Operation(summary = "Stats",
             description = "The number of eduID accounts in time and the services they are logged into, for the institution of the logged in service desk member")
-    public ResponseEntity<ServiceDeskOverview> overview(Authentication authentication) {
+    public ResponseEntity<ServiceDeskStats> stats(Authentication authentication) {
         String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
         ExternalUser serviceDeskMember = this.externalUserRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        return ResponseEntity.ok(serviceDeskUserRepository.overview(serviceDeskMember.getSchacHomeOrganization()));
+        return ResponseEntity.ok(serviceDeskUserRepository.stats(serviceDeskMember.getSchacHomeOrganization()));
     }
 
     @GetMapping("/users/{id}")

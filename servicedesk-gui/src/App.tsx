@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
 import { Spinner } from '@surfnet/curve-react';
 
 import './App.scss';
-import { configuration, me } from './api';
 import { Flash } from './components/Flash';
 import { Footer } from './components/Footer';
 import { TopNavigation } from './components/TopNavigation';
@@ -17,50 +16,41 @@ import RefreshRoute from './pages/RefreshRoute';
 import { Stats } from './pages/Stats';
 import { UserDetail } from './pages/UserDetail';
 import { Users } from './pages/Users';
-import { useAppStore } from './stores/AppStore';
+import { AUTH_STATUS, useAppStore } from './stores/AppStore';
 
-const AUTH_STATUS = {
-    LOADING: 'loading',
-    UNAUTHENTICATED: 'unauthenticated',
-    FORBIDDEN: 'forbidden',
-    AUTHORIZED: 'authorized',
-} as const;
-
-type AuthStatus = (typeof AUTH_STATUS)[keyof typeof AUTH_STATUS];
+const isLoginPath = () => window.location.pathname.endsWith('/login');
 
 const App = () => {
-    const [authStatus, setAuthStatus] = useState<AuthStatus>(
-        AUTH_STATUS.LOADING,
-    );
+    const storeAuthStatus = useAppStore((state) => state.authStatus);
+    const loadSession = useAppStore((state) => state.loadSession);
     const navigate = useNavigate();
+    // On the login page there is no session to load yet
+    const authStatus =
+        storeAuthStatus === AUTH_STATUS.LOADING && isLoginPath()
+            ? AUTH_STATUS.UNAUTHENTICATED
+            : storeAuthStatus;
 
+    // useNavigate returns a new function on every location change, so this
+    // effect re-runs on each tab switch; loadSession only fetches the first time
     useEffect(() => {
+        if (isLoginPath()) {
+            return;
+        }
         const load = async () => {
-            if (window.location.pathname.endsWith('/login')) {
-                setAuthStatus(AUTH_STATUS.UNAUTHENTICATED);
-                return;
-            }
             try {
-                const config = await configuration();
-                useAppStore.setState(() => ({ config }));
-                if (!config.isAuthenticated) {
-                    setAuthStatus(AUTH_STATUS.UNAUTHENTICATED);
-                    return;
-                }
-                const user = await me();
-                useAppStore.setState(() => ({ user }));
-                setAuthStatus(
-                    user.serviceDeskMember
-                        ? AUTH_STATUS.AUTHORIZED
-                        : AUTH_STATUS.FORBIDDEN,
-                );
+                await loadSession();
             } catch {
-                setAuthStatus(AUTH_STATUS.FORBIDDEN);
-                setTimeout(() => navigate('/forbidden?unauthorized=true'), 125);
+                // The failure is cached, don't redirect again once we're there
+                if (!window.location.pathname.endsWith('/forbidden')) {
+                    setTimeout(
+                        () => navigate('/forbidden?unauthorized=true'),
+                        125,
+                    );
+                }
             }
         };
         void load();
-    }, [navigate]);
+    }, [loadSession, navigate]);
 
     if (authStatus === AUTH_STATUS.LOADING) {
         return <Spinner className="loading" />;

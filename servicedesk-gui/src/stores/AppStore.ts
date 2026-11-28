@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { configuration, me } from '../api';
+
 export type User = {
     id?: string;
     displayName?: string;
@@ -33,6 +35,15 @@ export type Flash = {
     actionLabel?: string;
 };
 
+export const AUTH_STATUS = {
+    LOADING: 'loading',
+    UNAUTHENTICATED: 'unauthenticated',
+    FORBIDDEN: 'forbidden',
+    AUTHORIZED: 'authorized',
+} as const;
+
+export type AuthStatus = (typeof AUTH_STATUS)[keyof typeof AUTH_STATUS];
+
 const DARK_KEY = 'darkMode';
 
 const darkQuery =
@@ -59,12 +70,18 @@ type AppState = {
     toggleDark: () => void;
     user: User;
     config: Config;
+    authStatus: AuthStatus;
+    // Fetches /config and /me once; later calls reuse the same result
+    loadSession: () => Promise<AuthStatus>;
     controlCode: ControlCode;
     csrfToken?: string;
     flash: Flash;
     setFlash: (message: string, type?: FlashType) => void;
     clearFlash: () => void;
 };
+
+// Shared by every caller so /config and /me are fetched only once per page load
+let sessionPromise: Promise<AuthStatus> | undefined;
 
 export const useAppStore = create<AppState>((set) => ({
     dark: readDark(),
@@ -80,6 +97,31 @@ export const useAppStore = create<AppState>((set) => ({
         }),
     user: {},
     config: {},
+    authStatus: AUTH_STATUS.LOADING,
+    loadSession: () => {
+        sessionPromise ??= (async () => {
+            let authStatus: AuthStatus;
+            try {
+                const config = await configuration();
+                set({ config });
+                if (config.isAuthenticated) {
+                    const user = await me();
+                    set({ user });
+                    authStatus = user.serviceDeskMember
+                        ? AUTH_STATUS.AUTHORIZED
+                        : AUTH_STATUS.FORBIDDEN;
+                } else {
+                    authStatus = AUTH_STATUS.UNAUTHENTICATED;
+                }
+            } catch (error) {
+                set({ authStatus: AUTH_STATUS.FORBIDDEN });
+                throw error;
+            }
+            set({ authStatus });
+            return authStatus;
+        })();
+        return sessionPromise;
+    },
     controlCode: {},
     flash: { msg: '', className: 'hide', type: 'info' },
     setFlash: (message, type) => {
