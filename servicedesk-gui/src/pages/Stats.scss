@@ -73,9 +73,42 @@
         transform: translateX(-50%);
         margin-left: 1%;
         color: var(--muted-foreground);
+
+        //Shimmer: a lighter band sweeps over the text from left to right
+        > span {
+            background: linear-gradient(
+                    90deg,
+                    var(--muted-foreground) 0%,
+                    var(--muted-foreground) 40%,
+                    color-mix(in srgb, var(--muted-foreground) 20%, white) 50%,
+                    var(--muted-foreground) 60%,
+                    var(--muted-foreground) 100%
+            );
+            background-size: 300% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: stats-loading-shimmer 3s linear infinite;
+
+            @media (prefers-reduced-motion: reduce) {
+                animation: none;
+                background: none;
+                color: var(--muted-foreground);
+            }
+        }
     }
 
     &__empty {
         color: var(--muted-foreground);
+    }
+}
+
+@keyframes stats-loading-shimmer {
+    //Only the range where the light band (40%-60% of the gradient) crosses the text, so there is no idle gap between sweeps
+    from {
+        background-position: 90% 0;
+    }
+    to {
+        background-position: 10% 0;
     }
 }
