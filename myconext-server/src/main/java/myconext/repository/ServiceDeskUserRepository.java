@@ -9,7 +9,7 @@ import myconext.model.IdpScoping;
 import myconext.model.LinkedAccount;
 import myconext.model.ServiceProvider;
 import myconext.model.ServiceDeskUser;
-import myconext.model.ServiceDeskOverview;
+import myconext.model.ServiceDeskStats;
 import myconext.model.ProvisionedLinkedAccount;
 import myconext.model.ServiceDeskUserDetail;
 import myconext.model.ServiceDeskUserSearchResult;
@@ -17,7 +17,9 @@ import myconext.model.User;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Collation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -26,15 +28,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.time.Instant;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -49,6 +52,9 @@ import java.util.stream.Stream;
 public class ServiceDeskUserRepository {
 
     public static final int MAX_PAGE_SIZE = 100;
+
+    //The collation of the user search, and of the institution indexes in MongoMapping used by the search
+    public static final Collation CASE_INSENSITIVE = Collation.of(Locale.ENGLISH).strength(2);
 
     private static final List<String> SEARCH_FIELDS = List.of("email", "givenName", "familyName", "chosenName", "uid");
 
@@ -90,7 +96,7 @@ public class ServiceDeskUserRepository {
             criteria.add(blocked ? Criteria.where("blocked").is(true) : Criteria.where("blocked").ne(true));
         }
         Query query = new Query(new Criteria().andOperator(criteria))
-                .collation(Collation.of("en").strength(2));
+                .collation(CASE_INSENSITIVE);
 
         long total = mongoTemplate.count(query, User.class);
 
@@ -106,11 +112,15 @@ public class ServiceDeskUserRepository {
         return new ServiceDeskUserSearchResult(result, total, pageNumber, size);
     }
 
+    /**
+     * The schacHomeOrganization is always stored in lowercase, so an exact match can use the indexes created in
+     * MongoMapping: the search uses {@link #CASE_INSENSITIVE} and the matching indexes, the stats the plain ones
+     */
     private Criteria institutionCriteria(String schacHomeOrganization) {
-        Pattern organization = exactIgnoreCase(schacHomeOrganization);
+        String organization = schacHomeOrganization.trim().toLowerCase(Locale.ROOT);
         return new Criteria().orOperator(
-                Criteria.where("linkedAccounts").elemMatch(Criteria.where("schacHomeOrganization").regex(organization)),
-                Criteria.where("externalLinkedAccounts").elemMatch(Criteria.where("schacHomeOrganization").regex(organization)));
+                Criteria.where("linkedAccounts.schacHomeOrganization").is(organization),
+                Criteria.where("externalLinkedAccounts.schacHomeOrganization").is(organization));
     }
 
     private List<Criteria> searchCriteria(String queryString) {
@@ -145,52 +155,56 @@ public class ServiceDeskUserRepository {
     }
 
     /**
-     * The number of eduID accounts in time and the services they are logged into, for the institution
+     * The number of eduID accounts in time for the institution. The aggregation only needs the created field, so it is
+     * answered from the compound institution / created indexes in MongoMapping without reading any user document.
+     * Therefore no collation is used: the schacHomeOrganization is always lowercase, and a collation forces MongoDB
+     * to read the documents
      */
-    public ServiceDeskOverview overview(String schacHomeOrganization) {
+    public ServiceDeskStats stats(String schacHomeOrganization) {
         if (!StringUtils.hasText(schacHomeOrganization)) {
-            return new ServiceDeskOverview(null, 0, List.of(), List.of());
+            return new ServiceDeskStats(null, 0, List.of());
         }
-        Query query = new Query(institutionCriteria(schacHomeOrganization));
-        query.fields().include("created").include("eduIDS");
-        List<User> users = mongoTemplate.find(query, User.class);
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(institutionCriteria(schacHomeOrganization)),
+                context -> createdPerMonth());
+        List<Document> months = mongoTemplate.aggregate(aggregation, User.class, Document.class).getMappedResults();
 
         //Accounts without a creation date are counted in the baseline
-        long baseline = users.stream().filter(user -> user.getCreated() <= 0).count();
-        Map<YearMonth, Long> perMonth = new TreeMap<>();
-        users.stream()
-                .filter(user -> user.getCreated() > 0)
-                .map(user -> YearMonth.from(Instant.ofEpochSecond(user.getCreated()).atZone(ZoneOffset.UTC)))
-                .forEach(month -> perMonth.merge(month, 1L, Long::sum));
+        long baseline = 0;
+        TreeMap<YearMonth, Long> perMonth = new TreeMap<>();
+        for (Document month : months) {
+            long count = ((Number) month.get("count")).longValue();
+            String key = month.getString("_id");
+            if (key == null) {
+                baseline += count;
+            } else {
+                perMonth.merge(YearMonth.parse(key), count, Long::sum);
+            }
+        }
 
         String firstMonth = null;
         List<Long> added = new ArrayList<>();
         if (!perMonth.isEmpty()) {
-            YearMonth first = ((TreeMap<YearMonth, Long>) perMonth).firstKey();
+            YearMonth first = perMonth.firstKey();
             YearMonth last = YearMonth.now(ZoneOffset.UTC);
             firstMonth = first.toString();
             for (YearMonth month = first; !month.isAfter(last); month = month.plusMonths(1)) {
                 added.add(perMonth.getOrDefault(month, 0L));
             }
         }
+        return new ServiceDeskStats(firstMonth, baseline, added);
+    }
 
-        Map<String, Long> serviceUsers = new LinkedHashMap<>();
-        for (User user : users) {
-            //A user is counted once per service, even if multiple eduID's share the service
-            user.getEduIDS().stream()
-                    .flatMap(eduID -> eduID.getServices().stream())
-                    .map(service -> StringUtils.hasText(service.getNameNl()) && !StringUtils.hasText(service.getName()) ?
-                            service.getNameNl() : StringUtils.hasText(service.getName()) ? service.getName() : service.getEntityId())
-                    .filter(StringUtils::hasText)
-                    .distinct()
-                    .forEach(name -> serviceUsers.merge(name, 1L, Long::sum));
-        }
-        List<ServiceDeskOverview.ServiceUsage> services = serviceUsers.entrySet().stream()
-                .map(entry -> new ServiceDeskOverview.ServiceUsage(entry.getKey(), entry.getValue()))
-                .sorted(Comparator.comparingLong(ServiceDeskOverview.ServiceUsage::users).reversed()
-                        .thenComparing(ServiceDeskOverview.ServiceUsage::name))
-                .toList();
-        return new ServiceDeskOverview(firstMonth, baseline, added, services);
+    /**
+     * Groups the users by the UTC month ("yyyy-MM") of their creation, created is in epoch seconds. Users without a
+     * creation date are grouped under null
+     */
+    private Document createdPerMonth() {
+        Document createdDate = new Document("$toDate", new Document("$multiply", List.of("$created", 1000L)));
+        Document month = new Document("$dateToString", new Document("format", "%Y-%m").append("date", createdDate));
+        Document hasCreated = new Document("$gt", List.of(new Document("$ifNull", List.of("$created", 0L)), 0L));
+        return new Document("$group", new Document("_id", new Document("$cond", Arrays.asList(hasCreated, month, null)))
+                .append("count", new Document("$sum", 1)));
     }
 
     /**
@@ -352,10 +366,6 @@ public class ServiceDeskUserRepository {
                 .flatMap(Collection::stream)
                 .forEach(affiliations::add);
         return affiliations.stream().distinct().toList();
-    }
-
-    private Pattern exactIgnoreCase(String value) {
-        return Pattern.compile("^" + Pattern.quote(value.trim()) + "$", Pattern.CASE_INSENSITIVE);
     }
 
 }

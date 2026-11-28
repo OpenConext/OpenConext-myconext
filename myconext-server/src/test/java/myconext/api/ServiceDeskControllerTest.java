@@ -9,7 +9,10 @@ import myconext.model.EduID;
 import myconext.model.ServiceProvider;
 import myconext.model.ControlCode;
 import myconext.model.ExternalLinkedAccount;
-import myconext.model.ServiceDeskOverview;
+import myconext.model.ServiceDeskStats;
+import myconext.repository.ServiceDeskUserRepository;
+import com.mongodb.ExplainVerbosity;
+import org.bson.Document;
 import myconext.model.ServiceDeskUserDetail;
 import myconext.model.ServiceDeskUserSearchResult;
 import myconext.model.LinkedAccount;
@@ -29,6 +32,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -202,30 +206,67 @@ class ServiceDeskControllerTest
     }
 
     @Test
-    void overview() {
+    void stats() {
         seedUsers();
 
-        ServiceDeskOverview overview = given()
+        ServiceDeskStats stats = given()
                 .when()
-                .get("/myconext/api/servicedesk/overview")
-                .as(ServiceDeskOverview.class);
+                .get("/myconext/api/servicedesk/stats")
+                .as(ServiceDeskStats.class);
         //25 seeded users are linked to the institution of the service desk member, the other 5 are not
-        assertNotNull(overview.firstMonth());
-        assertEquals(25, overview.baseline() + overview.added().stream().mapToLong(Long::longValue).sum());
-        //The first 3 users have 3 services each
-        assertEquals(3, overview.services().size());
-        assertEquals(3, overview.services().getFirst().users());
+        assertNotNull(stats.firstMonth());
+        assertEquals(25, stats.baseline() + stats.added().stream().mapToLong(Long::longValue).sum());
     }
 
     @Test
-    void overviewOtherInstitution() {
-        ServiceDeskOverview overview = given()
+    void statsReadNoDocuments() {
+        seedUsers();
+        //Same match and group as ServiceDeskUserRepository#stats, without a collation
+        List<Document> pipeline = List.of(
+                new Document("$match", new Document("$or", List.of(
+                        new Document("linkedAccounts.schacHomeOrganization", "example.com"),
+                        new Document("externalLinkedAccounts.schacHomeOrganization", "example.com")))),
+                new Document("$group", new Document("_id", new Document("$cond", Arrays.asList(
+                        new Document("$gt", List.of(new Document("$ifNull", List.of("$created", 0L)), 0L)),
+                        new Document("$dateToString", new Document("format", "%Y-%m").append("date",
+                                new Document("$toDate", new Document("$multiply", List.of("$created", 1000L))))),
+                        null)))
+                        .append("count", new Document("$sum", 1))));
+        Document explain = mongoTemplate.getCollection("users")
+                .aggregate(pipeline)
+                .explain(Document.class, ExplainVerbosity.EXECUTION_STATS);
+        //Depending on the MongoDB version the stats are at the top or in the $cursor stage
+        Document executionStats = explain.containsKey("executionStats") ?
+                explain.get("executionStats", Document.class) :
+                explain.getList("stages", Document.class).getFirst()
+                        .get("$cursor", Document.class).get("executionStats", Document.class);
+        assertTrue(executionStats.get("totalKeysExamined", Number.class).longValue() > 0, executionStats.toJson());
+        assertEquals(0L, executionStats.get("totalDocsExamined", Number.class).longValue(), executionStats.toJson());
+    }
+
+    @Test
+    void searchUsesInstitutionIndex() {
+        //Same filter and collation as the user search in ServiceDeskUserRepository
+        Document filter = new Document("$or", List.of(
+                new Document("linkedAccounts.schacHomeOrganization", "example.com"),
+                new Document("externalLinkedAccounts.schacHomeOrganization", "example.com")));
+        Document explain = mongoTemplate.getCollection("users")
+                .find(filter)
+                .collation(ServiceDeskUserRepository.CASE_INSENSITIVE.toMongoCollation())
+                .explain();
+        String winningPlan = explain.get("queryPlanner", Document.class).get("winningPlan", Document.class).toJson();
+        assertTrue(winningPlan.contains("IXSCAN"), winningPlan);
+        assertFalse(winningPlan.contains("COLLSCAN"), winningPlan);
+    }
+
+    @Test
+    void statsOtherInstitution() {
+        ServiceDeskStats stats = given()
                 .when()
-                .get("/myconext/api/servicedesk/overview")
-                .as(ServiceDeskOverview.class);
-        assertNull(overview.firstMonth());
-        assertTrue(overview.added().isEmpty());
-        assertTrue(overview.services().isEmpty());
+                .get("/myconext/api/servicedesk/stats")
+                .as(ServiceDeskStats.class);
+        assertNull(stats.firstMonth());
+        assertTrue(stats.added().isEmpty());
     }
 
     @Test

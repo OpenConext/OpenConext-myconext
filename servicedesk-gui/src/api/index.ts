@@ -119,23 +119,17 @@ export const blockUser = (id: string) =>
         },
     );
 
-export type ServiceUsage = {
-    name: string;
-    users: number;
-};
-
-export type ServiceDeskOverview = {
+export type ServiceDeskStats = {
     // the month (yyyy-MM) of the first entry in added
     firstMonth: string | null;
     // the accounts without a creation date
     baseline: number;
     // the new accounts per month, from firstMonth until the current month
     added: number[];
-    services: ServiceUsage[];
 };
 
-export const getOverview = () =>
-    apiFetch<ServiceDeskOverview>('/myconext/api/servicedesk/overview');
+export const getStats = () =>
+    apiFetch<ServiceDeskStats>('/myconext/api/servicedesk/stats');
 
 export const unblockUser = (id: string) =>
     apiFetch(
